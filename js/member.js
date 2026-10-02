@@ -14,9 +14,14 @@ document.querySelector('[data-nav="member"]').setAttribute('aria-current', 'page
 const V = { loading: $('vLoading'), auth: $('vAuth'), owner: $('vOwner'), home: $('vHome'), profile: $('vProfile') };
 let user = null, member = null, orders = [], unsubM = null, queueShop = null, flipped = false, showAllOrders = false;
 
+let curView = null;
 function show(name) {
-  Object.entries(V).forEach(([k, el]) => { el.hidden = k !== name; });
-  window.scrollTo(0, 0);
+  if (curView === name) return;
+  const first = curView === null || curView === 'loading';
+  curView = name;
+  Object.entries(V).forEach(([k, el]) => { el.hidden = k !== name; el.classList.remove('view-in'); });
+  const el = V[name]; void el.offsetWidth; el.classList.add('view-in');
+  if (!first) window.scrollTo(0, 0);
 }
 function route() {
   if (!user) return show('auth');
@@ -105,7 +110,8 @@ onAuthStateChanged(auth, (u) => {
   if (unsubM) { unsubM(); unsubM = null; }
   renderTopEnd();
   if (!u || u.uid === OWNER) return route();
-  show('loading');
+  try { const c = localStorage.getItem('unitac-member-cache:' + u.uid); if (c) { const o = JSON.parse(c); member = o.m; orders = o.o || []; } } catch (_) {}
+  if (member) route(); else show('loading');
   if (!creating) watchMember(u);
 });
 function watchMember(u) {
@@ -117,6 +123,7 @@ function watchMember(u) {
       return;
     }
     member = snap.data();
+    saveCache();
     if (u.emailVerified && !member.verified) {
       try { await u.getIdToken(true); await updateDoc(doc(db, 'members', u.uid), { verified: true }); } catch (_) {}
     }
@@ -132,7 +139,12 @@ async function loadOrders(u) {
     orders = qs.docs.map(d => ({ id: d.id, ...d.data() }))
       .sort((a, b) => (toDate(b.deliveredAt) || 0) - (toDate(a.deliveredAt) || 0));
   } catch (_) { orders = []; }
-  if (member) route();
+  saveCache();
+  if (member && !V.home.hidden) { renderWarranties(); renderOrders(); }
+}
+function saveCache() {
+  if (!user || !member) return;
+  try { localStorage.setItem('unitac-member-cache:' + user.uid, JSON.stringify({ m: member, o: orders.slice(0, 20) })); } catch (_) {}
 }
 async function loadShop() {
   try { const s = await getDoc(doc(db, 'public', 'queue')); queueShop = s.exists() ? s.data().shop : null; } catch (_) {}
@@ -146,6 +158,7 @@ function renderTopEnd() {
   }
 }
 document.querySelectorAll('[data-signout]').forEach(b => b.addEventListener('click', async () => {
+  try { if (user) localStorage.removeItem('unitac-member-cache:' + user.uid); } catch (_) {}
   await signOut(auth); location.hash = ''; toast('ออกจากระบบแล้ว');
 }));
 
@@ -160,9 +173,12 @@ function renderHome() {
   $('verifyBar').hidden = !!user.emailVerified || !!m.verified; $('verifyEmail').textContent = user.email || ''; $('verifyHelp').hidden = !!user.emailVerified; renderVerifyStatus();
   $('delBar').hidden = !m.deleteRequested;
 
-  const cb = $('cardBtn'); cb.textContent = '';
-  const card = rankCard(m, uid); if (flipped) card.classList.add('is-flipped'); cb.appendChild(card);
-  attachTilt(card, cb);
+  const cb = $('cardBtn'), key = [r.key, m.nickname, m.points, uid].join('|');
+  let card = cb.querySelector('.rcard');
+  if (!card || cb.dataset.key !== key) {
+    cb.textContent = ''; card = rankCard(m, uid); cb.dataset.key = key;
+    if (flipped) card.classList.add('is-flipped'); cb.appendChild(card); attachTilt(card);
+  }
   if (!glinted && !matchMedia('(prefers-reduced-motion: reduce)').matches) { glinted = true; requestAnimationFrame(() => card.classList.add('is-glint')); }
   $('flipHint').textContent = flipped ? 'ปัดหรือแตะเพื่อพลิกกลับ' : 'แตะหรือปัดเพื่อพลิก · กดค้างเพื่อยื่นที่ร้าน';
 
@@ -192,7 +208,7 @@ $('cardBtn').addEventListener('cardflip', (e) => {
 document.addEventListener('click', () => requestGyro(), { once: true });
 $('cardBtn').addEventListener('click', () => {
   if (pressFired) { pressFired = false; return; }
-  if ($('cardBtn')._dragged) return;
+  const rc = $('cardBtn').querySelector('.rcard'); if (rc && rc._dragged) return;
   flipped = !flipped; const c = $('cardBtn').querySelector('.rcard'); if (c) c.classList.toggle('is-flipped', flipped);
   $('flipHint').textContent = flipped ? 'ปัดหรือแตะเพื่อพลิกกลับ' : 'แตะหรือปัดเพื่อพลิก · กดค้างเพื่อยื่นที่ร้าน';
 });

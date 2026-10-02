@@ -1,4 +1,4 @@
-import { db, doc, getDoc, collection, getDocs, query, where } from './fb.js';
+import { db, collection, getDocs, query, where } from './fb.js';
 import { $, h, reveal, LOGO_SVG, MARK_PATH } from './core.js';
 import { PCATS } from './pcats.js';
 document.querySelectorAll('[data-logo]').forEach(e => { e.innerHTML = LOGO_SVG; });
@@ -32,8 +32,7 @@ function render() {
     const g = h('div', 'prow__logos');
     if (items.length) items.forEach(p => g.appendChild(partnerTile(p)));
     else {
-      const a = h('a', 'pinvite'); a.href = $('ctaLink').href; a.target = '_blank'; a.rel = 'noopener';
-      a.append(h('b', null, 'ที่ว่างสำหรับคุณ'), h('span', null, 'ร่วมเป็นพาร์ทเนอร์ ↗')); g.appendChild(a);
+      const a = h('div', 'pinvite'); a.append(h('b', null, 'เร็วๆ นี้')); g.appendChild(a);
     }
     row.append(hd, g); S.appendChild(row);
   });
@@ -44,10 +43,5 @@ function render() {
     all = qs.docs.map(d => ({ id: d.id, ...d.data() })).filter(p => p.logo && /^https?:\/\//.test(p.url || ''))
       .sort((a, b) => (a.order || 0) - (b.order || 0));
   } catch (_) { all = []; }
-  try {
-    const q = await getDoc(doc(db, 'public', 'queue'));
-    const fb = q.exists() && (q.data().shop.fb || []).find(f => f.kind === 'page' && f.url);
-    if (fb) { const l = $('ctaLink'); l.href = fb.url; l.target = '_blank'; l.rel = 'noopener'; }
-  } catch (_) {}
   stats(); render();
 })();

@@ -22,7 +22,7 @@
 <meta property="og:locale" content="th_TH">
 <meta name="twitter:card" content="summary_large_image">
 <style>.mem{padding-top:26px;padding-bottom:40px}
-.mem__loading{padding:60px 0;text-align:center}
+
 .center{text-align:center}
 /* auth */
 .auth{position:relative;max-width:440px;margin:0 auto;display:flex;flex-direction:column;gap:22px;padding:16px 0 20px}
@@ -120,6 +120,23 @@ dialog[open] .rankup__name{display:inline-block;animation:forgeName .6s var(--ea
 .verify-status.is-ok{color:var(--ok)}
 .verify-status.is-bad{color:var(--stop)}
 .coupon-note{font-size:13px;color:var(--muted);padding:12px 14px;border-radius:var(--r-md);border:1px dashed var(--rule-strong);line-height:1.6}
+
+/* smooth entry */
+.view-in{animation:viewIn .55s cubic-bezier(.23,1,.32,1) both}
+@keyframes viewIn{from{opacity:0;transform:translateY(10px)}}
+.skel{display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:24px 28px;align-items:start}
+.skel__col{display:flex;flex-direction:column;gap:18px}
+.skel__hello{display:flex;align-items:center;gap:14px}
+.skel__hello > div{display:flex;flex-direction:column;gap:8px;flex:1}
+.sk{display:block;border-radius:10px;background:linear-gradient(100deg,#1D1B18 30%,#27241F 50%,#1D1B18 70%);background-size:200% 100%;animation:skel 1.3s linear infinite}
+.sk--av{width:52px;height:52px;border-radius:50%;flex:none}
+.sk--l{height:22px;width:60%}
+.sk--s{height:13px;width:40%}
+.sk--card{width:100%;max-width:360px;aspect-ratio:340/214;border-radius:18px;margin:0 auto}
+.sk--box{height:150px;border-radius:16px}
+.sk--box2{height:200px;border-radius:16px}
+@keyframes skel{to{background-position:-200% 0}}
+@media (max-width:860px){.skel{grid-template-columns:minmax(0,1fr)}.skel__col--r{display:none}}
 </style>
 </head>
 <body>
@@ -137,7 +154,14 @@ dialog[open] .rankup__name{display:inline-block;animation:forgeName .6s var(--ea
 </header>
 
 <main id="main" class="wrap mem">
-  <p class="muted mem__loading" id="vLoading">กำลังโหลด…</p>
+  <div class="skel" id="vLoading" aria-busy="true" aria-label="กำลังโหลด">
+    <div class="skel__col">
+      <div class="skel__hello"><span class="sk sk--av"></span><div><span class="sk sk--l"></span><span class="sk sk--s"></span></div></div>
+      <span class="sk sk--card"></span>
+      <span class="sk sk--box"></span>
+    </div>
+    <div class="skel__col skel__col--r"><span class="sk sk--box2"></span><span class="sk sk--box2"></span></div>
+  </div>
 
   <!-- ============ sign in / sign up ============ -->
   <section id="vAuth" class="auth" hidden aria-labelledby="authTitle">
