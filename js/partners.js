@@ -24,15 +24,17 @@ export function partnerTile(p) {
 }
 function render() {
   const S = $('secs'); S.textContent = '';
-  const cats = PCATS.filter(c => has(c.key));
-  if (!cats.length) { S.appendChild(h('p', 'pempty', 'ยังไม่มีพาร์ทเนอร์')); return; }
-  cats.forEach(c => {
+  PCATS.forEach(c => {
     const items = all.filter(p => p.cat === c.key);
-    const row = h('section', 'prow'), hd = h('div', 'prow__h'), t = h('div', 'prow__t');
+    const row = h('section', 'prow' + (items.length ? '' : ' prow--empty')), hd = h('div', 'prow__h'), t = h('div', 'prow__t');
     t.append(h('h2', null, c.name), h('span', 'prow__en', c.en + ' · ' + items.length));
     hd.append(h('span', 'prow__n', '0' + (PCATS.indexOf(c) + 1)), t);
     const g = h('div', 'prow__logos');
-    items.forEach(p => g.appendChild(partnerTile(p)));
+    if (items.length) items.forEach(p => g.appendChild(partnerTile(p)));
+    else {
+      const a = h('a', 'pinvite'); a.href = $('ctaLink').href; a.target = '_blank'; a.rel = 'noopener';
+      a.append(h('b', null, 'ที่ว่างสำหรับคุณ'), h('span', null, 'ร่วมเป็นพาร์ทเนอร์ ↗')); g.appendChild(a);
+    }
     row.append(hd, g); S.appendChild(row);
   });
 }
@@ -42,10 +44,10 @@ function render() {
     all = qs.docs.map(d => ({ id: d.id, ...d.data() })).filter(p => p.logo && /^https?:\/\//.test(p.url || ''))
       .sort((a, b) => (a.order || 0) - (b.order || 0));
   } catch (_) { all = []; }
-  stats(); render();
   try {
     const q = await getDoc(doc(db, 'public', 'queue'));
     const fb = q.exists() && (q.data().shop.fb || []).find(f => f.kind === 'page' && f.url);
     if (fb) { const l = $('ctaLink'); l.href = fb.url; l.target = '_blank'; l.rel = 'noopener'; }
   } catch (_) {}
+  stats(); render();
 })();
