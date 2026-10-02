@@ -73,7 +73,7 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
 .pa__pick{display:grid;grid-template-columns:64px minmax(0,1fr);gap:10px;align-items:center;text-align:left;color:inherit;min-height:44px;border-radius:8px;min-width:0}
 .pa__thumb{height:40px;border-radius:8px;background:#1A1816;display:grid;place-items:center;overflow:hidden}
 .pa__thumb img{max-width:80%;max-height:70%;object-fit:contain}
-.pa__thumb.is-dark{background:#F2EDE5}
+.pa__thumb.is-dark img{filter:invert(1) hue-rotate(180deg)}
 .pa__nm{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .pa__mv{display:flex;gap:2px}
 .pa__mv button{width:32px;height:32px;border-radius:8px;display:grid;place-items:center;color:var(--muted);border:1px solid var(--rule)}
@@ -86,7 +86,10 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
 @media (max-width:600px){.pa__top{grid-template-columns:minmax(0,1fr)}}
 .pa__drop{display:block;cursor:pointer;border-radius:14px}
 .pa__drop:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
-.pa__drop .ptile{border-style:dashed}
+.pa__drop{border:1px dashed var(--rule-strong);padding:6px 6px 12px}
+.pa__drop .ptile{width:100%}
+.pa__size output{float:right;font-family:var(--font-num);color:var(--ink)}
+.pa__size input[type=range]{width:100%;accent-color:var(--accent);min-height:32px}
 .pa__ph{font-size:13px;color:var(--muted)}
 .pa__acts{display:flex;gap:10px;align-items:center;padding-top:14px;border-top:1px solid var(--rule)}
 .pa__acts .sp{flex:1}
@@ -169,8 +172,9 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
             <div class="field">
               <span class="lab">โลโก้</span>
               <label class="pa__drop"><input type="file" id="paFile" accept="image/png,image/svg+xml,image/webp,image/jpeg" class="sr"><span class="ptile" id="paPrev"><span class="pa__ph">อัปโหลดโลโก้</span></span></label>
-              <p class="hint">PNG พื้นใส หรือ SVG ระบบแสดงเป็นโทนเทาเดียวกันทุกร้าน และขึ้นสีจริงตอนชี้ ลองชี้ที่ตัวอย่างนี้ได้</p>
-              <label class="check"><input type="checkbox" id="paDark"><span>โลโก้สีเข้ม: กลับสีให้เห็นบนพื้นมืด และขึ้นพื้นสีครีมตอนชี้</span></label>
+              <p class="hint">PNG พื้นใส หรือ SVG ตัวอย่างนี้หน้าตาเหมือนบนหน้าเว็บจริง ลองชี้ดูได้</p>
+              <div class="field pa__size"><label for="paScale">ขนาดโลโก้ <output id="paScaleOut">100%</output></label><input type="range" id="paScale" min="50" max="160" step="5" value="100"><p class="hint">ปรับให้โลโก้ดูใหญ่เท่าร้านอื่น โลโก้ที่มีขอบว่างเยอะให้ขยาย โลโก้เต็มกรอบให้ลด</p></div>
+              <label class="check"><input type="checkbox" id="paDark"><span>โลโก้สีเข้ม: กลับสีให้เห็นชัดบนพื้นมืด (ใช้กับโลโก้ดำล้วนบนพื้นใส)</span></label>
             </div>
             <div class="sec">
               <div class="field"><label for="paName">ชื่อร้าน</label><input type="text" id="paName" maxlength="60"><p class="hint">ไม่โชว์บนหน้าเว็บ ใช้เป็นคำอธิบายรูปและขึ้นตอนชี้โลโก้</p></div>

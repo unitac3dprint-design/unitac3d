@@ -48,14 +48,19 @@ async function move(p, dir) {
 
 function preview() {
   const pv = $('paPrev'); pv.textContent = ''; pv.className = 'ptile' + ($('paDark').checked ? ' ptile--dark' : '');
-  if (logo) { const im = h('img'); im.src = logo; im.alt = ''; pv.appendChild(im); }
-  else pv.appendChild(h('span', 'pa__ph', 'อัปโหลดโลโก้'));
+  pv.style.setProperty('--s', String(Number($('paScale').value) / 100));
+  $('paScaleOut').textContent = $('paScale').value + '%';
+  const st = h('span', 'ptile__stage');
+  if (logo) { const im = h('img'); im.src = logo; im.alt = ''; st.appendChild(im); }
+  else st.appendChild(h('span', 'pa__ph', 'กดเพื่ออัปโหลดโลโก้'));
+  pv.append(st, h('span', 'ptile__nm', $('paName').value.trim() || 'ชื่อร้าน'));
 }
 function openForm(p) {
   cur = p; logo = p ? p.logo || '' : '';
   $('paTitle').textContent = p ? 'แก้ไขพาร์ทเนอร์' : 'เพิ่มพาร์ทเนอร์';
   $('paName').value = p ? p.name || '' : ''; $('paCat').value = p ? p.cat : PCATS[0].key; $('paUrl').value = p ? p.url || '' : '';
   $('paVis').checked = p ? !!p.visible : true; $('paDark').checked = p ? p.tone === 'dark' : false;
+  $('paScale').value = String(Math.round(((p && p.scale) || 1) * 100));
   $('paDel').hidden = !p; $('paErr').hidden = true;
   $('paForm').hidden = false; $('paHint').hidden = true; preview(); renderList();
 }
@@ -63,6 +68,8 @@ const edit = (p) => openForm(p);
 $('paAdd').addEventListener('click', () => { openForm(null); $('paName').focus(); });
 $('paCancel').addEventListener('click', () => { cur = null; $('paForm').hidden = true; $('paHint').hidden = false; renderList(); });
 $('paDark').addEventListener('change', preview);
+$('paScale').addEventListener('input', preview);
+$('paName').addEventListener('input', preview);
 
 /* logo: SVG kept as is (<= 150 KB); bitmaps scaled to fit 480x240 and stored as PNG to keep transparency */
 function readLogo(file) {
@@ -97,7 +104,7 @@ $('paForm').addEventListener('submit', async (e) => {
   if (!name) return bad('ใส่ชื่อร้าน');
   if (!url) return bad('ลิงก์ปลายทางไม่ถูกต้อง');
   err.hidden = true; const b = $('paSave'); b.disabled = true;
-  const data = { name: name.slice(0, 60), cat, url, logo, tone: $('paDark').checked ? 'dark' : 'light', visible: $('paVis').checked };
+  const data = { name: name.slice(0, 60), cat, url, logo, tone: $('paDark').checked ? 'dark' : 'light', visible: $('paVis').checked, scale: Number($('paScale').value) / 100 };
   try {
     if (cur) {
       if (cur.cat !== cat) data.order = inCat(cat).length;
