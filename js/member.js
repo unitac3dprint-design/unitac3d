@@ -5,7 +5,7 @@ import {
 } from './fb.js';
 import {
   RANKS, rankOf, nextRank, couponInfo, memberNo, toDate, fDate, fDM, fMonthYear, money, intf, daysLeft,
-  COUPON_CAP, $, h, toast, reveal, toAvatar, avatarEl, rankCard, attachTilt, qrSvg, LOGO_SVG
+  COUPON_CAP, $, h, toast, reveal, toAvatar, avatarEl, rankCard, attachTilt, requestGyro, deviceId, qrSvg, LOGO_SVG
 } from './core.js';
 
 document.querySelectorAll('[data-logo]').forEach(e => { e.innerHTML = LOGO_SVG; });
@@ -86,7 +86,12 @@ $('fUp').addEventListener('submit', async (e) => {
   if (auth.currentUser) watchMember(auth.currentUser);
 });
 function createMember(u, nick) {
+  const dev = deviceId();
+  let firstUid = null; try { firstUid = localStorage.getItem('unitac-device-uid'); } catch (_) {}
+  const dup = !!(firstUid && firstUid !== u.uid);
+  if (!firstUid) { try { localStorage.setItem('unitac-device-uid', u.uid); } catch (_) {} }
   return setDoc(doc(db, 'members', u.uid), {
+    deviceId: dev, deviceDup: dup,
     nickname: (nick || (u.email || '').split('@')[0] || 'สมาชิก').slice(0, 20),
     email: u.email || '', fullName: '', phone: '', avatar: '', addresses: [],
     points: 0, rhodium: false, welcomeUsed: false, verified: false, deleteRequested: false,
@@ -159,7 +164,7 @@ function renderHome() {
   const card = rankCard(m, uid); if (flipped) card.classList.add('is-flipped'); cb.appendChild(card);
   attachTilt(card, cb);
   if (!glinted && !matchMedia('(prefers-reduced-motion: reduce)').matches) { glinted = true; requestAnimationFrame(() => card.classList.add('is-glint')); }
-  $('flipHint').textContent = flipped ? 'แตะอีกครั้งเพื่อพลิกกลับ' : 'แตะเพื่อพลิก · กดค้างเพื่อยื่นที่ร้าน';
+  $('flipHint').textContent = flipped ? 'ปัดหรือแตะเพื่อพลิกกลับ' : 'แตะหรือปัดเพื่อพลิก · กดค้างเพื่อยื่นที่ร้าน';
 
   renderCoupon();
 
@@ -180,10 +185,16 @@ function renderHome() {
   renderBook();
 }
 let glinted = false, pressT = 0, pressXY = null, pressFired = false;
+$('cardBtn').addEventListener('cardflip', (e) => {
+  flipped = !!e.detail;
+  $('flipHint').textContent = flipped ? 'ปัดหรือแตะเพื่อพลิกกลับ' : 'แตะหรือปัดเพื่อพลิก · กดค้างเพื่อยื่นที่ร้าน';
+});
+document.addEventListener('click', () => requestGyro(), { once: true });
 $('cardBtn').addEventListener('click', () => {
   if (pressFired) { pressFired = false; return; }
+  if ($('cardBtn')._dragged) return;
   flipped = !flipped; const c = $('cardBtn').querySelector('.rcard'); if (c) c.classList.toggle('is-flipped', flipped);
-  $('flipHint').textContent = flipped ? 'แตะอีกครั้งเพื่อพลิกกลับ' : 'แตะเพื่อพลิก · กดค้างเพื่อยื่นที่ร้าน';
+  $('flipHint').textContent = flipped ? 'ปัดหรือแตะเพื่อพลิกกลับ' : 'แตะหรือปัดเพื่อพลิก · กดค้างเพื่อยื่นที่ร้าน';
 });
 /* long press → counter mode */
 $('cardBtn').addEventListener('pointerdown', (e) => {
@@ -207,7 +218,7 @@ function openShowcase() {
 $('showIn').addEventListener('click', () => $('showDlg').close());
 function renderLadder(r) {
   const box = $('ladder'); box.textContent = '';
-  RANKS.forEach(x => {
+  RANKS.filter(x => !x.partner || r.partner).forEach(x => {
     const d = h('div', x.key === r.key ? 'is-me' : '');
     const i = h('i'); i.style.setProperty('--c', x.key === 'Rhodium' ? '#E7E8EA' : x.c);
     d.append(i, h('span', null, x.key), h('span', 'need', x.min === 0 ? 'สมัคร' : x.partner ? 'partner' : intf(x.min) + ' แต้ม'), h('span', 'num', x.disc + '%'));
@@ -226,6 +237,11 @@ const COUPON_COLOR = { 5: '#D0946A', 10: '#D3D7DC', 15: '#E9C46A' };
 function renderCoupon() {
   const box = $('couponBox'), c = couponInfo(member, user.uid);
   box.textContent = '';
+  if (c.blocked && !c.used) {
+    box.hidden = false;
+    const n = h('p', 'coupon-note', 'บัญชีนี้ไม่ได้รับคูปองต้อนรับ เพราะเครื่องนี้เคยสมัครสมาชิกและรับคูปองไปแล้ว คูปองต้อนรับให้เครื่องละหนึ่งครั้ง');
+    box.appendChild(n); return;
+  }
   if (!c.open) { box.hidden = true; return; }
   box.hidden = false;
   const key = 'unitac-coupon-seen:' + user.uid;
@@ -370,6 +386,7 @@ function checkRankUp() {
     $('upRank').textContent = r.key; $('upDisc').textContent = 'ส่วนลดค่าพิมพ์ของคุณตอนนี้ ' + r.disc + '%';
     const c = $('upCard'); c.textContent = ''; c.appendChild(rankCard(member, user.uid, { qr: false }));
     $('forge').style.setProperty('--fc', r.key === 'Rhodium' ? '#E7E8EA' : r.c);
+    attachTilt(c.querySelector('.rcard'), c);
     $('upDlg').showModal();
   }
 }

@@ -53,7 +53,8 @@ export function couponInfo(m, uid, now = new Date()) {
   const used = !!(m && m.welcomeUsed);
   const expired = !!(expires && now > expires);
   const verified = !!(m && m.verified);
-  return { pct, expires, used, expired, verified, usable: !used && !expired && verified, open: !used && !expired };
+  const blocked = !!(m && (m.deviceDup || m.couponBlocked));
+  return { pct, expires, used, expired, verified, blocked, usable: !used && !expired && verified && !blocked, open: !used && !expired && !blocked };
 }
 
 /* formatting */
@@ -150,34 +151,108 @@ export function rankCard(m, uid, opts = {}) {
   return wrap;
 }
 
-/* pointer tilt: the card leans toward the finger / mouse and the light follows */
+/* card motion:
+   - mouse / finger hover tilts the card (up to ±24°) and moves the light
+   - swipe sideways to spin the card and see the back
+   - the phone's motion sensor tilts every card on the page */
+const clampN = (v, a, b) => Math.max(a, Math.min(b, v));
+function setTilt(card, rx, ry) {
+  const fl = card.classList.contains('is-flipped') ? -1 : 1;
+  card.style.setProperty('--rx', rx.toFixed(2) + 'deg');
+  card.style.setProperty('--ry', ry.toFixed(2) + 'deg');
+  card.style.setProperty('--gx', clampN(50 + ry * 2.2 * fl, 0, 100).toFixed(1) + '%');
+  card.style.setProperty('--gy', clampN(30 - rx * 2.2, 0, 100).toFixed(1) + '%');
+  card.style.setProperty('--tilt', clampN(Math.hypot(rx, ry) / 22, 0, 1).toFixed(3));
+}
 export function attachTilt(card, host) {
   host = host || card;
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  let raf = 0, ev = null, active = false;
-  function apply() {
-    raf = 0; if (!ev) return;
+  let raf = 0, ev = null, down = null, dragging = false, lastX = 0, lastT = 0, vel = 0;
+  const isFlipped = () => card.classList.contains('is-flipped');
+  function hover() {
+    raf = 0; if (!ev || dragging) return;
     const b = card.getBoundingClientRect();
-    const x = Math.max(0, Math.min(1, (ev.clientX - b.left) / b.width)), y = Math.max(0, Math.min(1, (ev.clientY - b.top) / b.height));
-    const flip = card.classList.contains('is-flipped') ? -1 : 1;
-    card.style.setProperty('--ry', ((x - 0.5) * 16 * flip).toFixed(2) + 'deg');
-    card.style.setProperty('--rx', ((0.5 - y) * 12).toFixed(2) + 'deg');
-    card.style.setProperty('--gx', ((flip > 0 ? x : 1 - x) * 100).toFixed(1) + '%');
-    card.style.setProperty('--gy', (y * 100).toFixed(1) + '%');
-    card.style.setProperty('--tilt', Math.min(1, Math.hypot(x - 0.5, y - 0.5) * 2).toFixed(3));
-  }
-  function move(e) {
-    if (e.pointerType !== 'mouse' && !active) return;
-    ev = e; card.classList.add('is-tilting'); if (!raf) raf = requestAnimationFrame(apply);
+    const x = clampN((ev.clientX - b.left) / b.width, 0, 1), y = clampN((ev.clientY - b.top) / b.height, 0, 1);
+    setTilt(card, (0.5 - y) * 36, (x - 0.5) * 48 * (isFlipped() ? -1 : 1));
   }
   function reset() {
-    active = false; ev = null; card.classList.remove('is-tilting');
+    ev = null; card.classList.remove('is-tilting', 'is-pointer');
     ['--rx', '--ry', '--tilt'].forEach(k => card.style.removeProperty(k));
     card.style.setProperty('--gx', '50%'); card.style.setProperty('--gy', '25%');
   }
-  host.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'mouse') { active = true; move(e); } });
-  host.addEventListener('pointermove', move);
-  host.addEventListener('pointerleave', reset);
-  host.addEventListener('pointerup', (e) => { if (e.pointerType !== 'mouse') reset(); });
-  host.addEventListener('pointercancel', reset);
+  host.addEventListener('pointerdown', (e) => {
+    down = { x: e.clientX, y: e.clientY, base: isFlipped() ? 180 : 0 }; dragging = false; lastX = e.clientX; lastT = performance.now(); vel = 0;
+    card.classList.add('is-pointer');
+    if (e.pointerType !== 'mouse') { ev = e; card.classList.add('is-tilting'); if (!raf) raf = requestAnimationFrame(hover); }
+    requestGyro();
+  });
+  host.addEventListener('pointermove', (e) => {
+    if (down) {
+      const dx = e.clientX - down.x, dy = e.clientY - down.y;
+      if (!dragging && Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(dy) * 1.2) { dragging = true; card.classList.add('is-dragging'); host._dragged = true; ['--rx', '--ry'].forEach(k => card.style.removeProperty(k)); }
+      if (dragging) {
+        const now = performance.now(); vel = (e.clientX - lastX) / Math.max(1, now - lastT); lastX = e.clientX; lastT = now;
+        card.style.setProperty('--flip', (down.base + clampN(dx * 0.9, -200, 200)).toFixed(1) + 'deg');
+        card.style.setProperty('--tilt', clampN(Math.abs(dx) / 160, 0, 1).toFixed(3));
+        card.style.setProperty('--gx', clampN(50 - dx * 0.4, 0, 100).toFixed(1) + '%');
+        return;
+      }
+    }
+    if (e.pointerType === 'mouse' || down) { ev = e; card.classList.add('is-tilting', 'is-pointer'); if (!raf) raf = requestAnimationFrame(hover); }
+  });
+  function end(e) {
+    if (dragging) {
+      const dx = e.clientX - down.x, turn = Math.abs(dx * 0.9) > 70 || Math.abs(vel) > 0.6;
+      card.classList.remove('is-dragging'); card.style.removeProperty('--flip');
+      if (turn) { card.classList.toggle('is-flipped'); card.dispatchEvent(new CustomEvent('cardflip', { bubbles: true, detail: isFlipped() })); }
+      setTimeout(() => { host._dragged = false; }, 50);
+    }
+    down = null; dragging = false;
+    if (!e || e.pointerType !== 'mouse') reset();
+  }
+  host.addEventListener('pointerup', end);
+  host.addEventListener('pointercancel', end);
+  host.addEventListener('pointerleave', (e) => { if (down && dragging) end(e); else if (e.pointerType === 'mouse') { down = null; reset(); } });
+  startGyro();
+}
+
+/* phone motion sensor → every card on the page */
+let gyroOn = false, gyroAsked = false, g0 = null, gs = { rx: 0, ry: 0 }, graf = 0, glast = null;
+function onOrient(e) {
+  if (e.beta == null || e.gamma == null) return;
+  if (!g0) g0 = { b: e.beta, g: e.gamma };
+  g0.b += (e.beta - g0.b) * 0.015; g0.g += (e.gamma - g0.g) * 0.015;   /* slowly follow how the phone is held */
+  glast = { rx: clampN(-(e.beta - g0.b) * 0.9, -18, 18), ry: clampN((e.gamma - g0.g) * 1.1, -25, 25) };
+  if (!graf) graf = requestAnimationFrame(gyroFrame);
+}
+function gyroFrame() {
+  graf = 0; if (!glast) return;
+  gs.rx += (glast.rx - gs.rx) * 0.25; gs.ry += (glast.ry - gs.ry) * 0.25;
+  document.querySelectorAll('.rcard').forEach(c => {
+    if (c.classList.contains('is-pointer') || c.classList.contains('is-dragging')) return;
+    c.classList.add('is-gyro'); setTilt(c, gs.rx, gs.ry * (c.classList.contains('is-flipped') ? -1 : 1));
+  });
+  if (Math.abs(glast.rx - gs.rx) + Math.abs(glast.ry - gs.ry) > 0.05) graf = requestAnimationFrame(gyroFrame);
+}
+export function startGyro() {
+  if (gyroOn || !('DeviceOrientationEvent' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (typeof DeviceOrientationEvent.requestPermission === 'function') return;   /* iOS: wait for a tap */
+  gyroOn = true; window.addEventListener('deviceorientation', onOrient);
+}
+export function requestGyro() {
+  if (gyroOn || gyroAsked || !('DeviceOrientationEvent' in window)) return;
+  if (typeof DeviceOrientationEvent.requestPermission !== 'function') return startGyro();
+  gyroAsked = true;
+  DeviceOrientationEvent.requestPermission().then(s => { if (s === 'granted') { gyroOn = true; window.addEventListener('deviceorientation', onOrient); } }).catch(() => {});
+}
+
+/* one id per browser, used to stop the same phone from collecting welcome coupons again and again */
+export function deviceId() {
+  let id = null;
+  try { id = localStorage.getItem('unitac-device'); } catch (_) {}
+  if (!id) { const m = document.cookie.match(/(?:^|; )unitac_device=([A-Za-z0-9]+)/); if (m) id = m[1]; }
+  if (!id) { const a = new Uint32Array(3); crypto.getRandomValues(a); id = [...a].map(x => x.toString(36)).join(''); }
+  try { localStorage.setItem('unitac-device', id); } catch (_) {}
+  try { document.cookie = 'unitac_device=' + id + ';max-age=63072000;path=/;SameSite=Lax'; } catch (_) {}
+  return id;
 }

@@ -9,8 +9,18 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/site.css">
-<title>สมาชิก UNITAC</title>
-<meta name="description" content="บัตรสมาชิก แต้มสะสม และประกันงานพิมพ์ UNITAC">
+<title>สมาชิก · UNITAC 3D PRINT</title>
+<meta name="description" content="บัตรสมาชิก สะสมแต้ม รับส่วนลดตามแรงค์ และเช็กประกันงานพิมพ์">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="UNITAC 3D PRINT">
+<meta property="og:title" content="สมาชิก · UNITAC 3D PRINT">
+<meta property="og:description" content="บัตรสมาชิก สะสมแต้ม รับส่วนลดตามแรงค์ และเช็กประกันงานพิมพ์">
+<meta property="og:url" content="https://unitac3dprint-design.github.io/unitac/member.html">
+<meta property="og:image" content="https://unitac3dprint-design.github.io/unitac/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="th_TH">
+<meta name="twitter:card" content="summary_large_image">
 <style>.mem{padding-top:26px;padding-bottom:40px}
 .mem__loading{padding:60px 0;text-align:center}
 .center{text-align:center}
@@ -109,6 +119,7 @@ dialog[open] .rankup__name{display:inline-block;animation:forgeName .6s var(--ea
 .verify-status{flex-basis:100%;font-size:12.5px;padding:8px 10px;border-radius:8px;background:rgba(0,0,0,.18)}
 .verify-status.is-ok{color:var(--ok)}
 .verify-status.is-bad{color:var(--stop)}
+.coupon-note{font-size:13px;color:var(--muted);padding:12px 14px;border-radius:var(--r-md);border:1px dashed var(--rule-strong);line-height:1.6}
 </style>
 </head>
 <body>
@@ -183,7 +194,7 @@ dialog[open] .rankup__name{display:inline-block;animation:forgeName .6s var(--ea
       <div class="banner banner--accent" id="delBar" hidden><p>ส่งคำขอลบบัญชีแล้ว ร้านจะดำเนินการและแจ้งกลับทางอีเมล</p></div>
       <div class="rv" style="--d:60ms">
         <button type="button" class="rcard-btn" id="cardBtn" aria-label="พลิกบัตรเพื่อแสดง QR"></button>
-        <div class="cardacts"><p class="muted small" id="flipHint">แตะเพื่อพลิก · กดค้างเพื่อยื่นที่ร้าน</p><button type="button" class="linkbtn" id="showBtn">แสดง QR เต็มจอ</button></div>
+        <div class="cardacts"><p class="muted small" id="flipHint">แตะหรือปัดเพื่อพลิก · กดค้างเพื่อยื่นที่ร้าน</p><button type="button" class="linkbtn" id="showBtn">แสดง QR เต็มจอ</button></div>
       </div>
       <div id="couponBox" class="rv" style="--d:100ms" hidden></div>
       <div class="card prog rv" style="--d:140ms">

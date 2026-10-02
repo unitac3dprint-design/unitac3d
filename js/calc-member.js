@@ -75,9 +75,9 @@ function pick(uid) {
   $('msName').textContent = (m.nickname || 'สมาชิก') + (m.fullName ? ' · ' + m.fullName : '');
   $('msMeta').textContent = [m.no, m.phone].filter(Boolean).join(' · ');
   $('msRank').textContent = r.key + ' ' + r.disc + '%';
-  const ck = $('msCoupon'); ck.checked = c.usable; ck.disabled = !c.usable;
+  const ck = $('msCoupon'); ck.checked = c.usable; ck.disabled = c.used || c.expired || !c.verified;
   $('msCouponPct').textContent = '+' + c.pct + '%';
-  $('msCouponNote').textContent = c.used ? 'ใช้ไปแล้ว' : c.expired ? 'หมดอายุแล้ว' : !c.verified ? 'ลูกค้ายังไม่ได้ยืนยันอีเมล จึงยังใช้ไม่ได้' : 'งานแรกเท่านั้น ส่วนคูปองลดสูงสุด 500 บาท · ใช้ได้ถึง ' + (c.expires ? fDate.format(c.expires) : '-');
+  $('msCouponNote').textContent = c.used ? 'ใช้ไปแล้ว' : c.expired ? 'หมดอายุแล้ว' : c.blocked ? 'ระงับไว้ เพราะสมัครจากเครื่องที่เคยรับคูปองแล้ว' : !c.verified ? 'ลูกค้ายังไม่ได้ยืนยันอีเมล จึงยังใช้ไม่ได้' : 'งานแรกเท่านั้น ส่วนคูปองลดสูงสุด 500 บาท · ใช้ได้ถึง ' + (c.expires ? fDate.format(c.expires) : '-');
   $('msCouponRow').hidden = c.used;
   dupCheck(m, c);
   const sa = $('msAddr'); sa.textContent = '';
@@ -88,10 +88,13 @@ function pick(uid) {
   hideWarranty(); recalc();
 }
 function dupCheck(m, c) {
-  const w = $('msWarn'); w.hidden = true; if (!c.open) return;
-  const ph = norm(m.phone), addrs = (m.addresses || []).map(a => norm(a.addr)).filter(x => x.length > 10);
-  const other = members.find(x => x.uid !== m.uid && x.welcomeUsed && ((ph && norm(x.phone) === ph) || (x.addresses || []).some(a => addrs.includes(norm(a.addr)))));
-  if (other) { w.textContent = 'เบอร์หรือที่อยู่นี้เคยใช้คูปองต้อนรับแล้ว กับสมาชิก ' + (other.nickname || '') + ' (' + other.no + ') หนึ่งเบอร์หรือหนึ่งที่อยู่ใช้คูปองได้ครั้งเดียว'; w.hidden = false; $('msCoupon').checked = false; U.useCoupon = false; }
+  const w = $('msWarn'); w.hidden = true; if (c.used || c.expired) return;
+  if (m.deviceDup) { w.textContent = 'บัญชีนี้สมัครจากเครื่องที่เคยสมัครสมาชิกแล้ว ระบบจึงไม่ให้คูปองต้อนรับ ถ้าเป็นคนละคนจริง (เช่น คนในบ้านใช้เครื่องเดียวกัน) ติ๊กคูปองเองได้'; w.hidden = false; $('msCoupon').checked = false; $('msCoupon').disabled = false; U.useCoupon = false; return; }
+  const ph = norm(m.phone), addrs = (m.addresses || []).map(a => norm(a.addr)).filter(x => x.length > 10), nm = norm(m.fullName);
+  const other = members.find(x => x.uid !== m.uid && (
+    (m.deviceId && x.deviceId === m.deviceId) ||
+    (x.welcomeUsed && ((ph && norm(x.phone) === ph) || (nm.length > 4 && norm(x.fullName) === nm) || (x.addresses || []).some(a => addrs.includes(norm(a.addr)))))));
+  if (other) { w.textContent = 'ชื่อ เบอร์ ที่อยู่ หรือเครื่องนี้ ซ้ำกับสมาชิก ' + (other.nickname || '') + ' (' + other.no + ') ที่เคยรับคูปองแล้ว หนึ่งคน หนึ่งเครื่อง หรือหนึ่งที่อยู่ ใช้คูปองได้ครั้งเดียว ถ้าเป็นคนละคนจริง ติ๊กคูปองเองได้'; w.hidden = false; $('msCoupon').checked = false; U.useCoupon = false; }
 }
 $('msCoupon').addEventListener('change', () => { U.useCoupon = $('msCoupon').checked; recalc(); });
 function clearSel() {

@@ -65,6 +65,7 @@ function renderMembers() {
     fl.appendChild(h('span', 'pill', intf(m.points || 0) + ' แต้ม'));
     if (m.deleteRequested) fl.appendChild(h('span', 'pill pill--stop', 'ขอลบบัญชี'));
     if (!m.verified) fl.appendChild(h('span', 'pill pill--warn', 'ยังไม่ยืนยันอีเมล'));
+    if (m.deviceDup) fl.appendChild(h('span', 'pill pill--warn', 'เครื่องซ้ำ'));
     const c = couponInfo(m, m.uid); if (c.open) fl.appendChild(h('span', 'pill pill--accent', 'คูปอง +' + c.pct + '%'));
     r.appendChild(fl);
     b.append(avatarEl(m, 42), t, r); L.appendChild(b);
