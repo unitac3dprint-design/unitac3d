@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta name="robots" content="noindex">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#141311">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%224.3 21.5 85.5 36.5%22%3E%3Cstyle%3Epath%7Bfill:#FF7A3C%7D%3C/style%3E%3Cpath d=%22M4.85 24.9Q4.85 22.05 7.7 22.05H10.5L12.4 24.9L16.6 22.05H26Q27.3 22.05 27.3 23.3V24.54L12.14 41.96Q11.1 43.16 11.1 44.56V45.25Q11.1 46.85 12.7 46.85H25.54L47.12 22.05H84.2L89.3 27.7V28.4Q89.3 30.1 86.9 30.1H72.56L48.73 57.5H40.02Q36.23 57.5 38.73 54.63L60.06 30.1H52.46L28.63 57.5H7.65Q4.85 57.5 4.85 54.7Z%22/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/site.css">
+<title>หลังร้าน · UNITAC</title>
+
+<style>.adm{padding-top:26px;padding-bottom:40px;display:flex;flex-direction:column;gap:18px}
+.adm__loading{padding:60px 0;text-align:center}
+.adm__login{max-width:440px;margin:20px auto;display:grid;gap:10px;width:100%}
+.adm__head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.adm__head h1{font-size:26px}
+.adm__acts{display:flex;gap:8px;flex-wrap:wrap}
+.adm__tabs{max-width:420px;margin:12px 0 18px}
+.adm__search{display:flex;gap:10px;align-items:flex-end}
+.adm__search .field{flex:1}
+.clist{display:grid;gap:8px}
+.crow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;width:100%;padding:12px 14px;border-radius:var(--r-md);background:var(--surface);border:1px solid var(--rule);text-align:left;transition:border-color .2s var(--ease)}
+.crow:hover{border-color:var(--rule-strong)}
+.crow__t{min-width:0;display:grid;gap:2px}
+.crow__t b{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.crow__t span{font-size:12.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.crow__r{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.crow__flags{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+.rk{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600}
+.rk i{width:9px;height:9px;border-radius:2px;background:var(--c)}
+dialog.wide{max-width:min(720px,calc(100vw - 24px))}
+.cd__who{display:flex;align-items:center;gap:12px;min-width:0}
+.cd__who h2{overflow-wrap:anywhere}
+.cd__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:520px){.cd__grid{grid-template-columns:minmax(0,1fr)}}
+.cd__stat{display:grid;gap:2px;padding:12px 14px;border-radius:var(--r-md);background:var(--sunk)}
+.cd__stat b{font-size:16px;font-weight:600}
+.cd__info{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:6px 16px;margin:0;font-size:14px}
+.cd__info dt{color:var(--muted)}
+.cd__info dd{margin:0;overflow-wrap:anywhere}
+.cd__ptsform{display:grid;grid-template-columns:140px minmax(0,1fr) auto;gap:10px;align-items:end}
+@media (max-width:520px){.cd__ptsform{grid-template-columns:minmax(0,1fr)}}
+.cd__rh{padding:12px 14px;border-radius:var(--r-md);border:1px solid var(--rule)}
+.addr{padding:10px 12px;border-radius:var(--r-sm);background:var(--sunk);margin-bottom:6px;white-space:pre-line;overflow-wrap:anywhere}
+.wcard{display:grid;gap:14px}
+.claims{display:grid;gap:6px}
+.claim{padding:10px 12px;border-radius:var(--r-sm);background:var(--sunk);font-size:13.5px}
+.claim span{display:block;font-family:var(--font-num);font-size:11.5px;color:var(--muted)}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap top__row">
+    <a class="top__logo" href="./" aria-label="UNITAC กลับหน้าตารางคิว" data-logo></a>
+    <nav class="nav" aria-label="เมนูหลัก">
+      <a href="./" data-nav="queue">ตารางคิว</a>
+      <a href="member.html" data-nav="member">สมาชิก</a>
+      <a href="warranty.html" data-nav="warranty">เช็กประกัน</a>
+    </nav>
+    <div class="top__end" id="topEnd"></div>
+  </div>
+</header>
+
+<main id="main" class="wrap adm">
+  <p class="muted adm__loading" id="aLoading">กำลังโหลด…</p>
+
+  <section id="aLogin" class="card adm__login" hidden aria-labelledby="alTitle">
+    <h1 id="alTitle">หลังร้าน UNITAC</h1>
+    <p class="muted small">สำหรับเจ้าของร้านเท่านั้น</p>
+    <form id="alForm" class="sec" novalidate>
+      <div class="field"><label for="alEmail">อีเมล</label><input type="email" id="alEmail" autocomplete="username" spellcheck="false"></div>
+      <div class="field"><label for="alPass">รหัสผ่าน</label><input type="password" id="alPass" autocomplete="current-password"></div>
+      <p class="err" id="alErr" hidden></p>
+      <button type="submit" class="btn btn--primary btn--block" id="alOk">เข้าสู่ระบบ</button>
+    </form>
+  </section>
+
+  <section id="aDenied" class="card adm__login" hidden>
+    <h1>บัญชีนี้ไม่ใช่เจ้าของร้าน</h1>
+    <p class="muted">ออกจากระบบแล้วเข้าใหม่ด้วยบัญชีเจ้าของ</p>
+    <button type="button" class="btn btn--ghost" data-signout>ออกจากระบบ</button>
+  </section>
+
+  <section id="aApp" hidden>
+    <div class="adm__head">
+      <h1>หลังร้าน</h1>
+      <div class="adm__acts">
+        <a class="btn btn--primary btn--sm" href="calc.html">เครื่องคิดเลข</a>
+        <button type="button" class="btn btn--ghost btn--sm" data-signout>ออกจากระบบ</button>
+      </div>
+    </div>
+    <div class="tabs adm__tabs" role="tablist" aria-label="ส่วนของหลังร้าน">
+      <button type="button" role="tab" aria-selected="true" data-tab="cust" id="tCust">ลูกค้า</button>
+      <button type="button" role="tab" aria-selected="false" data-tab="ord" id="tOrd">ออเดอร์</button>
+      <button type="button" role="tab" aria-selected="false" data-tab="war" id="tWar">ประกัน</button>
+    </div>
+
+    <div data-panel="cust" class="sec">
+      <div class="adm__search">
+        <div class="field"><label for="cSearch" class="sr">ค้นหาลูกค้า</label><input type="search" id="cSearch" placeholder="ค้นหา ชื่อเล่น ชื่อ เบอร์ อีเมล หรือเลขสมาชิก" autocomplete="off"></div>
+        <button type="button" class="btn btn--ghost" id="cScan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M7 12h10"/></svg>สแกน QR</button>
+      </div>
+      <p class="muted small" id="cCount"></p>
+      <div id="cList" class="clist"></div>
+    </div>
+
+    <div data-panel="ord" class="sec" hidden>
+      <p class="muted small" id="oCount"></p>
+      <div id="oList" class="card rows"></div>
+    </div>
+
+    <div data-panel="war" class="sec" hidden>
+      <form id="wForm" class="adm__search" novalidate>
+        <div class="field"><label for="wCode" class="sr">รหัสประกัน</label><input type="search" id="wCode" placeholder="รหัสประกัน เช่น UT-7K2P-91" autocomplete="off" spellcheck="false" style="text-transform:uppercase"></div>
+        <button type="submit" class="btn btn--primary">ค้นหา</button>
+      </form>
+      <div id="wOut"></div>
+    </div>
+  </section>
+</main>
+
+<dialog id="cDlg" class="wide" aria-labelledby="cdName"><div class="dlg">
+  <div class="dlg__head"><div class="cd__who"><span id="cdAv"></span><div><h2 id="cdName"></h2><p class="muted small num" id="cdNo"></p></div></div>
+    <button type="button" class="iconbtn" data-close aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="dlg__body">
+    <div class="banner" id="cdDel" hidden><p>ลูกค้าขอลบบัญชี ลบข้อมูลสมาชิกได้ที่ปุ่มด้านล่าง แล้วลบบัญชี login ใน Firebase console → Security → Authentication → Users</p></div>
+    <div class="cd__grid">
+      <div class="cd__stat"><span class="muted small">แรงค์</span><b id="cdRank"></b></div>
+      <div class="cd__stat"><span class="muted small">แต้มสะสม</span><b class="num" id="cdPts"></b></div>
+      <div class="cd__stat"><span class="muted small">คูปองต้อนรับ</span><b id="cdCoupon"></b></div>
+    </div>
+    <dl class="cd__info" id="cdInfo"></dl>
+    <div class="sec"><div class="sec__h"><h2>ที่อยู่จัดส่ง</h2></div><div id="cdAddr" class="small"></div></div>
+    <div class="sec"><div class="sec__h"><h2>ปรับแต้ม</h2></div>
+      <form id="cdPtsForm" class="cd__ptsform" novalidate>
+        <div class="field"><label for="cdPtsN">จำนวน (ติดลบได้)</label><input type="number" id="cdPtsN" step="1" inputmode="numeric"></div>
+        <div class="field"><label for="cdPtsWhy">เหตุผล</label><input type="text" id="cdPtsWhy" maxlength="80" placeholder="เช่น โปรโมชันเปิดร้าน"></div>
+        <button type="submit" class="btn btn--ghost">บันทึก</button>
+      </form>
+    </div>
+    <label class="check cd__rh"><input type="checkbox" id="cdRh"><span><b>Rhodium (partner)</b> ส่วนลด 30% ไม่ขึ้นกับแต้ม ถอดออกเมื่อไหร่ ระบบคืนแรงค์ตามแต้มให้เอง</span></label>
+    <div class="sec"><div class="sec__h"><h2>ออเดอร์</h2><span id="cdOCount"></span></div><div id="cdOrders" class="rows"></div></div>
+  </div>
+  <div class="dlg__foot"><button type="button" class="btn btn--danger btn--sm" id="cdDelBtn" hidden>ลบข้อมูลสมาชิก</button><span class="sp"></span><a class="btn btn--primary" id="cdCalc" href="calc.html">เปิดในเครื่องคิดเลข</a></div>
+</div></dialog>
+
+<footer class="foot">UNITAC · <a href="./">ตารางคิว</a> · <a href="warranty.html">เช็กประกัน</a> · <a href="privacy.html">นโยบายความเป็นส่วนตัว</a></footer>
+<script type="module" src="js/admin.js"></script>
+</body>
+</html>

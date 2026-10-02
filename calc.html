@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>เครื่องคิดเลข · UNITAC</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%224.3 21.5 85.5 36.5%22%3E%3Cstyle%3Epath%7Bfill:#FF7A3C%7D%3C/style%3E%3Cpath d=%22M4.85 24.9Q4.85 22.05 7.7 22.05H10.5L12.4 24.9L16.6 22.05H26Q27.3 22.05 27.3 23.3V24.54L12.14 41.96Q11.1 43.16 11.1 44.56V45.25Q11.1 46.85 12.7 46.85H25.54L47.12 22.05H84.2L89.3 27.7V28.4Q89.3 30.1 86.9 30.1H72.56L48.73 57.5H40.02Q36.23 57.5 38.73 54.63L60.06 30.1H52.46L28.63 57.5H7.65Q4.85 57.5 4.85 54.7Z%22/%3E%3C/svg%3E">
+<script>
+/* apply a saved theme before first paint — harmless if storage is unavailable */
+try{var t=localStorage.getItem('unitac-theme');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+<style>
+/* ---------- tokens: light (bare :root) ---------- */
+:root{
+  color-scheme:light;
+  --ground:#F7F5F1;
+  --surface:#FFFFFF;
+  --sunk:#EEEBE5;
+  --ink:#191714;
+  --ink-2:#4A473F;
+  --muted:#6F6B62;
+  --rule:#E6E2DA;
+  --rule-strong:#D5D0C6;
+  --accent:#CC4410;        /* ember — text-safe on white (4.8:1) */
+  --accent-hi:#F0642A;     /* brighter sunset orange — fills, rings, glow */
+  --accent-soft:#FBE7DB;
+  --accent-glow:rgba(240,100,42,.22);
+  --on-accent:#FFFFFF;
+  --ok:#2F6E53;  --ok-soft:#E4F0EA;
+  --warn:#9A5C10; --warn-soft:#FAEED8;
+  --stop:#A8302A; --stop-soft:#F8E3E0;
+  --shadow:0 1px 2px rgba(25,23,20,.04),0 8px 24px -12px rgba(25,23,20,.12);
+  --shadow-float:0 12px 32px -8px rgba(25,23,20,.28);
+  --ease:cubic-bezier(.23,1,.32,1);
+  --r-lg:16px; --r-md:10px; --r-sm:6px; --r-pill:999px;
+  --font-ui:'IBM Plex Sans Thai','Anuphan',-apple-system,'Segoe UI','Noto Sans Thai','Leelawadee UI',Tahoma,sans-serif;
+  --font-head:'Anuphan','IBM Plex Sans Thai',-apple-system,'Segoe UI','Noto Sans Thai','Leelawadee UI',Tahoma,sans-serif;
+  --font-num:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  /* status colours used INSIDE the ink-coloured money card (it is dark in light mode, so it borrows the dark palette) */
+  --mc-ok:#74C49B; --mc-warn:#E3A853; --mc-stop:#EA7B72;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#141311;
+    --surface:#1D1B18;
+    --sunk:#27241F;
+    --ink:#F2EDE5;
+    --ink-2:#CBC4B8;
+    --muted:#948D80;
+    --rule:#2F2B26;
+    --rule-strong:#3C3731;
+    --accent:#FF7A3C;
+    --accent-hi:#FF8A50;
+    --accent-soft:#3A2216;
+    --accent-glow:rgba(255,122,60,.16);
+    --on-accent:#1A0E07;
+    --ok:#74C49B;  --ok-soft:#1B2D25;
+    --warn:#E3A853; --warn-soft:#332816;
+    --stop:#EA7B72; --stop-soft:#3A1F1D;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px -12px rgba(0,0,0,.5);
+    --shadow-float:0 12px 32px -8px rgba(0,0,0,.7);
+    --mc-ok:#2F6E53; --mc-warn:#9A5C10; --mc-stop:#A8302A;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#141311;
+  --surface:#1D1B18;
+  --sunk:#27241F;
+  --ink:#F2EDE5;
+  --ink-2:#CBC4B8;
+  --muted:#948D80;
+  --rule:#2F2B26;
+  --rule-strong:#3C3731;
+  --accent:#FF7A3C;
+  --accent-hi:#FF8A50;
+  --accent-soft:#3A2216;
+  --accent-glow:rgba(255,122,60,.16);
+  --on-accent:#1A0E07;
+  --ok:#74C49B;  --ok-soft:#1B2D25;
+  --warn:#E3A853; --warn-soft:#332816;
+  --stop:#EA7B72; --stop-soft:#3A1F1D;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px -12px rgba(0,0,0,.5);
+  --shadow-float:0 12px 32px -8px rgba(0,0,0,.7);
+  --mc-ok:#2F6E53; --mc-warn:#9A5C10; --mc-stop:#A8302A;
+}
+
+/* ---------- base ---------- */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--ground);
+  color:var(--ink);
+  font-family:var(--font-ui);
+  font-size:15px;
+  line-height:1.65;
+  overflow-x:clip;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:var(--font-head);font-weight:600;line-height:1.45;margin:0;letter-spacing:0}
+p{margin:0}
+a{color:inherit}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+button:disabled{cursor:not-allowed}
+input,select{font:inherit}
+svg{display:block}
+[hidden]{display:none!important}
+.num{font-family:var(--font-num);font-variant-numeric:tabular-nums;letter-spacing:0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:var(--r-sm)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:16px;top:-48px;background:var(--ink);color:var(--ground);padding:8px 14px;border-radius:var(--r-sm);z-index:50}
+.skip:focus{top:12px}
+.wrap{max-width:1180px;margin:0 auto;padding-left:24px;padding-right:24px}
+@media (max-width:600px){.wrap{padding-left:16px;padding-right:16px}}
+
+/* ---------- masthead ---------- */
+.mast{
+  position:relative;
+  background:var(--surface);
+  border-bottom:1px solid var(--rule);
+  overflow:hidden;
+}
+.mast > *{position:relative}
+.mast__glow{
+  position:absolute;inset:-40% -10% auto auto;width:52%;height:220%;
+  background:radial-gradient(closest-side,var(--accent-glow),transparent 70%);
+  pointer-events:none;
+}
+.mast__row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:18px;padding-bottom:6px;flex-wrap:wrap}
+.brand{display:inline-flex;align-items:center;gap:10px;text-decoration:none}
+.brand__mark{width:30px;height:22px;color:var(--ink);transform:skewX(-10deg)}
+.brand__word{font-family:var(--font-head);font-weight:700;font-size:21px;letter-spacing:.12em;line-height:1}
+.brand__word sup{font-size:9px;letter-spacing:0;margin-left:2px;vertical-align:top}
+.brand__tag{font-size:12.5px;color:var(--muted);margin-left:6px;line-height:1.6}
+@media (max-width:480px){.brand__tag{display:none}}
+.mast__right{display:flex;align-items:center;gap:10px}
+.seg{display:inline-flex;background:var(--sunk);border-radius:var(--r-pill);padding:3px}
+.seg button{padding:6px 16px;border-radius:var(--r-pill);font-family:var(--font-num);font-weight:500;font-size:13.5px;color:var(--muted);transition:transform .15s}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+.seg button:active{transform:scale(.97)}
+.iconbtn{width:44px;height:44px;border-radius:var(--r-pill);display:inline-grid;place-items:center;color:var(--ink-2);border:1px solid var(--rule);transition:color .2s var(--ease),border-color .2s var(--ease)}
+.iconbtn:hover{color:var(--ink);border-color:var(--rule-strong)}
+.iconbtn svg{width:18px;height:18px;grid-area:1/1;transition:opacity .25s var(--ease),transform .35s var(--ease)}
+.iconbtn .moon{opacity:0;transform:rotate(-40deg) scale(.6)}
+:root[data-theme="dark"] .iconbtn .sun{opacity:0;transform:rotate(40deg) scale(.6)}
+:root[data-theme="dark"] .iconbtn .moon{opacity:1;transform:none}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) .iconbtn .sun{opacity:0;transform:rotate(40deg) scale(.6)}
+  :root:not([data-theme="light"]) .iconbtn .moon{opacity:1;transform:none}
+}
+.mast__spec{display:flex;align-items:flex-start;gap:10px;padding-bottom:12px;color:var(--ink-2);font-size:13.5px}
+.mast__spec p{flex:1 1 0;min-width:0}
+.mast__spec .dot{width:7px;height:7px;border-radius:50%;background:var(--ok);flex:none;margin-top:8px}
+.mast__spec .dot--warn{background:var(--warn)}
+.mast__spec .sep{color:var(--rule-strong)}
+.mast__spec .num{color:var(--ink)}
+
+/* ---------- main layout ---------- */
+main{padding-top:28px;padding-bottom:96px}
+.grid{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:22px;align-items:start}
+.col{display:grid;gap:16px;min-width:0}
+.side{position:sticky;top:22px;display:grid;gap:12px;min-width:0}
+@media (max-width:1000px){.grid{grid-template-columns:minmax(0,1fr)}.side{position:static}}
+.section__head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.section__head h2{font-size:17px}
+.section__head .sub{color:var(--muted);font-size:13.5px}
+.section__head .acts{display:flex;gap:8px;flex-wrap:wrap}
+
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r-lg);padding:22px;box-shadow:var(--shadow)}
+@media (max-width:600px){.card{padding:18px;border-radius:14px}}
+.card__title{display:flex;align-items:baseline;gap:10px;font-size:17px}
+.card__title .step{font-family:var(--font-num);font-size:12px;color:var(--accent);font-weight:500;letter-spacing:.06em}
+.card__sub{color:var(--muted);font-size:13.5px;margin-top:2px;margin-bottom:16px}
+
+/* ---------- buttons ---------- */
+.btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:10px 18px;border-radius:var(--r-pill);font-weight:600;line-height:1.5;border:1px solid transparent;transition:transform .25s var(--ease),background .2s var(--ease),color .2s var(--ease),border-color .2s var(--ease)}
+.btn:hover{transform:translateY(-1px)}
+.btn:active{transform:scale(.97)}
+.btn--primary{background:var(--accent);color:var(--on-accent);padding:11px 22px;font-size:15.5px}
+.btn--primary:hover{background:var(--accent-hi)}
+.btn--ghost{border-color:var(--rule-strong);color:var(--ink-2);font-weight:500;padding:8px 14px;font-size:13.5px}
+.btn--ghost:hover{color:var(--ink);border-color:var(--ink-2)}
+.btn--ink{background:var(--ink);color:var(--ground);padding:8px 16px;font-size:13.5px;font-weight:500}
+.btn:disabled{opacity:.45;transform:none;pointer-events:none}
+.btn svg{width:15px;height:15px;flex:none}
+.btn .spin{animation:spin .9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ---------- fields ---------- */
+.field{display:grid;gap:6px;min-width:0}
+.field__lab{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:22px}
+.field label,.field .lab{font-size:12.5px;color:var(--muted);font-weight:500;line-height:1.5}
+.inp{position:relative}
+.inp input,.inp select{
+  display:block;width:100%;min-width:0;
+  background:var(--surface);color:var(--ink);
+  border:1px solid var(--rule-strong);border-radius:var(--r-md);
+  padding:10px 12px;line-height:1.5;
+  transition:border-color .2s var(--ease),box-shadow .2s var(--ease);
+}
+.inp input[type=number],.inp input[type=password],.inp input[type=url],.inp select{font-family:var(--font-num);font-size:14.5px}
+.inp input[type=text]{font-family:var(--font-ui)}
+.inp input[type=url]{font-size:13.5px}
+.inp input::placeholder{color:var(--muted);opacity:.8;font-family:var(--font-ui)}
+.inp input:focus-visible,.inp select:focus-visible{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+.inp input:disabled{background:var(--sunk);color:var(--muted)}
+.inp input[type=number]{-moz-appearance:textfield;appearance:textfield}
+.inp input[type=number]::-webkit-outer-spin-button,.inp input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.inp .unit{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-family:var(--font-num);font-size:12.5px;pointer-events:none;white-space:nowrap;line-height:1}
+.inp--unit input{padding-right:3.4em}
+.inp--wide input{padding-right:5.4em}
+.inp select{appearance:none;-webkit-appearance:none;padding-right:38px;cursor:pointer}
+.inp .chev{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--muted);pointer-events:none}
+.inp .eye{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:var(--r-sm);display:grid;place-items:center;color:var(--muted)}
+.inp .eye:hover{color:var(--ink)}
+.inp .eye svg{width:16px;height:16px}
+.inp--eye input{padding-right:44px}
+.hint{font-size:12px;color:var(--muted);line-height:1.55}
+.hint .num{color:var(--ink-2)}
+.frow{display:grid;gap:14px;align-items:start}
+.frow--2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.frow--3{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:600px){.frow--2,.frow--3{grid-template-columns:minmax(0,1fr)}.frow--time{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}}
+.stack{display:grid;gap:16px}
+.field--btn{align-self:end}
+.group{display:grid;gap:8px}
+.group > .lab{font-size:12.5px;color:var(--muted);font-weight:500}
+.minibtn{width:30px;height:30px;border-radius:var(--r-pill);display:inline-grid;place-items:center;color:var(--ink-2);border:1px solid var(--rule);transition:color .2s var(--ease),border-color .2s var(--ease)}
+.minibtn:hover{color:var(--ink);border-color:var(--rule-strong)}
+.minibtn svg{width:14px;height:14px}
+.minibtn.is-busy svg{animation:spin .9s linear infinite}
+.rule{height:1px;background:var(--rule);margin:20px 0 18px}
+.subhead{font-size:15px;margin-bottom:12px}
+.subhead small{display:block;font-family:var(--font-ui);font-weight:400;color:var(--muted);font-size:12.5px}
+
+/* ---------- money card ---------- */
+.money{position:relative;overflow:hidden;background:var(--ink);color:var(--ground);border:1px solid var(--ink);border-radius:var(--r-lg);padding:24px 26px;box-shadow:var(--shadow)}
+@media (max-width:600px){.money{padding:20px 18px;border-radius:14px}}
+.money > *{position:relative}
+.money__glow{position:absolute;inset:-70% -8% auto auto;width:46%;height:200%;background:radial-gradient(closest-side,var(--accent-glow),transparent 70%);pointer-events:none}
+.money__head{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.money__head h2{font-size:15px;font-weight:600;color:var(--ground)}
+.money__head .sub{font-size:12.5px;color:var(--ground);opacity:.55}
+.mpill{margin-left:auto;font-size:12.5px;padding:3px 12px;border-radius:var(--r-pill);font-weight:500;line-height:1.6;white-space:nowrap;border:1px solid currentColor;transition:color .3s var(--ease),background .3s var(--ease)}
+.mpill--ok{color:var(--mc-ok);background:color-mix(in srgb,var(--mc-ok) 14%,transparent)}
+.mpill--warn{color:var(--mc-warn);background:color-mix(in srgb,var(--mc-warn) 14%,transparent)}
+.mpill--stop{color:var(--mc-stop);background:color-mix(in srgb,var(--mc-stop) 14%,transparent)}
+.mpill--muted{color:var(--ground);opacity:.55}
+.money__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin:20px 0 0;padding:0}
+.money__grid > div{min-width:0;padding-left:16px;border-left:1px solid color-mix(in srgb,var(--ground) 18%,transparent)}
+.money__grid > div:first-child{padding-left:0;border-left:0}
+.money__grid dt{font-size:12.5px;color:var(--ground);opacity:.6;line-height:1.5}
+.money__grid dd{margin:4px 0 0;font-family:var(--font-num);font-variant-numeric:tabular-nums;font-size:28px;line-height:1.2;font-weight:500;color:var(--ground);display:flex;align-items:baseline;gap:6px;overflow-wrap:anywhere}
+.money__grid dd small{font-family:var(--font-ui);font-size:13px;font-weight:400;opacity:.6}
+.money__grid dd.is-neg{color:var(--mc-stop)}
+.money__foot{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-top:18px;padding-top:14px;border-top:1px solid color-mix(in srgb,var(--ground) 18%,transparent);font-size:13px;color:var(--ground);opacity:.85}
+.money__foot .k{opacity:.65}
+.money__foot .num{font-size:14.5px;font-weight:500}
+.money__foot .sepdot{opacity:.4}
+@media (max-width:600px){
+  .money__grid{grid-template-columns:minmax(0,1fr);gap:0}
+  .money__grid > div{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:10px 0;border-left:0;border-top:1px solid color-mix(in srgb,var(--ground) 18%,transparent)}
+  .money__grid > div:first-child{border-top:0;padding-top:0;padding-left:0}
+  .money__grid dd{margin:0;font-size:24px}
+}
+
+/* ---------- details (collapsible card) ---------- */
+details.card{padding:0}
+details.card > summary{list-style:none;display:flex;align-items:center;gap:12px;padding:18px 22px;cursor:pointer;border-radius:var(--r-lg)}
+details.card > summary::-webkit-details-marker{display:none}
+details.card > summary:focus-visible{outline-offset:-2px}
+details.card > summary .card__title{flex:1;min-width:0}
+details.card > summary .card__sub{margin:0;font-size:12.5px}
+details.card > summary .chev{width:18px;height:18px;color:var(--muted);flex:none;transition:transform .35s var(--ease)}
+details.card[open] > summary .chev{transform:rotate(180deg)}
+details.card .dbody{padding:2px 22px 22px}
+@media (max-width:600px){details.card > summary{padding:16px 18px}details.card .dbody{padding:0 18px 18px}}
+.summary__text{display:grid;flex:1;min-width:0}
+
+/* ---------- bed calculator ---------- */
+.beds{display:grid;gap:10px}
+.bed{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center}
+.bed__n{font-family:var(--font-num);font-size:12.5px;color:var(--muted);width:44px}
+.bed__in{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.bed__del{width:36px;height:36px;border-radius:var(--r-pill);display:grid;place-items:center;color:var(--muted);transition:color .2s var(--ease),background .2s var(--ease)}
+.bed__del:hover{color:var(--stop);background:var(--stop-soft)}
+.bed__del:disabled{opacity:.3}
+.bed__del svg{width:15px;height:15px}
+.bed__tot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:16px;padding:14px 16px;background:var(--sunk);border-radius:var(--r-md)}
+.bed__tot .k{font-size:12.5px;color:var(--muted)}
+.bed__tot .v{font-family:var(--font-num);font-size:16px;font-weight:500;display:block}
+.bed__acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+
+/* ---------- quote paper (fixed light in both themes) ---------- */
+.paper{
+  --p-ink:#191714;--p-ink2:#4A473F;--p-muted:#6F6B62;--p-rule:#E6E2DA;--p-sunk:#F7F5F1;--p-accent:#CC4410;--p-stop:#A8302A;--p-accent-hi:#F0642A;
+  color-scheme:light;
+  background:#FFFFFF;color:var(--p-ink);
+  border-radius:var(--r-lg);box-shadow:var(--shadow-float);
+  padding:30px 30px 24px;overflow:hidden;font-size:14px;line-height:1.6;
+}
+@media (max-width:600px){.paper{padding:22px 20px 18px;border-radius:14px}}
+.paper__head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:26px}
+.paper__logo{max-width:150px;min-width:0;display:flex;align-items:center;min-height:34px}
+.paper__logo img{max-width:150px;max-height:64px;object-fit:contain;display:block}
+.paper__brand{display:inline-flex;align-items:center;gap:9px;color:var(--p-ink)}
+.paper__brand svg{width:28px;height:20px;transform:skewX(-10deg)}
+.paper__brand b{font-family:var(--font-head);font-weight:700;font-size:19px;letter-spacing:.12em;line-height:1}
+.paper__brand b sup{font-size:8px;letter-spacing:0;margin-left:2px;vertical-align:top}
+.paper__title{text-align:right}
+.paper__title h3{font-size:20px;color:var(--p-ink);line-height:1.3}
+.paper__title .en{font-size:10px;letter-spacing:.18em;color:var(--p-muted);margin-top:2px}
+.paper__title .date{font-family:var(--font-num);font-size:12px;color:var(--p-ink2);margin-top:8px}
+.paper__cust{padding-bottom:18px;margin-bottom:18px;border-bottom:1px dashed var(--p-rule)}
+.paper__cust .k{font-size:10px;letter-spacing:.16em;color:var(--p-muted);margin-bottom:4px}
+.paper__cust h4{font-size:18px;color:var(--p-ink);overflow-wrap:anywhere;line-height:1.4}
+.items{list-style:none;margin:0;padding:0;display:grid}
+.item{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid var(--p-rule)}
+.item:last-child{border-bottom:0}
+.item__ic{width:32px;height:32px;border-radius:8px;background:var(--p-sunk);color:var(--p-ink2);display:grid;place-items:center;flex:none}
+.item__ic svg{width:16px;height:16px}
+.item__t{min-width:0}
+.item__t b{display:block;font-weight:600;font-size:13.5px;color:var(--p-ink);line-height:1.5}
+.item__t > span{display:block;font-size:11px;color:var(--p-muted);line-height:1.5;font-family:var(--font-num)}
+.item__v{font-family:var(--font-num);font-variant-numeric:tabular-nums;font-size:14.5px;color:var(--p-ink);white-space:nowrap}
+.item__v small{font-family:var(--font-ui);font-size:12px;color:var(--p-muted);margin-left:4px}
+.item--stop .item__v,.item--stop .item__ic{color:var(--p-stop)}
+.item--stop .item__ic{background:#F8E3E0}
+.paper__note{font-size:11.5px;color:var(--p-muted);margin-top:10px;font-family:var(--font-num)}
+.total{margin-top:20px;background:#191714;color:#F7F5F1;border-radius:12px;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.total .k{font-size:13px;opacity:.7}
+.total .k small{display:block;font-size:10px;letter-spacing:.16em;opacity:.7}
+.total .v{font-family:var(--font-num);font-variant-numeric:tabular-nums;font-size:30px;font-weight:500;line-height:1.1;display:flex;align-items:baseline;gap:8px;overflow-wrap:anywhere}
+.total .v small{font-family:var(--font-ui);font-size:12px;letter-spacing:.12em;opacity:.7}
+.total .pp{width:100%;text-align:right;font-family:var(--font-num);font-size:12px;opacity:.7;margin-top:-4px}
+.paper__foot{margin-top:22px;text-align:center;font-size:10px;letter-spacing:.24em;color:var(--p-muted);font-weight:500}
+.logo-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.logo-row .hint{margin-left:auto}
+
+/* ---------- misc ---------- */
+.status{font-size:12.5px;padding:2px 10px;border-radius:var(--r-pill);font-weight:500;line-height:1.6;white-space:nowrap}
+.status--ok{background:var(--ok-soft);color:var(--ok)}
+.status--warn{background:var(--warn-soft);color:var(--warn)}
+.status--muted{background:var(--sunk);color:var(--muted)}
+.foot{color:var(--muted);font-size:12.5px;padding:24px;text-align:center;border-top:1px solid var(--rule)}
+/* ---------- image lightbox (save the quotation picture) ---------- */
+.shot{position:fixed;inset:0;z-index:70;display:none;place-items:center;padding:20px;background:rgba(12,10,8,.72);backdrop-filter:blur(3px)}
+.shot.on{display:grid}
+.shot__box{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r-lg);box-shadow:var(--shadow-float);max-width:min(560px,100%);max-height:100%;display:flex;flex-direction:column;overflow:hidden}
+.shot__head{display:flex;align-items:center;gap:12px;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--rule)}
+.shot__head p{font-size:13.5px;color:var(--muted);line-height:1.5}
+.shot__scroll{overflow:auto;padding:16px;background:var(--sunk)}
+.shot__scroll img{width:100%;height:auto;display:block;border-radius:var(--r-sm);box-shadow:var(--shadow)}
+.shot__foot{display:flex;gap:10px;justify-content:flex-end;padding:14px 16px;border-top:1px solid var(--rule);flex-wrap:wrap}
+.toast{position:fixed;left:50%;bottom:24px;z-index:60;transform:translate(-50%,16px);opacity:0;background:var(--ink);color:var(--ground);padding:11px 20px;border-radius:var(--r-pill);box-shadow:var(--shadow-float);font-size:14px;line-height:1.5;max-width:calc(100vw - 32px);text-align:center;pointer-events:none;transition:opacity .3s var(--ease),transform .4s var(--ease)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ---------- motion (gated on html.js; inert under reduced motion) ---------- */
+html.js .rv{opacity:0;transform:translateY(12px)}
+html.js .rv.in{opacity:1;transform:none;transition:opacity .5s var(--ease) var(--d,0ms),transform .55s var(--ease) var(--d,0ms)}
+.col .rv:nth-child(2){--d:60ms}.col .rv:nth-child(3){--d:120ms}.col .rv:nth-child(4){--d:180ms}.col .rv:nth-child(5){--d:240ms}.col .rv:nth-child(6){--d:300ms}
+.side .rv{--d:90ms}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .rv{opacity:1!important;transform:none!important}
+}
+@media (min-width:1600px){body{font-size:16px}}
+/* ---- member integration ---- */
+.memsearch{display:flex;gap:8px;align-items:stretch}
+.memsearch .inp{flex:1}
+.memsearch .btn{flex:none}
+.memres{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.memres button{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;width:100%;padding:10px 12px;border-radius:var(--r-md);border:1px solid var(--rule);background:var(--surface);text-align:left;color:var(--ink)}
+.memres button:hover{border-color:var(--rule-strong)}
+.memres b{display:block;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.memres small{display:block;font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.memres .rk{font-size:12.5px;font-weight:600;white-space:nowrap}
+.mav{position:relative;flex:none;width:var(--s,40px);height:var(--s,40px);border-radius:50%;overflow:hidden;background:var(--accent-soft);display:grid;place-items:center;color:var(--accent);font-family:var(--font-head);font-weight:600;font-size:calc(var(--s,40px)*.42)}
+.mav img{width:100%;height:100%;object-fit:cover;display:block}
+.memchip{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px;border-radius:var(--r-md);background:var(--sunk)}
+.memchip__t{min-width:0}
+.memchip__t b{display:block;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.memchip__t span{display:block;font-size:12.5px;color:var(--muted)}
+.memdisc{display:grid;gap:8px}
+.memdisc > div{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px}
+.memdisc > div > span{color:var(--muted)}
+.memdisc b{font-family:var(--font-num);font-weight:500}
+.memck{display:flex;gap:10px;align-items:flex-start;cursor:pointer;width:100%}
+.memck input{width:18px;height:18px;margin-top:3px;accent-color:var(--accent);flex:none}
+.memck small{display:block;font-size:12px;color:var(--muted)}
+.memwarn{font-size:13px;color:var(--warn);background:var(--warn-soft);padding:10px 12px;border-radius:var(--r-md)}
+.brand__logo{height:34px;width:auto;color:var(--ink);display:block}
+.paper__brand svg.paper__logosvg{width:auto;height:44px;transform:none;color:var(--p-ink)}
+.paper__mem{font-size:12.5px;color:var(--p-ink2);margin-top:4px;font-family:var(--font-num)}
+.paper__war{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:center;margin-top:18px;padding-top:16px;border-top:1px dashed var(--p-rule)}
+.paper__war .qr{width:84px;height:84px}
+.paper__war .qr svg{width:100%;height:100%}
+.paper__war b{display:block;font-size:13.5px;color:var(--p-ink)}
+.paper__war span{display:block;font-size:11.5px;color:var(--p-muted);line-height:1.55}
+.paper__war code{font-family:var(--font-num);font-size:13px;color:var(--p-accent);letter-spacing:.06em}
+dialog.cd{border:0;padding:0;background:transparent;color:var(--ink);max-width:min(480px,calc(100vw - 24px));width:100%}
+dialog.cd::backdrop{background:rgba(12,10,8,.6);backdrop-filter:blur(3px)}
+.cd__box{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r-lg);box-shadow:var(--shadow-float);overflow:hidden}
+.cd__h{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-bottom:1px solid var(--rule)}
+.cd__h h2{font-size:18px}
+.cd__b{padding:18px 20px;display:grid;gap:14px;max-height:calc(100dvh - 180px);overflow:auto}
+.cd__f{display:flex;gap:10px;justify-content:flex-end;padding:14px 20px;border-top:1px solid var(--rule)}
+.cd__sum{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 14px;font-size:14px;margin:0}
+.cd__sum dt{color:var(--muted)}
+.cd__sum dd{margin:0;font-family:var(--font-num);text-align:right}
+.cd__err{font-size:13px;color:var(--stop)}
+
+</style>
+</head>
+<body>
+<a class="skip" href="#main">ข้ามไปเนื้อหา</a>
+
+<header class="mast">
+  <div class="mast__glow" aria-hidden="true"></div>
+  <div class="wrap mast__row">
+    <a class="brand" href="admin.html" aria-label="UNITAC หลังร้าน"><svg class="brand__logo" viewBox="4.25 5.75 86.1 52.35" role="img" aria-label="UNITAC"><path fill="currentColor" d="M4.85 24.9Q4.85 22.05 7.7 22.05H10.5L12.4 24.9L16.6 22.05H26Q27.3 22.05 27.3 23.3V24.54L12.14 41.96Q11.1 43.16 11.1 44.56V45.25Q11.1 46.85 12.7 46.85H25.54L47.12 22.05H84.2L89.3 27.7V28.4Q89.3 30.1 86.9 30.1H72.56L48.73 57.5H40.02Q36.23 57.5 38.73 54.63L60.06 30.1H52.46L28.63 57.5H7.65Q4.85 57.5 4.85 54.7Z"/><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="miter" stroke-miterlimit="8"><path d="M6.7 6.6V13.3Q6.7 14.85 8.25 14.85H19.25V6.6"/><path d="M21.8 15.75V8.9Q21.8 7.45 23.25 7.45H26.8V14.85H32.5Q34.45 14.85 34.45 12.9V6.6"/><path d="M36 7.45H38.8V14.85H41.4"/><path d="M41.7 10.2V7.45H54.4V10.2M48.1 7.45V14.85M45.7 14.85H50.5"/><path d="M57.2 15.75V7.45H65.5L68.7 11V15.75M67.3 14.85H69M68.3 11.2L64 14.85H57.2"/><path d="M83.85 10V7.45H71.15V10.5L75.8 14.85H83.7V12"/></g><g transform="translate(87.95 8.55)" fill="none" stroke="currentColor"><circle r="1.55" stroke-width=".42"/><path d="M-.55 .85V-.85H.15Q.65 -.85 .65 -.35Q.65 .15 .15 .15H-.55M.1 .15L.65 .85" stroke-width=".36"/></g></svg><span class="brand__tag">คำนวณราคางานพิมพ์ 3 มิติ</span></a>
+    <div class="mast__right">
+      <button type="button" class="btn btn--ghost" id="newJobBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        เริ่มงานใหม่
+      </button>
+      <button type="button" class="iconbtn" id="themeBtn" aria-label="สลับธีมสว่าง / มืด" aria-pressed="false">
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></svg>
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="wrap mast__spec">
+    <span class="dot" id="storeDot" aria-hidden="true"></span>
+    <p><span id="storeText">บันทึกค่าอัตโนมัติในเครื่องนี้</span> <span class="sep" aria-hidden="true">·</span> <span id="mastSync">ใช้ราคาในเครื่อง (ยังไม่ได้เชื่อมต่อชีต)</span></p>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+<div class="grid">
+
+<!-- ================= LEFT: form ================= -->
+<div class="col">
+
+  <!-- money card -->
+  <section class="money rv" aria-labelledby="moneyTitle">
+    <div class="money__glow" aria-hidden="true"></div>
+    <div class="money__head">
+      <h2 id="moneyTitle">สรุปหลังบ้าน</h2>
+      <span class="sub">ลูกค้าไม่เห็นส่วนนี้</span>
+      <span class="mpill mpill--ok" id="profitStatus">กำไรดี</span>
+    </div>
+    <dl class="money__grid" aria-live="polite">
+      <div><dt>ต้นทุนจริง</dt><dd><span id="internalTotalCost">0.00</span><small>฿</small></dd></div>
+      <div><dt>กำไรสุทธิ</dt><dd id="realProfitWrap"><span id="realProfit">0.00</span><small>฿</small></dd></div>
+      <div><dt>Margin</dt><dd><span id="realMargin">0.0</span><small>%</small></dd></div>
+    </dl>
+    <div class="money__foot">
+      <span class="k">ราคาขาย</span><span class="num" id="internalSellingPrice">0.00</span><span class="k">฿</span>
+      <span class="sepdot" aria-hidden="true">·</span>
+      <span class="k" id="internalPerPiece">1 ชิ้น</span>
+    </div>
+  </section>
+
+  <!-- 00 ลูกค้าสมาชิก -->
+  <section class="card rv" aria-labelledby="s0" id="memCard">
+    <h3 class="card__title" id="s0"><span class="step">00</span>ลูกค้าสมาชิก</h3>
+    <p class="card__sub" id="memSub">เลือกสมาชิกเพื่อใส่ส่วนลดตามแรงค์ และเก็บแต้มให้ลูกค้า</p>
+    <div id="memLogin" class="stack" hidden>
+      <p class="hint">ต้องเข้าสู่ระบบเจ้าของร้านก่อน จึงจะค้นหาสมาชิกและบันทึกออเดอร์ได้ ส่วนการคำนวณราคาใช้ได้ตามปกติ</p>
+      <div><button type="button" class="btn btn--ghost" id="memLoginBtn">เข้าสู่ระบบเจ้าของร้าน</button></div>
+    </div>
+    <div id="memPick" class="stack" hidden>
+      <div class="field">
+        <label for="memSearch">ค้นหาสมาชิก</label>
+        <div class="memsearch"><div class="inp"><input type="text" id="memSearch" placeholder="ชื่อเล่น ชื่อ เบอร์ อีเมล หรือเลขสมาชิก" autocomplete="off"></div>
+          <button type="button" class="btn btn--ghost" id="memScan" aria-label="สแกน QR บัตรสมาชิก"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M7 12h10"/></svg>สแกน</button></div>
+        <p class="hint">ไม่เลือกก็ได้ ถ้าเป็นลูกค้าทั่วไป</p>
+      </div>
+      <ul class="memres" id="memRes" aria-label="ผลการค้นหา"></ul>
+    </div>
+    <div id="memSel" class="stack" hidden>
+      <div class="memchip">
+        <span id="msAv"></span>
+        <div class="memchip__t"><b id="msName"></b><span id="msMeta"></span></div>
+        <button type="button" class="btn btn--ghost" id="msClear">เปลี่ยน</button>
+      </div>
+      <div class="memdisc">
+        <div><span>ส่วนลดสมาชิก</span><b id="msRank"></b></div>
+        <div id="msCouponRow"><label class="memck"><input type="checkbox" id="msCoupon"><span>ใช้คูปองต้อนรับ <b id="msCouponPct"></b><small id="msCouponNote"></small></span></label></div>
+      </div>
+      <p class="memwarn" id="msWarn" hidden></p>
+      <div class="field" id="msAddrWrap">
+        <label for="msAddr">จัดส่งไปที่</label>
+        <div class="inp"><select id="msAddr"></select></div>
+      </div>
+      <p class="hint">ช่องส่วนลดในหัวข้อ 02 กลายเป็น "ส่วนลดพิเศษเพิ่ม" ใส่เมื่อต้องการลดเพิ่มจากสิทธิ์สมาชิกเท่านั้น</p>
+    </div>
+  </section>
+
+  <!-- 01 งานนี้ -->
+  <section class="card rv" aria-labelledby="s1">
+    <h3 class="card__title" id="s1"><span class="step">01</span>งานนี้</h3>
+    <p class="card__sub">กรอกเท่าที่รู้ ตัวเลขทางขวาจะขยับตาม</p>
+    <div class="stack">
+      <div class="field">
+        <label for="jobName">ชื่องาน / ลูกค้า</label>
+        <div class="inp"><input type="text" id="jobName" placeholder="เช่น ฝาครอบเซนเซอร์ - คุณเอ" autocomplete="off"></div>
+      </div>
+      <div class="field">
+        <div class="field__lab">
+          <label for="matName">วัสดุ</label>
+          <button type="button" class="minibtn" id="matSyncBtn" aria-label="ซิงก์ราคาวัสดุจากชีต" title="ซิงก์ราคาจากชีต">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-14.2 5M4 12a8 8 0 0 1 14.2-5"/><path d="M18 3v4h-4M6 21v-4h4"/></svg>
+          </button>
+        </div>
+        <div class="inp">
+          <select id="matName"></select>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+        <p class="hint" id="matPriceHint">ต้นทุนจริง <span class="num">0.00</span> ฿/g · คิดลูกค้า <span class="num">0.00</span> ฿/g</p>
+        <p class="hint" id="matSyncStatus">ใช้ราคาในเครื่อง (ยังไม่ได้เชื่อมต่อชีต)</p>
+      </div>
+      <div class="frow frow--2">
+        <div class="field">
+          <label for="qty">จำนวนชิ้น</label>
+          <div class="inp inp--unit"><input type="number" id="qty" min="1" step="1" value="1" inputmode="numeric"><span class="unit">ชิ้น</span></div>
+        </div>
+        <div class="field">
+          <label for="matWeight">น้ำหนักต่อชิ้น</label>
+          <div class="inp inp--unit"><input type="number" id="matWeight" min="0" step="any" value="0" inputmode="decimal"><span class="unit">g</span></div>
+          <p class="hint">น้ำหนักเส้นที่ใช้ต่อ 1 ชิ้น</p>
+        </div>
+      </div>
+      <div class="group" role="group" aria-labelledby="timeLab">
+        <span class="lab" id="timeLab">เวลาต่อชิ้น</span>
+        <div class="frow frow--3 frow--time">
+          <div class="field">
+            <label for="printDays" class="sr">วัน</label>
+            <div class="inp inp--unit"><input type="number" id="printDays" min="0" step="any" value="0" inputmode="decimal"><span class="unit">วัน</span></div>
+          </div>
+          <div class="field">
+            <label for="printHours" class="sr">ชั่วโมง</label>
+            <div class="inp inp--unit"><input type="number" id="printHours" min="0" step="any" value="0" inputmode="decimal"><span class="unit">ชม.</span></div>
+          </div>
+          <div class="field">
+            <label for="printMins" class="sr">นาที</label>
+            <div class="inp inp--unit"><input type="number" id="printMins" min="0" step="any" value="0" inputmode="decimal"><span class="unit">นาที</span></div>
+          </div>
+        </div>
+        <p class="hint" id="timeHint">รวม 0 ชม. 0 นาที/ชิ้น · ทั้งงาน 0 ชม. 0 นาที</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 ส่วนลด & ค่าบริการเพิ่มเติม -->
+  <section class="card rv" aria-labelledby="s2">
+    <h3 class="card__title" id="s2"><span class="step">02</span>ส่วนลด &amp; ค่าบริการเพิ่มเติม</h3>
+    <p class="card__sub">ส่วนลดหักจากค่าพิมพ์เท่านั้น ค่าบริการอื่นบวกทีหลัง</p>
+    <div class="stack">
+      <div class="frow frow--2">
+        <div class="field">
+          <div class="field__lab">
+            <label for="discountValue" id="discountFieldLabel">ส่วนลด</label>
+            <div class="seg" role="group" aria-label="รูปแบบส่วนลด">
+              <button type="button" data-mode="percent" aria-pressed="true">%</button>
+              <button type="button" data-mode="baht" aria-pressed="false">฿</button>
+            </div>
+          </div>
+          <input type="hidden" id="discountMode" value="percent">
+          <div class="inp inp--unit"><input type="number" id="discountValue" min="0" step="any" value="0" inputmode="decimal"><span class="unit" id="discountUnit">%</span></div>
+        </div>
+      </div>
+      <div class="frow frow--2">
+        <div class="field">
+          <label for="designFee">ค่าเขียนแบบ</label>
+          <div class="inp inp--unit"><input type="number" id="designFee" min="0" step="any" value="0" inputmode="decimal"><span class="unit">฿</span></div>
+          <p class="hint">ไม่ถูกหักส่วนลด</p>
+        </div>
+        <div class="field">
+          <label for="shippingFee">ค่าจัดส่ง</label>
+          <div class="inp inp--unit"><input type="number" id="shippingFee" min="0" step="any" value="0" inputmode="decimal"><span class="unit">฿</span></div>
+          <p class="hint">ไม่ถูกหักส่วนลด</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 ความเสี่ยง & วัสดุสิ้นเปลือง -->
+  <section class="card rv" aria-labelledby="s3">
+    <h3 class="card__title" id="s3"><span class="step">03</span>ความเสี่ยง &amp; วัสดุสิ้นเปลือง</h3>
+    <p class="card__sub">เผื่อไว้ก่อน จะได้ไม่ขาดทุนตอนงานเสีย</p>
+    <div class="frow frow--2">
+      <div class="field">
+        <label for="failRate">% เผื่องานเสีย</label>
+        <div class="inp inp--unit"><input type="number" id="failRate" min="0" max="100" step="any" value="0" inputmode="decimal"><span class="unit">%</span></div>
+        <p class="hint">เผื่อทั้งค่าวัสดุ ค่าไฟ และค่าเสื่อมเครื่อง</p>
+      </div>
+      <div class="field">
+        <label for="hardwareCost">ค่าวัสดุอื่นๆ (ทั้งงาน)</label>
+        <div class="inp inp--unit"><input type="number" id="hardwareCost" min="0" step="any" value="0" inputmode="decimal"><span class="unit">฿</span></div>
+        <p class="hint">น็อต แม่เหล็ก บรรจุภัณฑ์ ฯลฯ — ไม่ถูกคูณจำนวนชิ้นและไม่ถูกเผื่อเสีย</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 ตั้งค่าร้าน -->
+  <details class="card rv" id="shopDetails">
+    <summary>
+      <div class="summary__text">
+        <h3 class="card__title"><span class="step">04</span>ตั้งค่าร้าน</h3>
+        <p class="card__sub">ตั้งครั้งเดียว ใช้ได้ตลอด</p>
+      </div>
+      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+    </summary>
+    <div class="dbody">
+      <div class="stack">
+        <div class="frow frow--3">
+          <div class="field">
+            <label for="powerWatt">กำลังไฟเครื่อง</label>
+            <div class="inp inp--unit"><input type="number" id="powerWatt" min="0" step="any" value="450" inputmode="decimal"><span class="unit">W</span></div>
+          </div>
+          <div class="field">
+            <label for="elecUnit">ค่าไฟต่อหน่วย</label>
+            <div class="inp inp--unit inp--wide"><input type="number" id="elecUnit" min="0" step="0.1" value="4.5" inputmode="decimal"><span class="unit">฿/kWh</span></div>
+          </div>
+          <div class="field">
+            <label for="markupPercent">ค่าดำเนินงาน (markup)</label>
+            <div class="inp inp--unit"><input type="number" id="markupPercent" min="0" step="any" value="50" inputmode="decimal"><span class="unit">%</span></div>
+            <p class="hint">กำไรที่บวกเพิ่มจากต้นทุน</p>
+          </div>
+        </div>
+        <div class="frow frow--2">
+          <div class="field">
+            <label for="machineCost">ราคาเครื่อง</label>
+            <div class="inp inp--unit"><input type="number" id="machineCost" min="0" step="any" value="80000" inputmode="decimal"><span class="unit">฿</span></div>
+          </div>
+          <div class="field">
+            <label for="machineLife">อายุเครื่อง</label>
+            <div class="inp inp--unit"><input type="number" id="machineLife" min="1" step="any" value="5000" inputmode="decimal"><span class="unit">ชม.</span></div>
+            <p class="hint" id="depHint">ใช้คิดค่าเสื่อม — ปัจจุบัน <span class="num">16.00</span> ฿/ชม.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule" role="presentation"></div>
+      <h4 class="subhead">เชื่อมต่อ Google Sheet<small>เว้นว่างไว้ได้ — โปรแกรมจะใช้ราคาวัสดุที่ติดมากับไฟล์ และปิดปุ่มบันทึกยอดขาย</small></h4>
+      <div class="stack">
+        <div class="field">
+          <label for="sheetUrl">URL ของ Web App</label>
+          <div class="inp"><input type="url" id="sheetUrl" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off" spellcheck="false"></div>
+        </div>
+        <div class="frow frow--2">
+          <div class="field">
+            <label for="sheetToken">รหัสลับ (Token)</label>
+            <div class="inp inp--eye">
+              <input type="password" id="sheetToken" autocomplete="off" spellcheck="false">
+              <button type="button" class="eye" id="tokenEye" aria-label="แสดงรหัสลับ" aria-pressed="false">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="field field--btn">
+            <button type="button" class="btn btn--ghost" id="testSheetBtn">ทดสอบการเชื่อมต่อ</button>
+          </div>
+          <p class="hint" id="hostedNote" hidden>หมายเหตุ: หน้าเว็บเวอร์ชันนี้ต่อกับ Google Apps Script ไม่ได้ (ตัวหน้าเว็บถูกกันไม่ให้ยิงไปเซิร์ฟเวอร์ภายนอก) ใช้ราคาวัสดุที่ติดมากับโปรแกรมได้ตามปกติ แต่ถ้าต้องการซิงก์ราคาและบันทึกยอดขายเข้าชีต ให้เปิดจากไฟล์ที่ดาวน์โหลดไว้ในเครื่อง</p>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 05 เครื่องคิดเวลาหลาย Bed -->
+  <details class="card rv" id="bedDetails">
+    <summary>
+      <div class="summary__text">
+        <h3 class="card__title"><span class="step">05</span>เครื่องคิดเวลาหลาย Bed</h3>
+        <p class="card__sub">รวมเวลาหลายถาดเป็นเวลาเดียว</p>
+      </div>
+      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+    </summary>
+    <div class="dbody">
+      <p class="hint" style="margin-bottom:14px">รวมเวลาหลายถาด แล้วส่งไปช่อง ‘เวลาต่อชิ้น’ — ถ้าถาดนั้นมีหลายชิ้น อย่าลืมตั้งจำนวนชิ้นเป็น 1 แล้วกรอกน้ำหนักรวม</p>
+      <div class="beds" id="bedRows"></div>
+      <div class="bed__acts">
+        <button type="button" class="btn btn--ghost" id="addBedBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          เพิ่ม Bed
+        </button>
+      </div>
+      <div class="bed__tot">
+        <div><span class="k">รวมทุกถาด</span><span class="v" id="bedTotalText" aria-live="polite">0 วัน 0 ชม. 0 นาที</span></div>
+        <button type="button" class="btn btn--ink" id="applyBedBtn">ใช้เวลานี้
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+    </div>
+  </details>
+
+</div>
+
+<!-- ================= RIGHT: quotation ================= -->
+<div class="side">
+  <div class="section__head">
+    <h2>ใบเสนอราคา</h2>
+    <div class="acts">
+      <button type="button" class="btn btn--ghost" id="captureBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M4 19h16"/></svg>
+        บันทึกรูป
+      </button>
+      <button type="button" class="btn btn--primary" id="saveTransactionBtn" style="padding:8px 18px;font-size:13.5px;font-weight:600">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16.5A4.5 4.5 0 0 1 6 8a6 6 0 0 1 11.5 1.5A4 4 0 0 1 17 17H7"/><path d="M12 12v8M9 15l3-3 3 3"/></svg>
+        <span id="saveTransactionLabel">บันทึกยอดขาย</span>
+      </button>
+      <button type="button" class="btn btn--primary" id="saveOrderBtn" style="padding:8px 18px;font-size:13.5px;font-weight:600" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5 10 17l9-10"/></svg>
+        บันทึกเป็นออเดอร์
+      </button>
+    </div>
+  </div>
+
+  <div class="paper rv" id="quotePaper">
+    <div class="paper__head">
+      <div class="paper__logo" id="logoBox">
+        <span class="paper__brand" id="defaultLogo"><svg class="paper__logosvg" viewBox="4.25 5.75 86.1 52.35" role="img" aria-label="UNITAC"><path fill="currentColor" d="M4.85 24.9Q4.85 22.05 7.7 22.05H10.5L12.4 24.9L16.6 22.05H26Q27.3 22.05 27.3 23.3V24.54L12.14 41.96Q11.1 43.16 11.1 44.56V45.25Q11.1 46.85 12.7 46.85H25.54L47.12 22.05H84.2L89.3 27.7V28.4Q89.3 30.1 86.9 30.1H72.56L48.73 57.5H40.02Q36.23 57.5 38.73 54.63L60.06 30.1H52.46L28.63 57.5H7.65Q4.85 57.5 4.85 54.7Z"/><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="miter" stroke-miterlimit="8"><path d="M6.7 6.6V13.3Q6.7 14.85 8.25 14.85H19.25V6.6"/><path d="M21.8 15.75V8.9Q21.8 7.45 23.25 7.45H26.8V14.85H32.5Q34.45 14.85 34.45 12.9V6.6"/><path d="M36 7.45H38.8V14.85H41.4"/><path d="M41.7 10.2V7.45H54.4V10.2M48.1 7.45V14.85M45.7 14.85H50.5"/><path d="M57.2 15.75V7.45H65.5L68.7 11V15.75M67.3 14.85H69M68.3 11.2L64 14.85H57.2"/><path d="M83.85 10V7.45H71.15V10.5L75.8 14.85H83.7V12"/></g><g transform="translate(87.95 8.55)" fill="none" stroke="currentColor"><circle r="1.55" stroke-width=".42"/><path d="M-.55 .85V-.85H.15Q.65 -.85 .65 -.35Q.65 .15 .15 .15H-.55M.1 .15L.65 .85" stroke-width=".36"/></g></svg></span>
+        <img id="uploadedLogo" alt="โลโก้ร้าน" hidden>
+      </div>
+      <div class="paper__title">
+        <h3>ใบเสนอราคา</h3>
+        <p class="en">QUOTATION</p>
+        <p class="date" id="dateDisplay"></p>
+      </div>
+    </div>
+    <div class="paper__cust">
+      <p class="k">PROJECT / CUSTOMER</p>
+      <h4 id="summaryJobName">งานพิมพ์ 3 มิติ</h4>
+      <p class="paper__mem" id="paperMem" hidden></p>
+    </div>
+    <ul class="items" aria-label="รายการ">
+      <li class="item">
+        <span class="item__ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3 4 7.5v9L12 21l8-4.5v-9Z"/><path d="M4 7.5 12 12l8-4.5M12 12v9"/></svg></span>
+        <span class="item__t"><b>ค่าวัสดุ (<span id="dispMatName">POLY-PLA</span>)</b><span id="matSub">Material · 0 g × 1 ชิ้น</span></span>
+        <span class="item__v"><span id="sumMatCost">0.00</span><small>฿</small></span>
+      </li>
+      <li class="item">
+        <span class="item__ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7Z"/></svg></span>
+        <span class="item__t"><b>ค่าไฟ</b><span id="elecSub">Electricity · 0 ชม. 0 นาที</span></span>
+        <span class="item__v"><span id="sumElecCost">0.00</span><small>฿</small></span>
+      </li>
+      <li class="item">
+        <span class="item__ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V4h12v5M6 18H4a1 1 0 0 1-1-1v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1h-2"/><path d="M6 14h12v6H6z"/></svg></span>
+        <span class="item__t"><b>ค่าเสื่อมเครื่อง</b><span>Depreciation</span></span>
+        <span class="item__v"><span id="sumDepCost">0.00</span><small>฿</small></span>
+      </li>
+      <li class="item" id="rowHardware" hidden>
+        <span class="item__ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0 5 5L13 18a2.1 2.1 0 0 1-3-3l6.7-6.7Z"/><path d="M20.5 3.5 17 7"/><path d="M4 20l3-3"/></svg></span>
+        <span class="item__t"><b>ค่าวัสดุอื่นๆ</b><span>Hardware</span></span>
+        <span class="item__v"><span id="sumHardwareCost">0.00</span><small>฿</small></span>
+      </li>
+      <li class="item">
+        <span class="item__ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18"/></svg></span>
+        <span class="item__t"><b>ค่าดำเนินงาน</b><span>Operation Fee</span></span>
+        <span class="item__v"><span id="sumProfit">0.00</span><small>฿</small></span>
+      </li>
+      <li class="item item--stop" id="rowMember" hidden>
+        <span class="item__ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8Z"/><circle cx="7.5" cy="7.5" r="1.2"/></svg></span>
+        <span class="item__t"><b id="memberLabel">ส่วนลดสมาชิก</b><span>Member Discount</span></span>
+        <span class="item__v">-<span id="sumMember">0.00</span><small>฿</small></span>
+      </li>
+      <li class="item item--stop" id="rowCoupon" hidden>
+        <span class="item__ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8Z"/><circle cx="7.5" cy="7.5" r="1.2"/></svg></span>
+        <span class="item__t"><b id="couponLabel">คูปองต้อนรับ</b><span id="couponSub">Welcome Coupon</span></span>
+        <span class="item__v">-<span id="sumCoupon">0.00</span><small>฿</small></span>
+      </li>
+      <li class="item item--stop" id="rowDiscount" hidden>
+        <span class="item__ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8Z"/><circle cx="7.5" cy="7.5" r="1.2"/></svg></span>
+        <span class="item__t"><b id="discountLabel">ส่วนลด</b><span>Discount</span></span>
+        <span class="item__v">-<span id="sumDiscount">0.00</span><small>฿</small></span>
+      </li>
+      <li class="item" id="rowDesignFee" hidden>
+        <span class="item__ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m4 20 4-1 11-11-3-3L5 16Z"/><path d="m13 6 3 3"/></svg></span>
+        <span class="item__t"><b>ค่าเขียนแบบ</b><span>Design Fee · ไม่หักส่วนลด</span></span>
+        <span class="item__v"><span id="sumDesignFee">0.00</span><small>฿</small></span>
+      </li>
+      <li class="item" id="rowShippingFee" hidden>
+        <span class="item__ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h11v10H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg></span>
+        <span class="item__t"><b>ค่าจัดส่ง</b><span>Shipping Fee · ไม่หักส่วนลด</span></span>
+        <span class="item__v"><span id="sumShippingFee">0.00</span><small>฿</small></span>
+      </li>
+    </ul>
+    <p class="paper__note" id="failNote" hidden>* ราคารวมเผื่องานเสีย <span id="failNoteVal">0</span>% แล้ว</p>
+    <div class="total" aria-live="polite">
+      <div class="k">ยอดรวมสุทธิ<small>GRAND TOTAL</small></div>
+      <div class="v"><span id="grandTotal">0.00</span><small>THB</small></div>
+      <div class="pp" id="perPieceLine" hidden>≈ <span id="perPiece">0.00</span> ฿/ชิ้น</div>
+    </div>
+    <div class="paper__war" id="paperWar" hidden><div class="qr" id="pwQr"></div><div><b>ประกัน <span id="pwDays"></span> วัน · ถึง <span id="pwUntil"></span></b><code id="pwCode"></code><span>สแกน QR หรือใส่รหัสที่ <span id="pwUrl"></span></span></div></div>
+    <p class="paper__foot">UNITAC AUTHORIZED SERVICE</p>
+  </div>
+
+  <div class="logo-row">
+    <input type="file" id="logoFile" accept="image/*" class="sr">
+    <label for="logoFile" class="btn btn--ghost" tabindex="0" id="logoLabel">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="m21 16-5-5-9 9"/></svg>
+      อัปโหลดโลโก้
+    </label>
+    <button type="button" class="btn btn--ghost" id="logoRemoveBtn" hidden>ลบโลโก้</button>
+    <span class="hint">โลโก้เก็บในเครื่องนี้เท่านั้น</span>
+  </div>
+</div>
+
+</div>
+</main>
+
+<footer class="foot">UNITAC · เครื่องคิดราคางานพิมพ์ 3 มิติ · ข้อมูลทั้งหมดอยู่ในเครื่องนี้</footer>
+<div class="shot" id="shot" role="dialog" aria-modal="true" aria-labelledby="shotTitle">
+  <div class="shot__box">
+    <div class="shot__head">
+      <p id="shotTitle">กดค้างที่รูปเพื่อบันทึก (มือถือ) หรือคลิกขวา → บันทึกรูปภาพ</p>
+      <button type="button" class="iconbtn" id="shotClose" aria-label="ปิด">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+    <div class="shot__scroll"><img id="shotImg" alt="ใบเสนอราคา"></div>
+    <div class="shot__foot">
+      <button type="button" class="btn btn--ghost" id="shotCloseBtn">ปิด</button>
+      <a class="btn btn--primary" id="shotDownload" download>ดาวน์โหลดรูป</a>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>window.UMEM={sel:null};</script>
+<script>
+(function(){
+'use strict';
+var root=document.documentElement;
+var reduce=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+/* ================= data ================= */
+var FALLBACK_MATERIALS = [
+  {code:'POLY-PLA',     brand:'POLY-PLA-M',    pricePerKg:1000, actualCostPerGram:0.39},
+  {code:'POLY-TPU-95A', brand:'POLY-TPU95A',   pricePerKg:2200, actualCostPerGram:1.3866666666666667},
+  {code:'3DD-PLA-CF',   brand:'3DD-PLA-CF',    pricePerKg:1500, actualCostPerGram:0.64},
+  {code:'KEX-PETG-M',   brand:'KEX-PETG-M',    pricePerKg:1600, actualCostPerGram:0.74},
+  {code:'KEX-PETG-CF',  brand:'KEX-PETG-CF',   pricePerKg:1700, actualCostPerGram:0.84},
+  {code:'BBL-ASA',      brand:'BBL-ASA',       pricePerKg:1600, actualCostPerGram:0.777},
+  {code:'BBL-ASA-CF',   brand:'BBL-ASA-CF',    pricePerKg:2700, actualCostPerGram:1.85},
+  {code:'BBL-PLA-T',    brand:'BBL-PLA-T',     pricePerKg:1600, actualCostPerGram:0.74},
+  {code:'PPS-CF10',     brand:'POLY-PPS-CF10', pricePerKg:5700, actualCostPerGram:4.78},
+  {code:'BBL-PETG-HF',  brand:'BBL-PETG-HF',   pricePerKg:1500, actualCostPerGram:0.65},
+  {code:'BBL-PA6-GF',   brand:'BBL-PA6-GF',    pricePerKg:3920, actualCostPerGram:3},
+  {code:'BBL-PLA-CF',   brand:'BBL-PLA-CF',    pricePerKg:2500, actualCostPerGram:1.455}
+];
+var KEY='unitac-calc-v4';
+var FIELD_IDS=['jobName','matName','qty','matWeight','printDays','printHours','printMins',
+  'discountMode','discountValue','designFee','shippingFee','failRate','hardwareCost',
+  'powerWatt','elecUnit','machineCost','machineLife','markupPercent','sheetUrl','sheetToken'];
+var JOB_RESET={jobName:'',qty:'1',matWeight:'0',printDays:'0',printHours:'0',printMins:'0',
+  discountValue:'0',designFee:'0',shippingFee:'0',hardwareCost:'0'};
+
+var S={v:4,fields:{},theme:null,logo:null,materials:null,materialsAt:null};
+var storageOk=true;
+var last=null;
+
+function $(id){return document.getElementById(id);}
+function val(id){var el=$(id);return el?el.value:'';}
+function num(id){var n=Number(val(id));if(!isFinite(n)||n<0)n=0;return n;}
+function fmt(n){if(typeof n!=='number'||!isFinite(n))n=0;return n.toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function fmt1(n){if(typeof n!=='number'||!isFinite(n))n=0;return n.toLocaleString('th-TH',{minimumFractionDigits:1,maximumFractionDigits:1});}
+function fmtInt(n){if(typeof n!=='number'||!isFinite(n))n=0;return n.toLocaleString('th-TH',{maximumFractionDigits:2});}
+function pad(n){return String(n).padStart(2,'0');}
+function clamp(v,a,b){return Math.min(Math.max(v,a),b);}
+function hm(hours){var t=Math.max(0,Math.round((isFinite(hours)?hours:0)*60));return {h:Math.floor(t/60),m:t%60,d:Math.floor(t/1440),hr:Math.floor((t%1440)/60)};}
+function fmtHM(hours){var x=hm(hours);return x.h+' ชม. '+x.m+' นาที';}
+function fmtDHM(hours){var x=hm(hours);return x.d>0?(x.d+' วัน '+x.hr+' ชม. '+x.m+' นาที'):fmtHM(hours);}
+
+/* ================= toast ================= */
+var toastEl=$('toast'),toastT=0;
+function toast(msg){
+  toastEl.textContent=msg;
+  toastEl.classList.add('show');
+  clearTimeout(toastT);
+  toastT=setTimeout(function(){toastEl.classList.remove('show');},3000);
+}
+
+/* ================= storage ================= */
+function loadState(){
+  try{
+    var raw=localStorage.getItem(KEY);
+    if(!raw) return;
+    var o=JSON.parse(raw);
+    if(!o||o.v!==4) return;
+    if(o.fields&&typeof o.fields==='object') S.fields=o.fields;
+    if(o.theme==='dark'||o.theme==='light') S.theme=o.theme;
+    if(typeof o.logo==='string'&&o.logo.indexOf('data:image/')===0) S.logo=o.logo;
+    if(Array.isArray(o.materials)&&o.materials.length) S.materials=o.materials;
+    if(typeof o.materialsAt==='number') S.materialsAt=o.materialsAt;
+  }catch(e){ storageOk=false; }
+}
+function writeState(){
+  try{
+    localStorage.setItem(KEY,JSON.stringify(S));
+    if(!storageOk){storageOk=true;setStoreLine();}
+  }catch(e){
+    var quota=e&&(e.name==='QuotaExceededError'||e.name==='NS_ERROR_DOM_QUOTA_REACHED'||e.code===22||e.code===1014);
+    if(quota){ toast('บันทึกค่าไม่สำเร็จ — โลโก้อาจใหญ่เกินไป'); }
+    else { storageOk=false; setStoreLine(); }
+  }
+}
+var saveT=0;
+function save(){
+  FIELD_IDS.forEach(function(id){var el=$(id);if(el)S.fields[id]=el.value;});
+  clearTimeout(saveT);
+  saveT=setTimeout(writeState,400);
+}
+function saveNow(){clearTimeout(saveT);FIELD_IDS.forEach(function(id){var el=$(id);if(el)S.fields[id]=el.value;});writeState();}
+function setStoreLine(){
+  $('storeText').textContent=storageOk?'บันทึกค่าอัตโนมัติในเครื่องนี้':'เบราว์เซอร์นี้บันทึกค่าไม่ได้ — ค่าจะหายเมื่อปิดหน้า';
+  $('storeDot').classList.toggle('dot--warn',!storageOk);
+}
+
+/* ================= theme ================= */
+var themeBtn=$('themeBtn');
+function isDark(){var t=root.getAttribute('data-theme');if(t)return t==='dark';return !!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);}
+function syncTheme(){themeBtn.setAttribute('aria-pressed',String(isDark()));}
+themeBtn.addEventListener('click',function(){
+  var next=isDark()?'light':'dark';
+  root.setAttribute('data-theme',next);
+  try{localStorage.setItem('unitac-theme',next);}catch(e){}
+  S.theme=next; save(); syncTheme();
+});
+
+/* ================= materials ================= */
+function sheetUrl(){return (val('sheetUrl')||'').trim();}
+function materials(){
+  if(sheetUrl()&&S.materials&&S.materials.length) return S.materials;
+  return FALLBACK_MATERIALS;
+}
+function currentMaterial(){
+  var list=materials(),code=val('matName');
+  for(var i=0;i<list.length;i++){ if(list[i].code===code) return list[i]; }
+  return list[0];
+}
+function buildOptions(){
+  var sel=$('matName'),prev=sel.value||S.fields.matName||'POLY-PLA',list=materials();
+  sel.innerHTML='';
+  list.forEach(function(m){
+    var o=document.createElement('option');
+    o.value=m.code;
+    o.textContent=m.code+' · '+Number(m.pricePerKg).toLocaleString('th-TH')+' ฿/kg';
+    sel.appendChild(o);
+  });
+  var exists=list.some(function(m){return m.code===prev;});
+  sel.value=exists?prev:(list[0]?list[0].code:'');
+}
+function setSyncStatus(text){
+  $('matSyncStatus').textContent=text;
+  $('mastSync').textContent=text;
+}
+function stampText(ts){var d=new Date(ts);return 'ราคาล่าสุดจากชีต ✓ '+pad(d.getHours())+':'+pad(d.getMinutes());}
+
+/* ================= calculation (§4) ================= */
+function calc(){
+  var m=currentMaterial()||{pricePerKg:0};
+  var listPerGram=(Number(m.pricePerKg)||0)/1000;
+  var costPerGram=(typeof m.actualCostPerGram==='number'&&m.actualCostPerGram>0)?m.actualCostPerGram:listPerGram;
+
+  var qty=Math.floor(num('qty')); if(qty<1) qty=1;
+  var matWeight=num('matWeight');
+  var printDays=num('printDays'),printHours=num('printHours'),printMins=num('printMins');
+  var powerWatt=num('powerWatt'),elecUnit=num('elecUnit'),machineCost=num('machineCost'),machineLife=num('machineLife');
+  var markupPercent=num('markupPercent'),failRate=clamp(num('failRate'),0,100),hardwareCost=num('hardwareCost');
+  var discountMode=val('discountMode')==='baht'?'baht':'percent';
+  var discountValue=num('discountValue'),designFee=num('designFee'),shippingFee=num('shippingFee');
+
+  var hoursPerPiece=printDays*24+printHours+printMins/60;
+  var totalHours=hoursPerPiece*qty;
+
+  var elecCost=(powerWatt/1000)*totalHours*elecUnit;
+  var depPerHour=machineLife>0?machineCost/machineLife:0;
+  var depCost=depPerHour*totalHours;
+
+  var matCharge=listPerGram*matWeight*qty;
+  var matReal=costPerGram*matWeight*qty;
+
+  var buffer=1+failRate/100;
+  var chargeBase=(matCharge+elecCost+depCost)*buffer+hardwareCost;
+  var realCost=(matReal+elecCost+depCost)*buffer+hardwareCost;
+
+  var operationFee=chargeBase*(markupPercent/100);
+  var printSubtotal=chargeBase+operationFee;
+
+  /* member discounts (UNITAC membership): rank % + welcome coupon (capped 500 ฿), both on print cost only */
+  var U=window.UMEM||{};
+  var memberPct=U.sel?(Number(U.rankPct)||0):0, couponPct=(U.sel&&U.useCoupon)?(Number(U.couponPct)||0):0;
+  var memberDisc=Math.min(printSubtotal*memberPct/100,printSubtotal);
+  var couponDisc=Math.min(printSubtotal*couponPct/100,500,printSubtotal-memberDisc);
+  var discountAmount=(discountMode==='baht')?discountValue:printSubtotal*(clamp(discountValue,0,100)/100);
+  discountAmount=Math.min(Math.max(discountAmount,0),printSubtotal-memberDisc-couponDisc);
+  var discountTotal=memberDisc+couponDisc+discountAmount;
+  var printPaid=printSubtotal-discountTotal;
+  var points=Math.max(0,Math.floor(printPaid/10));
+
+  var grandTotal=printPaid+designFee+shippingFee;
+  var realProfit=grandTotal-realCost;
+  var realMargin=grandTotal>0?(realProfit/grandTotal)*100:0;
+  var perPiece=qty>0?grandTotal/qty:0;
+
+  var r={m:m,listPerGram:listPerGram,costPerGram:costPerGram,qty:qty,matWeight:matWeight,
+    hoursPerPiece:hoursPerPiece,totalHours:totalHours,elecCost:elecCost,depCost:depCost,depPerHour:depPerHour,
+    matCharge:matCharge,matReal:matReal,buffer:buffer,failRate:failRate,hardwareCost:hardwareCost,
+    chargeBase:chargeBase,realCost:realCost,operationFee:operationFee,printSubtotal:printSubtotal,
+    discountMode:discountMode,discountValue:discountValue,discountAmount:discountAmount,
+    memberPct:memberPct,couponPct:couponPct,memberDisc:memberDisc,couponDisc:couponDisc,discountTotal:discountTotal,printPaid:printPaid,points:points,
+    designFee:designFee,shippingFee:shippingFee,grandTotal:grandTotal,realProfit:realProfit,realMargin:realMargin,perPiece:perPiece,
+    lineMat:matCharge*buffer,lineElec:elecCost*buffer,lineDep:depCost*buffer};
+  /* never let a NaN/Infinity reach the screen */
+  Object.keys(r).forEach(function(k){if(typeof r[k]==='number'&&!isFinite(r[k]))r[k]=0;});
+  return r;
+}
+
+function render(r){
+  last=r;
+  /* money card */
+  $('internalTotalCost').textContent=fmt(r.realCost);
+  $('realProfit').textContent=fmt(r.realProfit);
+  $('realProfitWrap').classList.toggle('is-neg',r.realProfit<0);
+  $('realMargin').textContent=fmt1(r.realMargin);
+  $('internalSellingPrice').textContent=fmt(r.grandTotal);
+  $('internalPerPiece').textContent=r.qty>1?(r.qty+' ชิ้น · ≈ '+fmt(r.perPiece)+' ฿/ชิ้น'):'1 ชิ้น';
+  var st=$('profitStatus'),cls,txt;
+  if(!(r.grandTotal>0)){cls='mpill--muted';txt='ยังไม่มีข้อมูล';}
+  else if(r.realMargin<15){cls='mpill--stop';txt='กำไรน้อย (เสี่ยง)';}
+  else if(r.realMargin<35){cls='mpill--warn';txt='กำไรปานกลาง';}
+  else{cls='mpill--ok';txt='กำไรดี';}
+  st.className='mpill '+cls; st.textContent=txt;
+
+  /* hints */
+  $('matPriceHint').innerHTML='ต้นทุนจริง <span class="num">'+fmt(r.costPerGram)+'</span> ฿/g · คิดลูกค้า <span class="num">'+fmt(r.listPerGram)+'</span> ฿/g';
+  $('timeHint').textContent='รวม '+fmtDHM(r.hoursPerPiece)+'/ชิ้น · ทั้งงาน '+fmtDHM(r.totalHours);
+  $('depHint').innerHTML='ใช้คิดค่าเสื่อม — ปัจจุบัน <span class="num">'+fmt(r.depPerHour)+'</span> ฿/ชม.';
+
+  /* paper */
+  $('summaryJobName').textContent=(val('jobName')||'').trim()||'งานพิมพ์ 3 มิติ';
+  $('dispMatName').textContent=r.m&&r.m.code?r.m.code:'—';
+  $('matSub').textContent='Material · '+fmtInt(r.matWeight)+' g × '+r.qty+' ชิ้น';
+  $('sumMatCost').textContent=fmt(r.lineMat);
+  $('elecSub').textContent='Electricity · '+fmtHM(r.totalHours);
+  $('sumElecCost').textContent=fmt(r.lineElec);
+  $('sumDepCost').textContent=fmt(r.lineDep);
+  $('rowHardware').hidden=!(r.hardwareCost>0);
+  $('sumHardwareCost').textContent=fmt(r.hardwareCost);
+  $('sumProfit').textContent=fmt(r.operationFee);
+  var U=window.UMEM||{};
+  $('rowMember').hidden=!(r.memberDisc>0);
+  $('memberLabel').textContent='ส่วนลดสมาชิก '+(U.rankKey||'')+' '+fmtInt(r.memberPct)+'%';
+  $('sumMember').textContent=fmt(r.memberDisc);
+  $('rowCoupon').hidden=!(r.couponDisc>0);
+  $('couponLabel').textContent='คูปองต้อนรับ +'+fmtInt(r.couponPct)+'%';
+  $('couponSub').textContent=(r.printSubtotal*r.couponPct/100>500)?'Welcome Coupon · ลดสูงสุด 500 ฿':'Welcome Coupon';
+  $('sumCoupon').textContent=fmt(r.couponDisc);
+  $('rowDiscount').hidden=!(r.discountAmount>0);
+  var dl=U.sel?'ส่วนลดพิเศษ':'ส่วนลด';
+  $('discountLabel').textContent=r.discountMode==='percent'?(dl+' '+fmtInt(clamp(r.discountValue,0,100))+'%'):dl;
+  if(window.__memRender) window.__memRender(r);
+  $('sumDiscount').textContent=fmt(r.discountAmount);
+  $('rowDesignFee').hidden=!(r.designFee>0);
+  $('sumDesignFee').textContent=fmt(r.designFee);
+  $('rowShippingFee').hidden=!(r.shippingFee>0);
+  $('sumShippingFee').textContent=fmt(r.shippingFee);
+  $('failNote').hidden=!(r.failRate>0);
+  $('failNoteVal').textContent=fmtInt(r.failRate);
+  $('grandTotal').textContent=fmt(r.grandTotal);
+  $('perPieceLine').hidden=!(r.qty>1);
+  $('perPiece').textContent=fmt(r.perPiece);
+  $('dateDisplay').textContent=new Date().toLocaleDateString('th-TH',{year:'numeric',month:'short',day:'numeric'});
+}
+function recalc(){render(calc());}
+
+/* ================= discount segmented control ================= */
+var segBtns=[].slice.call(document.querySelectorAll('.seg [data-mode]'));
+function setDiscountMode(mode,silent){
+  mode=mode==='baht'?'baht':'percent';
+  $('discountMode').value=mode;
+  segBtns.forEach(function(b){b.setAttribute('aria-pressed',String(b.getAttribute('data-mode')===mode));});
+  $('discountUnit').textContent=mode==='baht'?'฿':'%';
+  var dv=$('discountValue');
+  dv.max=mode==='percent'?'100':'';
+  if(mode==='percent'&&Number(dv.value)>100) dv.value='100';
+  if(!silent){recalc();save();}
+}
+segBtns.forEach(function(b){b.addEventListener('click',function(){setDiscountMode(b.getAttribute('data-mode'));});});
+
+/* ================= sheet connection (§7) ================= */
+function sheetCfg(){return {url:sheetUrl(),token:(val('sheetToken')||'').trim()};}
+function postSheet(body){
+  var cfg=sheetCfg();
+  if(!cfg.url) return Promise.reject(new Error('ยังไม่ได้ตั้งค่า URL ของชีต'));
+  var payload=Object.assign({},body,{token:cfg.token});
+  return fetch(cfg.url,{method:'POST',redirect:'follow',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)})
+    .then(function(res){return res.text().then(function(text){
+      if(!res.ok) throw new Error('เซิร์ฟเวอร์ตอบ HTTP '+res.status);
+      if(text.trim().charAt(0)==='<') throw new Error('ชีตตอบกลับเป็นหน้าเว็บ — ตรวจสิทธิ์ของ Web App');
+      var parsed=null; try{parsed=JSON.parse(text);}catch(e){}
+      if(!parsed) throw new Error('คำตอบจากชีตอ่านไม่ได้');
+      if(parsed.result==='error') throw new Error(parsed.error||'ชีตแจ้งข้อผิดพลาด');
+      if(parsed.result!=='success') throw new Error('คำตอบจากชีตไม่ถูกต้อง');
+      return parsed;
+    });});
+}
+function validMaterials(arr){
+  return Array.isArray(arr)&&arr.length>0&&arr.every(function(m){return m&&typeof m.code==='string'&&m.code&&isFinite(Number(m.pricePerKg));});
+}
+function normalizeMaterials(arr){
+  return arr.map(function(m){
+    var ac=Number(m.actualCostPerGram);
+    return {code:String(m.code),brand:m.brand?String(m.brand):'',pricePerKg:Number(m.pricePerKg)||0,actualCostPerGram:(isFinite(ac)&&ac>0)?ac:undefined};
+  });
+}
+var syncing=false;
+function syncMaterials(mode){ /* mode: 'auto' | 'manual' | 'test' */
+  var btn=$('matSyncBtn');
+  if(!sheetUrl()){
+    setSyncStatus('ใช้ราคาในเครื่อง (ยังไม่ได้เชื่อมต่อชีต)');
+    if(mode!=='auto') toast('ตั้งค่า URL ของชีตในหัวข้อ ตั้งค่าร้าน ก่อน');
+    return Promise.resolve(false);
+  }
+  if(syncing) return Promise.resolve(false);
+  syncing=true; btn.classList.add('is-busy'); btn.disabled=true;
+  setSyncStatus('กำลังโหลดราคาจากชีต…');
+  return postSheet({action:'materials'}).then(function(parsed){
+    if(!validMaterials(parsed.materials)) throw new Error('ไม่ได้รับรายการวัสดุที่ถูกต้องจากชีต');
+    S.materials=normalizeMaterials(parsed.materials);
+    S.materialsAt=Date.now();
+    buildOptions(); recalc(); save();
+    setSyncStatus(stampText(S.materialsAt));
+    if(mode==='test') toast('เชื่อมต่อสำเร็จ — พบวัสดุ '+S.materials.length+' รายการ');
+    else if(mode==='manual') toast('อัปเดตราคาวัสดุจากชีตแล้ว ('+S.materials.length+' รายการ)');
+    return true;
+  }).catch(function(err){
+    setSyncStatus('เชื่อมต่อชีตไม่ได้ — ใช้ราคาที่บันทึกไว้');
+    if(mode==='test') toast('เชื่อมต่อไม่ได้: '+(err&&err.message?err.message:'ไม่ทราบสาเหตุ'));
+    else if(mode==='manual') toast('เชื่อมต่อชีตไม่ได้ — ใช้ราคาที่บันทึกไว้');
+    return false;
+  }).then(function(ok){
+    syncing=false; btn.classList.remove('is-busy'); btn.disabled=false; return ok;
+  });
+}
+/* a page served over http(s) inside a sandboxed frame cannot reach Apps Script */
+if(location.protocol!=='file:') $('hostedNote').hidden=false;
+
+$('matSyncBtn').addEventListener('click',function(){syncMaterials('manual');});
+$('testSheetBtn').addEventListener('click',function(){syncMaterials('test');});
+
+function updateSheetButtons(){
+  var b=$('saveTransactionBtn'),on=!!sheetUrl();
+  b.disabled=!on;
+  b.title=on?'':'ตั้งค่า URL และรหัสลับในหัวข้อ ตั้งค่าร้าน ก่อน';
+}
+var saving=false;
+function saveSale(){
+  if(saving||!sheetUrl()||!last) return;
+  var btn=$('saveTransactionBtn'),label=$('saveTransactionLabel');
+  saving=true; btn.disabled=true; label.textContent='กำลังบันทึก…';
+  var now=new Date(),r=last;
+  var payload={action:'save',
+    datetime:now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+' '+pad(now.getHours())+':'+pad(now.getMinutes()),
+    productName:(val('jobName')||'').trim()||'งานพิมพ์ 3 มิติ',
+    filamentType:val('matName')||'',
+    quantity:r.qty,
+    weightGrams:Number((r.matWeight*r.qty).toFixed(2)),
+    sellingPrice:Number(r.grandTotal.toFixed(2)),
+    /* คอลัมน์ F "ต้นทุนตั้งขาย (In-App)" = ต้นทุนที่โปรแกรมใช้ตั้งราคา (รวมเผื่อเสียแล้ว) */
+    inAppCost:Number(r.realCost.toFixed(2)),
+    /* คอลัมน์ H "ค่าไฟ/ค่าเสื่อม" = เงินที่จ่ายจริงนอกเหนือจากค่าเส้น (ไม่รวมเผื่อเสีย
+       เพราะเผื่อเสียคือเงินกันไว้ ไม่ใช่เงินที่จ่ายออกไปจริง)
+       คอลัมน์ G ชีตคำนวณค่าเส้นจริงเอง แล้ว I = E-G-H จึงเป็นกำไรจริงที่ได้รับ */
+    operationalCost:Number((r.elecCost+r.depCost+r.hardwareCost).toFixed(2))};
+  postSheet(payload).then(function(){ toast('บันทึกยอดขายสำเร็จ ✓'); })
+  .catch(function(err){ toast('บันทึกไม่สำเร็จ: '+(err&&err.message?err.message:'เชื่อมต่อไม่ได้')); })
+  .then(function(){ saving=false; label.textContent='บันทึกยอดขาย'; updateSheetButtons(); });
+}
+$('saveTransactionBtn').addEventListener('click',saveSale);
+
+/* token show/hide */
+$('tokenEye').addEventListener('click',function(){
+  var inp=$('sheetToken'),show=inp.type==='password';
+  inp.type=show?'text':'password';
+  this.setAttribute('aria-pressed',String(show));
+  this.setAttribute('aria-label',show?'ซ่อนรหัสลับ':'แสดงรหัสลับ');
+});
+
+/* ================= logo ================= */
+function applyLogo(){
+  var img=$('uploadedLogo'),has=!!S.logo;
+  if(has) img.src=S.logo; else img.removeAttribute('src');
+  img.hidden=!has; $('defaultLogo').hidden=has; $('logoRemoveBtn').hidden=!has;
+}
+$('logoFile').addEventListener('change',function(){
+  var f=this.files&&this.files[0]; if(!f) return;
+  if(f.type.indexOf('image/')!==0){toast('เลือกไฟล์รูปภาพเท่านั้น');return;}
+  var rd=new FileReader();
+  rd.onload=function(e){S.logo=String(e.target.result);applyLogo();saveNow();toast('ใส่โลโก้แล้ว');};
+  rd.onerror=function(){toast('อ่านไฟล์โลโก้ไม่ได้');};
+  rd.readAsDataURL(f);
+  this.value='';
+});
+$('logoLabel').addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();$('logoFile').click();}});
+$('logoRemoveBtn').addEventListener('click',function(){S.logo=null;applyLogo();saveNow();toast('ลบโลโก้แล้ว');});
+
+/* ================= capture ================= */
+$('captureBtn').addEventListener('click',function(){
+  if(typeof window.html2canvas!=='function'){toast('บันทึกรูปไม่ได้ — ต้องต่ออินเทอร์เน็ตครั้งแรกเพื่อโหลดตัวช่วย');return;}
+  var btn=this; btn.disabled=true;
+  var now=new Date(),ymd=now.getFullYear()+pad(now.getMonth()+1)+pad(now.getDate());
+  var name=((val('jobName')||'').trim()||'งานพิมพ์3มิติ').replace(/[\\/:*?"<>|]+/g,'-').slice(0,60);
+  window.html2canvas($('quotePaper'),{scale:2,backgroundColor:'#ffffff',useCORS:true,logging:false}).then(function(canvas){
+    var url=canvas.toDataURL('image/png');
+    shotName='Quotation_'+name+'_'+ymd+'.png';
+    $('shotImg').src=url;
+    var a=$('shotDownload'); a.href=url; a.setAttribute('download',shotName);
+    shotBlob=null;
+    if(canvas.toBlob) canvas.toBlob(function(b){shotBlob=b;},'image/png');
+    openShot();
+  }).catch(function(){toast('บันทึกรูปไม่สำเร็จ');}).then(function(){btn.disabled=false;});
+});
+
+/* the picture opens in an overlay rather than downloading straight away:
+   a hosted page cannot start its own download, but long-press / right-click
+   on the image works everywhere, and the download button still works when
+   this file is opened from disk */
+var shotPrev=null,shotBlob=null,shotName='quotation.png',dlCap=null;
+
+/* when this page runs as a hosted Claude artifact the frame cannot start its
+   own download, so the save goes through the viewer-mediated downloads
+   capability instead; opened from disk, the plain anchor already works */
+if(window.claude&&typeof window.claude.use==='function'){
+  window.claude.use('downloads').then(function(d){
+    dlCap=d;
+    if(!d) $('shotDownload').hidden=true;   /* long-press / right-click only */
+  }).catch(function(){ $('shotDownload').hidden=true; });
+}
+$('shotDownload').addEventListener('click',function(e){
+  if(!dlCap) return;                        /* let the anchor do its job */
+  e.preventDefault();
+  var data=shotBlob||$('shotImg').src;
+  if(!data){toast('บันทึกรูปไม่สำเร็จ');return;}
+  var a=this; a.setAttribute('aria-busy','true');
+  dlCap.save({filename:shotName,data:data}).then(function(){
+    toast('บันทึกรูปใบเสนอราคาแล้ว');
+  }).catch(function(err){
+    var code=err&&err.code;
+    if(code==='declined') return;
+    toast(code==='rate_limited'?'รอสักครู่แล้วลองใหม่':'บันทึกรูปไม่สำเร็จ');
+  }).then(function(){ a.removeAttribute('aria-busy'); });
+});
+
+function openShot(){
+  shotPrev=document.activeElement;
+  $('shot').classList.add('on');
+  $('shotClose').focus();
+  document.addEventListener('keydown',shotKey);
+}
+function closeShot(){
+  $('shot').classList.remove('on');
+  $('shotImg').src='';
+  document.removeEventListener('keydown',shotKey);
+  if(shotPrev&&shotPrev.focus) shotPrev.focus();
+}
+function shotKey(e){ if(e.key==='Escape') closeShot(); }
+$('shotClose').addEventListener('click',closeShot);
+$('shotCloseBtn').addEventListener('click',closeShot);
+$('shot').addEventListener('click',function(e){ if(e.target===this) closeShot(); });
+
+/* ================= multi-bed calculator ================= */
+var bedSeq=0,bedTotal={d:0,h:0,m:0};
+function bedInput(cls,unit,id,label,v){
+  return '<div class="field"><label class="sr" for="'+id+'">'+label+'</label><div class="inp inp--unit"><input type="number" class="'+cls+'" id="'+id+'" min="0" step="any" value="'+v+'" inputmode="decimal"><span class="unit">'+unit+'</span></div></div>';
+}
+function addBedRow(d,h,m){
+  d=d||0;h=h||0;m=m||0;
+  var n=++bedSeq,row=document.createElement('div');
+  row.className='bed';
+  row.innerHTML='<span class="bed__n">Bed <span class="bed-num">1</span></span>'+
+    '<div class="bed__in">'+bedInput('bed-days','วัน','bed'+n+'d','ถาดที่ '+n+' — วัน',d)+bedInput('bed-hours','ชม.','bed'+n+'h','ถาดที่ '+n+' — ชั่วโมง',h)+bedInput('bed-mins','นาที','bed'+n+'m','ถาดที่ '+n+' — นาที',m)+'</div>'+
+    '<button type="button" class="bed__del" title="ลบถาดนี้" aria-label="ลบถาดนี้"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>';
+  [].forEach.call(row.querySelectorAll('input'),function(i){i.addEventListener('input',updateBedTotal);});
+  row.querySelector('.bed__del').addEventListener('click',function(){removeBedRow(row);});
+  $('bedRows').appendChild(row);
+  refreshBedRows(); updateBedTotal();
+}
+function removeBedRow(row){
+  if($('bedRows').children.length<=2) return;
+  row.remove(); refreshBedRows(); updateBedTotal();
+}
+function refreshBedRows(){
+  var rows=[].slice.call($('bedRows').children);
+  rows.forEach(function(r,i){r.querySelector('.bed-num').textContent=i+1;r.querySelector('.bed__del').disabled=rows.length<=2;});
+}
+function updateBedTotal(){
+  var t=0;
+  [].forEach.call($('bedRows').children,function(r){
+    var d=Math.max(0,Number(r.querySelector('.bed-days').value)||0),h=Math.max(0,Number(r.querySelector('.bed-hours').value)||0),m=Math.max(0,Number(r.querySelector('.bed-mins').value)||0);
+    t+=d*1440+h*60+m;
+  });
+  t=Math.round(isFinite(t)?t:0);
+  bedTotal={d:Math.floor(t/1440),h:Math.floor((t%1440)/60),m:t%60};
+  $('bedTotalText').textContent=bedTotal.d+' วัน '+bedTotal.h+' ชม. '+bedTotal.m+' นาที';
+}
+$('addBedBtn').addEventListener('click',function(){addBedRow();var rows=$('bedRows').children;var f=rows[rows.length-1].querySelector('input');if(f)f.focus();});
+$('applyBedBtn').addEventListener('click',function(){
+  $('printDays').value=bedTotal.d;$('printHours').value=bedTotal.h;$('printMins').value=bedTotal.m;
+  recalc(); save(); toast('ใส่เวลา '+bedTotal.d+' วัน '+bedTotal.h+' ชม. '+bedTotal.m+' นาที ในช่องเวลาต่อชิ้นแล้ว');
+  $('printDays').focus();
+});
+
+/* ================= new job ================= */
+$('newJobBtn').addEventListener('click',function(){
+  Object.keys(JOB_RESET).forEach(function(id){var el=$(id);if(el)el.value=JOB_RESET[id];});
+  recalc(); saveNow(); toast('เริ่มงานใหม่แล้ว');
+  $('jobName').focus();
+});
+
+/* ================= wiring ================= */
+var main=document.getElementById('main');
+main.addEventListener('input',function(e){
+  var el=e.target; if(!el||!el.id||FIELD_IDS.indexOf(el.id)<0) return;
+  if(el.id==='sheetUrl'){updateSheetButtons();buildOptions();}
+  recalc(); save();
+});
+main.addEventListener('change',function(e){
+  var el=e.target; if(!el||!el.id||FIELD_IDS.indexOf(el.id)<0) return;
+  if(el.id==='discountValue'&&val('discountMode')==='percent'&&Number(el.value)>100) el.value='100';
+  if(el.id==='qty'&&(Number(el.value)<1||!isFinite(Number(el.value)))) el.value='1';
+  if(el.id==='failRate'&&Number(el.value)>100) el.value='100';
+  if(el.id==='machineLife'&&Number(el.value)<1) el.value='1';
+  if(el.type==='number'&&Number(el.value)<0) el.value='0';
+  if(el.id==='sheetUrl'){
+    updateSheetButtons(); buildOptions();
+    if(sheetUrl()) syncMaterials('auto'); else setSyncStatus('ใช้ราคาในเครื่อง (ยังไม่ได้เชื่อมต่อชีต)');
+  }
+  recalc(); save();
+});
+
+/* ================= boot ================= */
+loadState();
+setStoreLine();
+FIELD_IDS.forEach(function(id){
+  var el=$(id); if(!el||id==='matName') return;
+  if(Object.prototype.hasOwnProperty.call(S.fields,id)&&S.fields[id]!=null) el.value=S.fields[id];
+});
+if(S.theme&&!root.getAttribute('data-theme')) root.setAttribute('data-theme',S.theme);
+syncTheme();
+buildOptions();
+setDiscountMode(val('discountMode'),true);
+applyLogo();
+updateSheetButtons();
+addBedRow(); addBedRow();
+recalc();
+if(sheetUrl()){
+  if(S.materialsAt) setSyncStatus(stampText(S.materialsAt));
+  syncMaterials('auto');
+}else{
+  setSyncStatus('ใช้ราคาในเครื่อง (ยังไม่ได้เชื่อมต่อชีต)');
+}
+
+/* reveal-on-scroll: gated on html.js so reduced motion and no-JS sit in the final state */
+if(!reduce){
+  root.classList.add('js');
+  if('IntersectionObserver' in window){
+    var rv=new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(!e.isIntersecting) return; e.target.classList.add('in'); rv.unobserve(e.target); });
+    },{rootMargin:'0px 0px -6% 0px',threshold:0});
+    [].forEach.call(document.querySelectorAll('.rv'),function(el){rv.observe(el);});
+  } else {
+    [].forEach.call(document.querySelectorAll('.rv'),function(el){el.classList.add('in');});
+  }
+}
+
+/* verification hook (harmless in production) */
+window.__unitac={calc:calc,last:function(){return last;},materials:materials,recalc:recalc};
+})();
+</script>
+<dialog class="cd" id="orderDlg" aria-labelledby="odTitle"><form class="cd__box" id="orderForm" novalidate>
+  <div class="cd__h"><h2 id="odTitle">บันทึกเป็นออเดอร์</h2></div>
+  <div class="cd__b">
+    <div class="field"><label for="odTitleIn">ชื่องาน</label><div class="inp"><input type="text" id="odTitleIn" maxlength="80"></div></div>
+    <div class="field"><label for="odDays">ประกัน</label><div class="inp"><select id="odDays"><option value="0">ไม่มีประกัน</option><option value="7">7 วัน</option><option value="15">15 วัน</option><option value="30" selected>30 วัน</option><option value="60">60 วัน</option><option value="90">90 วัน</option><option value="180">180 วัน</option><option value="365">1 ปี</option></select></div></div>
+    <dl class="cd__sum" id="odSum"></dl>
+    <p class="hint">กดเมื่อส่งมอบหรือรับเงินแล้วเท่านั้น ระบบจะเพิ่มแต้ม ปิดคูปองต้อนรับ และออกรหัสประกันทันที</p>
+    <p class="cd__err" id="odErr" hidden></p>
+  </div>
+  <div class="cd__f"><button type="button" class="btn btn--ghost" data-close>ยกเลิก</button><button type="submit" class="btn btn--primary" id="odOk">ยืนยันบันทึก</button></div>
+</form></dialog>
+<dialog class="cd" id="loginDlg" aria-labelledby="lgTitle"><form class="cd__box" id="loginForm" novalidate>
+  <div class="cd__h"><h2 id="lgTitle">เข้าสู่ระบบเจ้าของร้าน</h2></div>
+  <div class="cd__b">
+    <div class="field"><label for="lgEmail">อีเมล</label><div class="inp"><input type="text" id="lgEmail" inputmode="email" autocomplete="username" spellcheck="false"></div></div>
+    <div class="field"><label for="lgPass">รหัสผ่าน</label><div class="inp"><input type="password" id="lgPass" autocomplete="current-password"></div></div>
+    <p class="cd__err" id="lgErr" hidden></p>
+  </div>
+  <div class="cd__f"><button type="button" class="btn btn--ghost" data-close>ยกเลิก</button><button type="submit" class="btn btn--primary" id="lgOk">เข้าสู่ระบบ</button></div>
+</form></dialog>
+<script src="vendor/qrcode.js"></script>
+<script type="module" src="js/calc-member.js"></script>
+</body>
+</html>

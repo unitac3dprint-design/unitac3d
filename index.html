@@ -318,6 +318,8 @@ dialog[open] .dlg{animation:pop .3s var(--ease)}
 /* ---------- toast + footer ---------- */
 .toast{position:fixed;left:50%;bottom:84px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:60;transform:translate(-50%,16px);opacity:0;background:var(--ink);color:var(--ground);padding:11px 20px;border-radius:var(--r-pill);box-shadow:var(--shadow-float);font-size:14px;line-height:1.5;max-width:calc(100vw - 32px);text-align:center;pointer-events:none;transition:opacity .3s var(--ease),transform .4s var(--ease)}
 .toast.show{opacity:1;transform:translate(-50%,0)}
+.mastlink{text-decoration:none}
+@media (max-width:520px){.mastlink[href="warranty.html"]{display:none}}
 .footlink{background:none;border:0;color:var(--muted);text-decoration:underline;text-underline-offset:3px;font-size:12.5px;padding:6px 4px;min-height:32px;cursor:pointer}
 .footlink:hover{color:var(--ink)}
 .foot{color:var(--muted);font-size:12.5px;padding:24px;text-align:center;border-top:1px solid var(--rule)}
@@ -382,11 +384,11 @@ dialog[open] .dlg{animation:pop .3s var(--ease)}
 .splash__out > path:first-of-type{fill:none;stroke:#F2EDE5;stroke-opacity:.4;stroke-width:.4;stroke-dasharray:1 1;stroke-dashoffset:1;animation:ldraw .9s cubic-bezier(.65,0,.35,1) forwards}
 .splash__out g{opacity:.22}
 .splash__out g path,.splash__out g circle{stroke-dasharray:1 1;stroke-dashoffset:1;animation:ldraw .7s var(--ease) calc(150ms + var(--i,0) * 60ms) forwards}
-.splash__lvl{position:absolute;inset:0;transform:translateY(100%);animation:srise 2.5s cubic-bezier(.45,.05,.3,1) .1s forwards;-webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2748%27 height=%2712%27%3E%3Cpath d=%27M0 6Q12 0 24 6T48 6V12H0Z%27/%3E%3C/svg%3E"),linear-gradient(#000 0 0);mask-image:url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2748%27 height=%2712%27%3E%3Cpath d=%27M0 6Q12 0 24 6T48 6V12H0Z%27/%3E%3C/svg%3E"),linear-gradient(#000 0 0);-webkit-mask-size:48px 12px,100% 100%;mask-size:48px 12px,100% 100%;-webkit-mask-position:0 0,0 11px;mask-position:0 0,0 11px;-webkit-mask-repeat:repeat-x,no-repeat;mask-repeat:repeat-x,no-repeat}
+.splash__lvl{position:absolute;left:0;right:0;top:0;height:114%;transform:translateY(100%);animation:srise 2.5s cubic-bezier(.45,.05,.3,1) .1s forwards;-webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2748%27 height=%2712%27%3E%3Cpath d=%27M0 6Q12 0 24 6T48 6V12H0Z%27/%3E%3C/svg%3E"),linear-gradient(#000 0 0);mask-image:url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2748%27 height=%2712%27%3E%3Cpath d=%27M0 6Q12 0 24 6T48 6V12H0Z%27/%3E%3C/svg%3E"),linear-gradient(#000 0 0);-webkit-mask-size:48px 12px,100% 100%;mask-size:48px 12px,100% 100%;-webkit-mask-position:0 0,0 11px;mask-position:0 0,0 11px;-webkit-mask-repeat:repeat-x,no-repeat;mask-repeat:repeat-x,no-repeat}
 .splash__lvl{animation:srise 2.5s cubic-bezier(.45,.05,.3,1) .1s forwards,ssurf 1.1s linear infinite}
-.splash__in{position:absolute;inset:0;transform:translateY(-100%);animation:sriseIn 2.5s cubic-bezier(.45,.05,.3,1) .1s forwards}
+.splash__in{position:absolute;left:0;right:0;top:0;height:calc(100% / 1.14);transform:translateY(-114%);animation:sriseIn 2.5s cubic-bezier(.45,.05,.3,1) .1s forwards}
 @keyframes srise{to{transform:translateY(-9%)}}
-@keyframes sriseIn{to{transform:translateY(9%)}}
+@keyframes sriseIn{to{transform:translateY(10.26%)}}
 @keyframes ssurf{to{-webkit-mask-position:48px 0,0 11px;mask-position:48px 0,0 11px}}
 @keyframes sglow{to{opacity:1}}
 .splash.is-out{opacity:0;pointer-events:none}
@@ -553,6 +555,8 @@ document.getElementById('root').outerHTML=
  '<div class="wrap mast__row">'+
   '<div class="brand">'+LOGO+'<span class="brand__tag" id="shopTag"></span></div>'+
   '<div class="mast__right">'+
+   '<a class="btn btn--ghost mastlink" href="warranty.html">เช็กประกัน</a>'+
+   '<a class="btn btn--ghost mastlink" href="member.html">สมาชิก</a>'+
    '<button type="button" class="btn btn--ghost" id="editBtn" aria-label="แก้ไขคิว" hidden>'+ICON.edit+'<span class="editBtn__t">แก้ไขคิว</span></button>'+
   '</div>'+
  '</div>'+

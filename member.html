@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#141311">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%224.3 21.5 85.5 36.5%22%3E%3Cstyle%3Epath%7Bfill:#FF7A3C%7D%3C/style%3E%3Cpath d=%22M4.85 24.9Q4.85 22.05 7.7 22.05H10.5L12.4 24.9L16.6 22.05H26Q27.3 22.05 27.3 23.3V24.54L12.14 41.96Q11.1 43.16 11.1 44.56V45.25Q11.1 46.85 12.7 46.85H25.54L47.12 22.05H84.2L89.3 27.7V28.4Q89.3 30.1 86.9 30.1H72.56L48.73 57.5H40.02Q36.23 57.5 38.73 54.63L60.06 30.1H52.46L28.63 57.5H7.65Q4.85 57.5 4.85 54.7Z%22/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/site.css">
+<title>สมาชิก UNITAC</title>
+<meta name="description" content="บัตรสมาชิก แต้มสะสม และประกันงานพิมพ์ UNITAC">
+<style>.mem{padding-top:26px;padding-bottom:40px}
+.mem__loading{padding:60px 0;text-align:center}
+.center{text-align:center}
+/* auth */
+.auth{position:relative;max-width:440px;margin:0 auto;display:flex;flex-direction:column;gap:22px;padding:16px 0 20px}
+.auth__glow{position:absolute;top:-140px;right:-160px;width:440px;height:440px;border-radius:50%;background:radial-gradient(closest-side,var(--accent-glow),transparent 70%);pointer-events:none}
+.auth > *{position:relative}
+.auth__head{display:flex;flex-direction:column;align-items:center;gap:12px;padding-top:12px}
+.auth__logo svg{height:72px;width:auto;color:var(--ink)}
+.auth__form{display:flex;flex-direction:column;gap:16px}
+.auth__forgot{align-self:flex-end;margin-top:-8px}
+.auth__note{text-align:center}
+.ownernote{max-width:520px;margin:20px auto;display:grid;gap:10px}
+.ownernote__acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+/* home */
+.home{display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:24px 28px;align-items:start}
+.home__col{display:flex;flex-direction:column;gap:18px;min-width:0}
+@media (max-width:860px){.home{grid-template-columns:minmax(0,1fr)}}
+.hello{display:flex;align-items:center;gap:14px}
+.hello h1{font-size:26px}
+@media (max-width:600px){.hello h1{font-size:22px}}
+.prog{display:flex;flex-direction:column;gap:10px;padding:16px 18px}
+.prog__top{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.prog__pts{font-size:22px;font-weight:500}
+.prog .bar{height:12px}
+.ladder{display:grid;border-top:1px solid var(--rule);padding-top:6px}
+.ladder div{display:grid;grid-template-columns:12px minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:7px 0;font-size:13px;opacity:.72}
+.ladder div.is-me{opacity:1;font-weight:600}
+.ladder i{width:10px;height:10px;border-radius:3px;background:var(--c)}
+.ladder .num{font-size:12.5px;text-align:right;min-width:2.8em}
+.ladder .need{font-family:var(--font-num);font-size:12px;color:var(--muted);font-weight:400}
+.ladder__note{font-size:12px;color:var(--muted);padding-top:8px}
+.wlist{display:grid;gap:8px}
+.wi{display:grid;gap:8px;padding:14px;border-radius:var(--r-md);background:var(--sunk)}
+.wi__h{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.wi__h b{font-weight:500;min-width:0;overflow-wrap:anywhere}
+.wi__h span{font-family:var(--font-num);font-size:12.5px;white-space:nowrap}
+.wi__m{font-family:var(--font-num);font-size:11.5px;color:var(--muted);letter-spacing:.04em}
+.wi--exp{background:none;border:1px dashed var(--rule-strong);color:var(--muted);padding:10px 14px}
+.profilelink{display:flex;align-items:center;justify-content:space-between;min-height:52px;padding:0 16px;border-radius:var(--r-md);border:1px solid var(--rule);color:var(--ink-2);text-decoration:none;font-size:14px}
+.profilelink:hover{color:var(--ink);border-color:var(--rule-strong)}
+.profilelink svg{width:16px;height:16px}
+/* coupon */
+.coupon{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px;align-items:center;width:100%;padding:16px 18px;border-radius:var(--r-lg);background:var(--surface);border:1px dashed var(--cc,var(--accent));text-align:left;overflow:hidden}
+.coupon__pct{position:relative;width:78px;height:78px;border-radius:50%;display:grid;place-items:center;background:var(--sunk);overflow:hidden;font-family:var(--font-num);font-size:24px;font-weight:500;color:var(--ink);flex:none}
+.coupon__pct b{position:relative;z-index:1}
+.coupon__water{position:absolute;left:-10%;right:-10%;bottom:0;height:120%;background:var(--cc,var(--accent));opacity:.9;transform:translateY(100%)}
+.coupon.is-open .coupon__water{transform:translateY(32%);transition:transform 1.6s cubic-bezier(.45,.05,.3,1)}
+.coupon.is-open .coupon__pct b{color:var(--on-accent)}
+.coupon__t{display:flex;flex-direction:column;gap:3px;min-width:0}
+.coupon__t b{font-family:var(--font-head);font-size:17px;font-weight:600;line-height:1.4}
+.coupon__t span{font-size:12.5px;color:var(--muted);line-height:1.55}
+.coupon--closed{cursor:pointer}
+.coupon--closed .coupon__pct b{font-size:28px}
+.coupon--closed:hover{border-style:solid}
+/* profile */
+.prof{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+.prof__head{display:flex;align-items:center;gap:12px}
+.prof__head h1{font-size:22px}
+.prof__av{display:flex;flex-direction:column;align-items:center;gap:10px}
+.prof__avbtns{display:flex;gap:12px;align-items:center}
+.prof__avbtns label{cursor:pointer}
+.prof__avbtns label:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.emailbox{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:46px;padding:0 14px;border-radius:var(--r-md);background:var(--sunk);overflow-wrap:anywhere}
+.prof__acts{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.alist{display:grid;gap:10px}
+.ad{display:grid;gap:4px;padding:14px;border-radius:var(--r-md);background:var(--surface);border:1px solid var(--rule)}
+.ad.is-main{border-color:var(--accent)}
+.ad__h{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ad__h b{display:flex;align-items:center;gap:8px;font-weight:500}
+.ad p{font-size:13.5px;color:var(--ink-2);white-space:pre-line;overflow-wrap:anywhere}
+.addbtn{min-height:48px;border-radius:var(--r-md);border:1px dashed var(--rule-strong);color:var(--ink-2);font-size:14px}
+.addbtn:hover{color:var(--ink);border-color:var(--ink-2)}
+.prof__foot{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding-top:12px;border-top:1px solid var(--rule)}
+/* rank up */
+.rankup{max-width:420px;margin:0 auto}
+.rankup__body{text-align:center;justify-items:center;padding:26px 22px}
+.rankup__body h2{font-size:22px}
+.rankup__card{width:100%;max-width:340px}
+dialog[open] .rankup__card .rcard__in{animation:rankflip 1.1s var(--ease) .2s both}
+@keyframes rankflip{from{transform:rotateY(-180deg)}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap top__row">
+    <a class="top__logo" href="./" aria-label="UNITAC กลับหน้าตารางคิว" data-logo></a>
+    <nav class="nav" aria-label="เมนูหลัก">
+      <a href="./" data-nav="queue">ตารางคิว</a>
+      <a href="member.html" data-nav="member">สมาชิก</a>
+      <a href="warranty.html" data-nav="warranty">เช็กประกัน</a>
+    </nav>
+    <div class="top__end" id="topEnd"></div>
+  </div>
+</header>
+
+<main id="main" class="wrap mem">
+  <p class="muted mem__loading" id="vLoading">กำลังโหลด…</p>
+
+  <!-- ============ sign in / sign up ============ -->
+  <section id="vAuth" class="auth" hidden aria-labelledby="authTitle">
+    <div class="auth__glow" aria-hidden="true"></div>
+    <div class="auth__head">
+      <div class="auth__logo" data-logo></div>
+      <h1 id="authTitle" class="sr">สมาชิก UNITAC</h1>
+      <p class="muted">สมาชิก · สะสมแต้ม · เช็กประกัน</p>
+    </div>
+    <div class="tabs" role="tablist" aria-label="เข้าสู่ระบบหรือสมัครสมาชิก">
+      <button type="button" role="tab" id="tabIn" aria-selected="true" aria-controls="fIn">เข้าสู่ระบบ</button>
+      <button type="button" role="tab" id="tabUp" aria-selected="false" aria-controls="fUp">สมัครสมาชิก</button>
+    </div>
+
+    <form id="fIn" class="auth__form" novalidate role="tabpanel" aria-labelledby="tabIn">
+      <div class="field"><label for="inEmail">อีเมล</label><input type="email" id="inEmail" autocomplete="email" inputmode="email" spellcheck="false" placeholder="you@email.com"></div>
+      <div class="field"><label for="inPass">รหัสผ่าน</label><div class="pwbox"><input type="password" id="inPass" autocomplete="current-password"><button type="button" class="pweye" aria-label="แสดงรหัสผ่าน"></button></div></div>
+      <p class="err" id="inErr" hidden></p>
+      <button type="button" class="linkbtn auth__forgot" id="forgotBtn">ลืมรหัสผ่าน?</button>
+      <button type="submit" class="btn btn--primary btn--block" id="inOk">เข้าสู่ระบบ</button>
+    </form>
+
+    <form id="fUp" class="auth__form" novalidate role="tabpanel" aria-labelledby="tabUp" hidden>
+      <div class="field"><label for="upNick">ชื่อเล่น</label><input type="text" id="upNick" maxlength="20" autocomplete="nickname" placeholder="ชื่อที่จะขึ้นบนบัตรสมาชิก"></div>
+      <div class="field"><label for="upEmail">อีเมล</label><input type="email" id="upEmail" autocomplete="email" inputmode="email" spellcheck="false" placeholder="you@email.com"><p class="hint">ใช้เข้าสู่ระบบ และรับลิงก์ตอนลืมรหัสผ่าน</p></div>
+      <div class="field"><label for="upPass">รหัสผ่าน</label><div class="pwbox"><input type="password" id="upPass" autocomplete="new-password"><button type="button" class="pweye" aria-label="แสดงรหัสผ่าน"></button></div><p class="hint">อย่างน้อย 8 ตัว และมีตัวเลขอย่างน้อย 1 ตัว</p></div>
+      <label class="check"><input type="checkbox" id="upConsent"><span>ยอมรับ <a href="privacy.html" target="_blank" rel="noopener">นโยบายความเป็นส่วนตัว</a> ร้านเก็บอีเมล เบอร์ และที่อยู่ไว้ใช้กับงานของคุณเท่านั้น</span></label>
+      <p class="err" id="upErr" hidden></p>
+      <button type="submit" class="btn btn--primary btn--block" id="upOk">สมัครและรับบัตร Bronze</button>
+    </form>
+    <p class="auth__note muted small">เปิดจาก Messenger หรือ LINE ก็เข้าระบบได้</p>
+  </section>
+
+  <!-- ============ owner signed in here ============ -->
+  <section id="vOwner" class="card ownernote" hidden>
+    <h1>บัญชีนี้คือเจ้าของร้าน</h1>
+    <p class="muted">บัญชีเจ้าของไม่มีบัตรสมาชิก จัดการลูกค้าได้ที่หลังร้าน</p>
+    <div class="ownernote__acts"><a class="btn btn--primary" href="admin.html">ไปหลังร้าน</a><a class="btn btn--ghost" href="calc.html">เครื่องคิดเลข</a><button type="button" class="btn btn--ghost" data-signout>ออกจากระบบ</button></div>
+  </section>
+
+  <!-- ============ member home ============ -->
+  <section id="vHome" class="home" hidden>
+    <div class="home__col">
+      <div class="hello rv">
+        <span id="helloAv"></span>
+        <div><h1 id="helloName">สวัสดี</h1><p class="muted small" id="helloSince"></p></div>
+      </div>
+      <div class="banner" id="verifyBar" hidden>
+        <p>ยืนยันอีเมลก่อน จึงจะใช้คูปองต้อนรับได้ เราส่งลิงก์ไปที่ <b id="verifyEmail"></b> แล้ว</p>
+        <button type="button" class="btn btn--ghost btn--sm" id="resendBtn">ส่งลิงก์อีกครั้ง</button>
+        <button type="button" class="btn btn--primary btn--sm" id="verifiedBtn">ยืนยันแล้ว</button>
+      </div>
+      <div class="banner banner--accent" id="delBar" hidden><p>ส่งคำขอลบบัญชีแล้ว ร้านจะดำเนินการและแจ้งกลับทางอีเมล</p></div>
+      <div class="rv" style="--d:60ms">
+        <button type="button" class="rcard-btn" id="cardBtn" aria-label="พลิกบัตรเพื่อแสดง QR"></button>
+        <p class="muted small center" id="flipHint">แตะบัตรเพื่อแสดง QR</p>
+      </div>
+      <div id="couponBox" class="rv" style="--d:100ms" hidden></div>
+      <div class="card prog rv" style="--d:140ms">
+        <div class="prog__top"><span class="muted small">แต้มสะสม · ค่าพิมพ์ทุก 10 บาท = 1 แต้ม</span><b class="num prog__pts" id="pts">0</b></div>
+        <div class="bar" id="ptsBarWrap"><span class="liq" id="ptsBar" style="width:0"></span></div>
+        <p class="small" id="ptsNext"></p>
+        <button type="button" class="linkbtn" id="ladderBtn" aria-expanded="false">ดูสิทธิ์ทุกแรงค์</button>
+        <div id="ladder" class="ladder" hidden></div>
+      </div>
+      <a class="btn btn--primary btn--block rv" style="--d:180ms" id="bookBtn" href="./" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12c0-4.4 3.6-8 8-8s8 3.6 8 8-3.6 8-8 8c-1.2 0-2.4-.3-3.4-.8L4 20l.9-3.9A8 8 0 0 1 4 12Z"/></svg>
+        จองคิวใหม่ทาง Messenger</a>
+    </div>
+    <div class="home__col">
+      <section class="card sec rv" style="--d:120ms" aria-labelledby="wTitle">
+        <div class="sec__h"><h2 id="wTitle">ประกันที่คุ้มครองอยู่</h2><span id="wCount"></span></div>
+        <div id="wList" class="wlist"></div>
+        <button type="button" class="linkbtn linkbtn--muted" id="wExpBtn" hidden aria-expanded="false"></button>
+        <div id="wExp" class="wlist" hidden></div>
+      </section>
+      <section class="card sec rv" style="--d:180ms" aria-labelledby="oTitle">
+        <div class="sec__h"><h2 id="oTitle">งานล่าสุด</h2><span id="oCount"></span></div>
+        <div id="oList" class="rows"></div>
+        <button type="button" class="linkbtn" id="oAllBtn" hidden aria-expanded="false">ดูทั้งหมด</button>
+      </section>
+      <a class="profilelink rv" style="--d:220ms" href="#profile">ข้อมูลของฉัน · ที่อยู่จัดส่ง
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></a>
+    </div>
+  </section>
+
+  <!-- ============ profile ============ -->
+  <section id="vProfile" class="prof" hidden aria-labelledby="pTitle">
+    <div class="prof__head"><a href="#" class="iconbtn" aria-label="กลับหน้าสมาชิก"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg></a><h1 id="pTitle">ข้อมูลของฉัน</h1></div>
+    <div class="prof__av">
+      <span id="pAv"></span>
+      <div class="prof__avbtns">
+        <label class="btn btn--ghost btn--sm"><input type="file" id="pFile" accept="image/*" class="sr">เปลี่ยนรูปโปรไฟล์</label>
+        <button type="button" class="linkbtn linkbtn--muted" id="pAvDel" hidden>ลบรูป</button>
+      </div>
+    </div>
+    <form id="pForm" class="card sec" novalidate>
+      <div class="field"><label for="pNick">ชื่อเล่น (ขึ้นบนบัตรสมาชิก)</label><input type="text" id="pNick" maxlength="20" autocomplete="nickname"></div>
+      <div class="field"><label for="pName">ชื่อ-นามสกุล</label><input type="text" id="pName" maxlength="80" autocomplete="name"><p class="hint">ใช้ในใบเสนอราคา ใบประกัน และการจัดส่ง</p></div>
+      <div class="field"><label for="pPhone">เบอร์โทร</label><input type="tel" id="pPhone" maxlength="20" autocomplete="tel" inputmode="tel"><p class="hint">ไว้ให้ร้านติดต่อ ไม่ได้ใช้เข้าสู่ระบบ</p></div>
+      <div class="field"><span class="lab">อีเมล</span><div class="emailbox"><span id="pEmail"></span><span id="pVer" class="pill"></span></div></div>
+      <p class="err" id="pErr" hidden></p>
+      <div class="prof__acts"><button type="submit" class="btn btn--primary" id="pSave">บันทึก</button><button type="button" class="btn btn--ghost btn--sm" id="pPw">เปลี่ยนรหัสผ่าน</button></div>
+    </form>
+    <section class="sec" aria-labelledby="aTitle">
+      <div class="sec__h"><h2 id="aTitle">ที่อยู่จัดส่ง</h2><span id="aCount"></span></div>
+      <div id="aList" class="alist"></div>
+      <button type="button" class="addbtn" id="aAdd">+ เพิ่มที่อยู่</button>
+    </section>
+    <div class="prof__foot">
+      <button type="button" class="linkbtn linkbtn--muted" data-signout>ออกจากระบบ</button>
+      <a href="privacy.html" class="small muted">นโยบายความเป็นส่วนตัว</a>
+      <button type="button" class="linkbtn" id="delReq" style="color:var(--stop)">ขอลบบัญชี</button>
+    </div>
+  </section>
+</main>
+
+<dialog id="addrDlg" aria-labelledby="addrTitle"><form class="dlg" id="addrForm" novalidate>
+  <div class="dlg__head"><h2 id="addrTitle">เพิ่มที่อยู่</h2><button type="button" class="iconbtn" data-close aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="dlg__body">
+    <div class="field"><label for="adLabel">ชื่อเรียก</label><input type="text" id="adLabel" maxlength="20" placeholder="บ้าน, ที่ทำงาน"></div>
+    <div class="frow">
+      <div class="field"><label for="adName">ชื่อผู้รับ</label><input type="text" id="adName" maxlength="80" autocomplete="name"></div>
+      <div class="field"><label for="adPhone">เบอร์ผู้รับ</label><input type="tel" id="adPhone" maxlength="20" autocomplete="tel" inputmode="tel"></div>
+    </div>
+    <div class="field"><label for="adAddr">ที่อยู่</label><textarea id="adAddr" maxlength="300" rows="3" autocomplete="street-address" placeholder="บ้านเลขที่ ถนน ตำบล อำเภอ จังหวัด รหัสไปรษณีย์"></textarea></div>
+    <label class="check"><input type="checkbox" id="adMain"><span>ตั้งเป็นที่อยู่หลัก</span></label>
+    <p class="err" id="adErr" hidden></p>
+  </div>
+  <div class="dlg__foot"><button type="button" class="btn btn--danger btn--sm" id="adDel" hidden>ลบที่อยู่นี้</button><span class="sp"></span><button type="button" class="btn btn--ghost" data-close>ยกเลิก</button><button type="submit" class="btn btn--primary">บันทึก</button></div>
+</form></dialog>
+
+<dialog id="delDlg" aria-labelledby="delTitle"><div class="dlg">
+  <div class="dlg__head"><h2 id="delTitle">ขอลบบัญชี</h2></div>
+  <div class="dlg__body"><p>ร้านจะลบข้อมูลสมาชิก ที่อยู่ และรูปโปรไฟล์ของคุณ แต้มและแรงค์จะหายไปด้วย ส่วนประวัติงานกับประกันที่ร้านต้องเก็บตามกฎหมาย จะเก็บไว้โดยไม่ผูกกับบัญชีคุณ</p></div>
+  <div class="dlg__foot"><span class="sp"></span><button type="button" class="btn btn--ghost" data-close>ยกเลิก</button><button type="button" class="btn btn--danger" id="delOk">ยืนยันขอลบบัญชี</button></div>
+</div></dialog>
+
+<dialog id="upDlg" aria-labelledby="upTitle"><div class="dlg rankup">
+  <div class="dlg__body rankup__body">
+    <p class="muted small">ยินดีด้วย</p>
+    <h2 id="upTitle">ตอนนี้คุณคือ <span id="upRank"></span></h2>
+    <div id="upCard" class="rankup__card"></div>
+    <p class="small" id="upDisc"></p>
+    <button type="button" class="btn btn--primary btn--block" data-close>เยี่ยมเลย</button>
+  </div>
+</div></dialog>
+
+<footer class="foot">UNITAC · <a href="./">ตารางคิว</a> · <a href="warranty.html">เช็กประกัน</a> · <a href="privacy.html">นโยบายความเป็นส่วนตัว</a></footer>
+<script src="vendor/qrcode.js"></script>
+<script type="module" src="js/member.js"></script>
+</body>
+</html>

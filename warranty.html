@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#141311">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%224.3 21.5 85.5 36.5%22%3E%3Cstyle%3Epath%7Bfill:#FF7A3C%7D%3C/style%3E%3Cpath d=%22M4.85 24.9Q4.85 22.05 7.7 22.05H10.5L12.4 24.9L16.6 22.05H26Q27.3 22.05 27.3 23.3V24.54L12.14 41.96Q11.1 43.16 11.1 44.56V45.25Q11.1 46.85 12.7 46.85H25.54L47.12 22.05H84.2L89.3 27.7V28.4Q89.3 30.1 86.9 30.1H72.56L48.73 57.5H40.02Q36.23 57.5 38.73 54.63L60.06 30.1H52.46L28.63 57.5H7.65Q4.85 57.5 4.85 54.7Z%22/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/site.css">
+<title>เช็กประกัน · UNITAC</title>
+<meta name="description" content="เช็กสถานะประกันงานพิมพ์ 3 มิติจาก UNITAC">
+<style>.war{padding-top:36px;padding-bottom:40px;display:flex;flex-direction:column;gap:20px}
+.war__head h1{font-size:28px}
+.war__form{display:flex;gap:10px;align-items:flex-end}
+.war__form .field{flex:1}
+.war__form input{font-family:var(--font-num);letter-spacing:.06em;text-transform:uppercase}
+.wres{display:grid;gap:16px;text-align:left}
+.wres__status{display:flex;align-items:center;gap:12px}
+.wres__dot{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;flex:none}
+.wres__dot svg{width:22px;height:22px}
+.wres--ok .wres__dot{background:var(--ok-soft);color:var(--ok)}
+.wres--no .wres__dot{background:var(--stop-soft);color:var(--stop)}
+.wres__status b{font-family:var(--font-head);font-size:20px;font-weight:600;display:block;line-height:1.35}
+.wres dl{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:8px 18px;margin:0;font-size:14.5px}
+.wres dt{color:var(--muted)}
+.wres dd{margin:0;overflow-wrap:anywhere}
+.wres .bar{height:10px}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap top__row">
+    <a class="top__logo" href="./" aria-label="UNITAC กลับหน้าตารางคิว" data-logo></a>
+    <nav class="nav" aria-label="เมนูหลัก">
+      <a href="./" data-nav="queue">ตารางคิว</a>
+      <a href="member.html" data-nav="member">สมาชิก</a>
+      <a href="warranty.html" data-nav="warranty">เช็กประกัน</a>
+    </nav>
+    <div class="top__end" id="topEnd"></div>
+  </div>
+</header>
+
+<main id="main" class="wrap wrap--narrow war">
+  <div class="war__head rv">
+    <h1>เช็กประกันงานพิมพ์</h1>
+    <p class="muted">ใส่รหัสประกันที่อยู่บนใบเสนอราคา หรือสแกน QR บนใบเสนอราคา</p>
+  </div>
+  <form id="wf" class="war__form rv" style="--d:60ms" novalidate>
+    <div class="field"><label for="wc" class="sr">รหัสประกัน</label><input type="search" id="wc" placeholder="UT-XXXX-XX" autocomplete="off" spellcheck="false" autocapitalize="characters"></div>
+    <button type="submit" class="btn btn--primary">เช็ก</button>
+  </form>
+  <div id="wr" aria-live="polite"></div>
+</main>
+
+<footer class="foot">UNITAC · <a href="./">ตารางคิว</a> · <a href="warranty.html">เช็กประกัน</a> · <a href="privacy.html">นโยบายความเป็นส่วนตัว</a></footer>
+<script type="module" src="js/warranty.js"></script>
+</body>
+</html>
