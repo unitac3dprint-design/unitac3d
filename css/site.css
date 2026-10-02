@@ -213,6 +213,20 @@ svg{display:block}
 .showcase__hint{font-size:13px;color:var(--muted)}
 .showcase[open] .showcase__qr{animation:pop .4s var(--ease)}
 
+/* partner logo tile (public page + admin preview) */
+.ptile{position:relative;display:grid;place-items:center;aspect-ratio:3/2;border-radius:14px;border:1px solid var(--rule);background:#1A1816;padding:18px 22px;text-decoration:none;color:var(--ink);transition:border-color .3s var(--ease),transform .3s var(--ease),background-color .3s var(--ease)}
+.ptile img{max-width:78%;max-height:70%;object-fit:contain;display:block;filter:grayscale(1) brightness(1.25) contrast(.9);opacity:.72;transition:filter .3s var(--ease),opacity .3s var(--ease)}
+.ptile--dark img{filter:grayscale(1) invert(1) brightness(1.05);opacity:.72}
+.ptile:hover,.ptile:focus-visible{border-color:var(--accent);transform:translateY(-2px)}
+.ptile:hover img,.ptile:focus-visible img{filter:none;opacity:1}
+.ptile--dark:hover,.ptile--dark:focus-visible{background-color:#F2EDE5}
+.ptile__go{position:absolute;right:10px;top:10px;color:var(--accent);opacity:0;transform:translate(-3px,3px);transition:opacity .3s,transform .3s}
+.ptile__go svg{width:16px;height:16px}
+.ptile__nm{position:absolute;left:8px;right:8px;bottom:7px;text-align:center;font-size:11.5px;color:var(--muted);opacity:0;transition:opacity .3s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ptile--dark:hover .ptile__nm{color:#4A473F}
+.ptile:hover .ptile__go,.ptile:focus-visible .ptile__go,.ptile:hover .ptile__nm,.ptile:focus-visible .ptile__nm{opacity:1;transform:none}
+@media (hover:none){.ptile img{filter:none;opacity:1}.ptile--dark{background-color:#F2EDE5}}
+
 /* dialogs */
 dialog{border:0;padding:0;background:transparent;color:var(--ink);max-width:min(520px,calc(100vw - 24px));width:100%;max-height:calc(100dvh - 24px)}
 dialog::backdrop{background:rgba(12,10,8,.65);backdrop-filter:blur(3px)}

@@ -59,6 +59,38 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
 .claims{display:grid;gap:6px}
 .claim{padding:10px 12px;border-radius:var(--r-sm);background:var(--sunk);font-size:13.5px}
 .claim span{display:block;font-family:var(--font-num);font-size:11.5px;color:var(--muted)}
+
+.pa{display:grid;grid-template-columns:380px minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:900px){.pa{grid-template-columns:minmax(0,1fr)}}
+.pa__list{display:flex;flex-direction:column;gap:14px}
+.addbtn{min-height:46px;border-radius:var(--r-md);border:1px dashed var(--rule-strong);color:var(--ink-2);font-size:14px}
+.addbtn:hover{color:var(--ink);border-color:var(--ink-2)}
+.pa__groups{display:flex;flex-direction:column;gap:14px}
+.pa__g{display:flex;flex-direction:column;gap:6px}
+.pa__g > span{font-family:var(--font-num);font-size:11px;letter-spacing:.16em;color:var(--muted)}
+.pa__row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:6px 8px 6px 6px;border-radius:12px;border:1px solid var(--rule);background:var(--surface)}
+.pa__row.is-on{border-color:var(--accent);background:var(--sunk)}
+.pa__pick{display:grid;grid-template-columns:64px minmax(0,1fr);gap:10px;align-items:center;text-align:left;color:inherit;min-height:44px;border-radius:8px;min-width:0}
+.pa__thumb{height:40px;border-radius:8px;background:#1A1816;display:grid;place-items:center;overflow:hidden}
+.pa__thumb img{max-width:80%;max-height:70%;object-fit:contain}
+.pa__thumb.is-dark{background:#F2EDE5}
+.pa__nm{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.pa__mv{display:flex;gap:2px}
+.pa__mv button{width:32px;height:32px;border-radius:8px;display:grid;place-items:center;color:var(--muted);border:1px solid var(--rule)}
+.pa__mv button:hover:not(:disabled){color:var(--ink);border-color:var(--rule-strong)}
+.pa__mv button:disabled{opacity:.3}
+.pa__mv svg{width:14px;height:14px}
+.pa__form{display:flex;flex-direction:column;gap:16px}
+.pa__h{font-size:18px}
+.pa__top{display:grid;grid-template-columns:220px minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:600px){.pa__top{grid-template-columns:minmax(0,1fr)}}
+.pa__drop{display:block;cursor:pointer;border-radius:14px}
+.pa__drop:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.pa__drop .ptile{border-style:dashed}
+.pa__ph{font-size:13px;color:var(--muted)}
+.pa__acts{display:flex;gap:10px;align-items:center;padding-top:14px;border-top:1px solid var(--rule)}
+.pa__acts .sp{flex:1}
+.pa__empty{padding:40px 0;text-align:center}
 </style>
 </head>
 <body>
@@ -69,6 +101,7 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
       <a href="./" data-nav="queue">ตารางคิว</a>
       <a href="member.html" data-nav="member">สมาชิก</a>
       <a href="warranty.html" data-nav="warranty">เช็กประกัน</a>
+      <a href="partners.html" data-nav="partners">พาร์ทเนอร์</a>
     </nav>
     <div class="top__end" id="topEnd"></div>
   </div>
@@ -102,10 +135,11 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
         <button type="button" class="btn btn--ghost btn--sm" data-signout>ออกจากระบบ</button>
       </div>
     </div>
-    <div class="tabs adm__tabs" role="tablist" aria-label="ส่วนของหลังร้าน">
+    <div class="tabs adm__tabs" style="max-width:560px" role="tablist" aria-label="ส่วนของหลังร้าน">
       <button type="button" role="tab" aria-selected="true" data-tab="cust" id="tCust">ลูกค้า</button>
       <button type="button" role="tab" aria-selected="false" data-tab="ord" id="tOrd">ออเดอร์</button>
       <button type="button" role="tab" aria-selected="false" data-tab="war" id="tWar">ประกัน</button>
+      <button type="button" role="tab" aria-selected="false" data-tab="prt" id="tPrt">พาร์ทเนอร์</button>
     </div>
 
     <div data-panel="cust" class="sec">
@@ -120,6 +154,36 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
     <div data-panel="ord" class="sec" hidden>
       <p class="muted small" id="oCount"></p>
       <div id="oList" class="card rows"></div>
+    </div>
+
+    <div data-panel="prt" class="sec" hidden>
+      <div class="pa">
+        <div class="pa__list">
+          <button type="button" class="addbtn" id="paAdd">+ เพิ่มพาร์ทเนอร์</button>
+          <div id="paList" class="pa__groups"></div>
+          <p class="hint">ใช้ลูกศรขึ้น/ลง เพื่อเรียงลำดับที่แสดงในแต่ละหมวด · <a href="partners.html" target="_blank" rel="noopener">เปิดหน้าพาร์ทเนอร์</a></p>
+        </div>
+        <form id="paForm" class="card pa__form" novalidate hidden>
+          <h2 id="paTitle" class="pa__h">เพิ่มพาร์ทเนอร์</h2>
+          <div class="pa__top">
+            <div class="field">
+              <span class="lab">โลโก้</span>
+              <label class="pa__drop"><input type="file" id="paFile" accept="image/png,image/svg+xml,image/webp,image/jpeg" class="sr"><span class="ptile" id="paPrev"><span class="pa__ph">อัปโหลดโลโก้</span></span></label>
+              <p class="hint">PNG พื้นใส หรือ SVG ระบบแสดงเป็นโทนเทาเดียวกันทุกร้าน และขึ้นสีจริงตอนชี้ ลองชี้ที่ตัวอย่างนี้ได้</p>
+              <label class="check"><input type="checkbox" id="paDark"><span>โลโก้สีเข้ม: กลับสีให้เห็นบนพื้นมืด และขึ้นพื้นสีครีมตอนชี้</span></label>
+            </div>
+            <div class="sec">
+              <div class="field"><label for="paName">ชื่อร้าน</label><input type="text" id="paName" maxlength="60"><p class="hint">ไม่โชว์บนหน้าเว็บ ใช้เป็นคำอธิบายรูปและขึ้นตอนชี้โลโก้</p></div>
+              <div class="field"><label for="paCat">หมวด</label><select id="paCat"></select></div>
+              <div class="field"><label for="paUrl">ลิงก์ปลายทาง</label><input type="text" id="paUrl" inputmode="url" spellcheck="false" placeholder="https://facebook.com/…"><p class="hint">เพจ เว็บไซต์ หรือ Google Maps ก็ได้ เปิดในแท็บใหม่</p></div>
+            </div>
+          </div>
+          <label class="check"><input type="checkbox" id="paVis" checked><span>แสดงบนหน้าพาร์ทเนอร์</span></label>
+          <p class="err" id="paErr" hidden></p>
+          <div class="pa__acts"><button type="button" class="btn btn--danger btn--sm" id="paDel" hidden>ลบ</button><span class="sp"></span><button type="button" class="btn btn--ghost" id="paCancel">ยกเลิก</button><button type="submit" class="btn btn--primary" id="paSave">บันทึก</button></div>
+        </form>
+        <p class="muted pa__empty" id="paHint">เลือกพาร์ทเนอร์ทางซ้ายเพื่อแก้ไข หรือกด เพิ่มพาร์ทเนอร์</p>
+      </div>
     </div>
 
     <div data-panel="war" class="sec" hidden>
@@ -158,7 +222,8 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
   <div class="dlg__foot"><button type="button" class="btn btn--danger btn--sm" id="cdDelBtn" hidden>ลบข้อมูลสมาชิก</button><span class="sp"></span><a class="btn btn--primary" id="cdCalc" href="calc.html">เปิดในเครื่องคิดเลข</a></div>
 </div></dialog>
 
-<footer class="foot">UNITAC · <a href="./">ตารางคิว</a> · <a href="warranty.html">เช็กประกัน</a> · <a href="privacy.html">นโยบายความเป็นส่วนตัว</a></footer>
+<footer class="foot">UNITAC · <a href="./">ตารางคิว</a> · <a href="warranty.html">เช็กประกัน</a> · <a href="partners.html">พาร์ทเนอร์</a> · <a href="privacy.html">นโยบายความเป็นส่วนตัว</a></footer>
 <script type="module" src="js/admin.js"></script>
+<script type="module" src="js/admin-partners.js"></script>
 </body>
 </html>
