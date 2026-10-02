@@ -431,6 +431,9 @@ dialog.cd::backdrop{background:rgba(12,10,8,.6);backdrop-filter:blur(3px)}
   input[type=text],input[type=url],textarea{cursor:text}
   button:disabled{cursor:not-allowed}
 }
+
+.mglow{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:0;transition:opacity .8s cubic-bezier(.23,1,.32,1);background:radial-gradient(560px circle at var(--mx,50%) var(--my,30%),rgba(255,122,60,.11),rgba(255,122,60,.04) 35%,transparent 62%)}
+.mglow.is-on{opacity:1}
 </style>
 </head>
 <body>

@@ -256,3 +256,22 @@ export function deviceId() {
   try { document.cookie = 'unitac_device=' + id + ';max-age=63072000;path=/;SameSite=Lax'; } catch (_) {}
   return id;
 }
+
+/* soft orange light that follows the mouse, on the back-most layer (same feel as the queue page) */
+export function mouseGlow() {
+  if (window.__unitacGlow || !matchMedia('(hover:hover) and (pointer:fine)').matches || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  window.__unitacGlow = true;
+  const g = document.createElement('div'); g.className = 'mglow'; g.setAttribute('aria-hidden', 'true');
+  document.body.prepend(g);
+  let tx = innerWidth / 2, ty = innerHeight / 3, x = tx, y = ty, raf = 0;
+  const step = () => {
+    x += (tx - x) * 0.12; y += (ty - y) * 0.12;
+    g.style.setProperty('--mx', x.toFixed(1) + 'px'); g.style.setProperty('--my', y.toFixed(1) + 'px');
+    raf = Math.abs(tx - x) + Math.abs(ty - y) > 0.5 ? requestAnimationFrame(step) : 0;
+  };
+  addEventListener('pointermove', (e) => { if (e.pointerType !== 'mouse') return; tx = e.clientX; ty = e.clientY; g.classList.add('is-on'); if (!raf) raf = requestAnimationFrame(step); }, { passive: true });
+  document.documentElement.addEventListener('mouseleave', () => g.classList.remove('is-on'));
+}
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mouseGlow); else mouseGlow();
+}
