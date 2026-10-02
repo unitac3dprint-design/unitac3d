@@ -141,6 +141,12 @@ svg{display:block}
 .brand__tag{font-size:12.5px;color:var(--muted);margin-left:6px;line-height:1.6}
 @media (max-width:480px){.brand__tag{display:none}}
 .mast__right{display:flex;align-items:center;gap:10px}
+.calcnav{display:flex;gap:2px;margin-right:auto;margin-left:8px;flex-wrap:wrap}
+.calcnav a{display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border-radius:var(--r-pill);color:var(--muted);text-decoration:none;font-size:14px;white-space:nowrap}
+.calcnav a:hover{color:var(--ink)}
+.calcnav a svg{width:15px;height:15px}
+.calcnav a[aria-current="page"]{background:var(--sunk);color:var(--ink);font-weight:500}
+@media (max-width:700px){.calcnav{order:3;width:100%;margin:2px 0 0}.calcnav a{padding:6px 11px;font-size:13.5px}}
 .seg{display:inline-flex;background:var(--sunk);border-radius:var(--r-pill);padding:3px}
 .seg button{padding:6px 16px;border-radius:var(--r-pill);font-family:var(--font-num);font-weight:500;font-size:13.5px;color:var(--muted);transition:transform .15s}
 .seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
@@ -425,7 +431,12 @@ dialog.cd::backdrop{background:rgba(12,10,8,.6);backdrop-filter:blur(3px)}
 <header class="mast">
   <div class="mast__glow" aria-hidden="true"></div>
   <div class="wrap mast__row">
-    <a class="brand" href="admin.html" aria-label="UNITAC หลังร้าน"><svg class="brand__logo" viewBox="4.25 5.75 86.1 52.35" role="img" aria-label="UNITAC"><path fill="currentColor" d="M4.85 24.9Q4.85 22.05 7.7 22.05H10.5L12.4 24.9L16.6 22.05H26Q27.3 22.05 27.3 23.3V24.54L12.14 41.96Q11.1 43.16 11.1 44.56V45.25Q11.1 46.85 12.7 46.85H25.54L47.12 22.05H84.2L89.3 27.7V28.4Q89.3 30.1 86.9 30.1H72.56L48.73 57.5H40.02Q36.23 57.5 38.73 54.63L60.06 30.1H52.46L28.63 57.5H7.65Q4.85 57.5 4.85 54.7Z"/><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="miter" stroke-miterlimit="8"><path d="M6.7 6.6V13.3Q6.7 14.85 8.25 14.85H19.25V6.6"/><path d="M21.8 15.75V8.9Q21.8 7.45 23.25 7.45H26.8V14.85H32.5Q34.45 14.85 34.45 12.9V6.6"/><path d="M36 7.45H38.8V14.85H41.4"/><path d="M41.7 10.2V7.45H54.4V10.2M48.1 7.45V14.85M45.7 14.85H50.5"/><path d="M57.2 15.75V7.45H65.5L68.7 11V15.75M67.3 14.85H69M68.3 11.2L64 14.85H57.2"/><path d="M83.85 10V7.45H71.15V10.5L75.8 14.85H83.7V12"/></g><g transform="translate(87.95 8.55)" fill="none" stroke="currentColor"><circle r="1.55" stroke-width=".42"/><path d="M-.55 .85V-.85H.15Q.65 -.85 .65 -.35Q.65 .15 .15 .15H-.55M.1 .15L.65 .85" stroke-width=".36"/></g></svg><span class="brand__tag">คำนวณราคางานพิมพ์ 3 มิติ</span></a>
+    <a class="brand" href="./" aria-label="UNITAC กลับหน้าตารางคิว"><svg class="brand__logo" viewBox="4.25 5.75 86.1 52.35" role="img" aria-label="UNITAC"><path fill="currentColor" d="M4.85 24.9Q4.85 22.05 7.7 22.05H10.5L12.4 24.9L16.6 22.05H26Q27.3 22.05 27.3 23.3V24.54L12.14 41.96Q11.1 43.16 11.1 44.56V45.25Q11.1 46.85 12.7 46.85H25.54L47.12 22.05H84.2L89.3 27.7V28.4Q89.3 30.1 86.9 30.1H72.56L48.73 57.5H40.02Q36.23 57.5 38.73 54.63L60.06 30.1H52.46L28.63 57.5H7.65Q4.85 57.5 4.85 54.7Z"/><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="miter" stroke-miterlimit="8"><path d="M6.7 6.6V13.3Q6.7 14.85 8.25 14.85H19.25V6.6"/><path d="M21.8 15.75V8.9Q21.8 7.45 23.25 7.45H26.8V14.85H32.5Q34.45 14.85 34.45 12.9V6.6"/><path d="M36 7.45H38.8V14.85H41.4"/><path d="M41.7 10.2V7.45H54.4V10.2M48.1 7.45V14.85M45.7 14.85H50.5"/><path d="M57.2 15.75V7.45H65.5L68.7 11V15.75M67.3 14.85H69M68.3 11.2L64 14.85H57.2"/><path d="M83.85 10V7.45H71.15V10.5L75.8 14.85H83.7V12"/></g><g transform="translate(87.95 8.55)" fill="none" stroke="currentColor"><circle r="1.55" stroke-width=".42"/><path d="M-.55 .85V-.85H.15Q.65 -.85 .65 -.35Q.65 .15 .15 .15H-.55M.1 .15L.65 .85" stroke-width=".36"/></g></svg><span class="brand__tag">คำนวณราคางานพิมพ์ 3 มิติ</span></a>
+    <nav class="calcnav" aria-label="เมนูหลัก">
+      <a href="./"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg>ตารางคิว</a>
+      <a href="admin.html">หลังร้าน</a>
+      <a href="calc.html" aria-current="page">เครื่องคิดเลข</a>
+    </nav>
     <div class="mast__right">
       <button type="button" class="btn btn--ghost" id="newJobBtn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
@@ -471,18 +482,15 @@ dialog.cd::backdrop{background:rgba(12,10,8,.6);backdrop-filter:blur(3px)}
 
   <!-- 00 ลูกค้าสมาชิก -->
   <section class="card rv" aria-labelledby="s0" id="memCard">
-    <h3 class="card__title" id="s0"><span class="step">00</span>ลูกค้าสมาชิก</h3>
-    <p class="card__sub" id="memSub">เลือกสมาชิกเพื่อใส่ส่วนลดตามแรงค์ และเก็บแต้มให้ลูกค้า</p>
-    <div id="memLogin" class="stack" hidden>
-      <p class="hint">ต้องเข้าสู่ระบบเจ้าของร้านก่อน จึงจะค้นหาสมาชิกและบันทึกออเดอร์ได้ ส่วนการคำนวณราคาใช้ได้ตามปกติ</p>
-      <div><button type="button" class="btn btn--ghost" id="memLoginBtn">เข้าสู่ระบบเจ้าของร้าน</button></div>
-    </div>
-    <div id="memPick" class="stack" hidden>
+    <h3 class="card__title" id="s0"><span class="step">00</span>ลูกค้า</h3>
+    <p class="card__sub" id="memSub">ค้นหาชื่อลูกค้า ถ้าเป็นสมาชิก ระบบใส่ส่วนลดตามแรงค์และเก็บแต้มให้เอง</p>
+    <div id="memPick" class="stack">
       <div class="field">
-        <label for="memSearch">ค้นหาสมาชิก</label>
-        <div class="memsearch"><div class="inp"><input type="text" id="memSearch" placeholder="ชื่อเล่น ชื่อ เบอร์ อีเมล หรือเลขสมาชิก" autocomplete="off"></div>
+        <label for="memSearch">ค้นหาชื่อลูกค้า</label>
+        <div class="memsearch"><div class="inp"><input type="text" id="memSearch" placeholder="ชื่อเล่น ชื่อจริง เบอร์ อีเมล หรือเลขสมาชิก" autocomplete="off"></div>
           <button type="button" class="btn btn--ghost" id="memScan" aria-label="สแกน QR บัตรสมาชิก"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M7 12h10"/></svg>สแกน</button></div>
-        <p class="hint">ไม่เลือกก็ได้ ถ้าเป็นลูกค้าทั่วไป</p>
+        <p class="hint" id="memHint">ลูกค้าทั่วไปไม่ต้องเลือก พิมพ์ชื่อในช่อง "ชื่องาน / ลูกค้า" ได้เลย</p>
+        <div id="memLogin" hidden><button type="button" class="btn btn--ghost" id="memLoginBtn">เข้าสู่ระบบเจ้าของร้านเพื่อค้นหาสมาชิก</button></div>
       </div>
       <ul class="memres" id="memRes" aria-label="ผลการค้นหา"></ul>
     </div>

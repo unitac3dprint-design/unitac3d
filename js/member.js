@@ -78,9 +78,9 @@ $('fUp').addEventListener('submit', async (e) => {
   err($('upErr'), ''); busy(b, true, 'กำลังสมัคร…'); creating = true;
   try {
     const cred = await createUserWithEmailAndPassword(auth, em, pw);
+    const sent = await sendVerify(cred.user);
     await createMember(cred.user, nick);
-    try { await sendEmailVerification(cred.user, { url: location.origin + location.pathname }); } catch (_) {}
-    toast('สมัครเรียบร้อย ตรวจอีเมลเพื่อยืนยันบัญชี', 5000);
+    toast(sent === true ? 'สมัครเรียบร้อย ส่งอีเมลยืนยันไปที่ ' + em + ' แล้ว' : 'สมัครเรียบร้อย แต่ส่งอีเมลยืนยันไม่สำเร็จ กด "ส่งลิงก์อีกครั้ง" ในหน้าสมาชิก', 6000);
   } catch (x) { err($('upErr'), authMsg(x.code)); }
   creating = false; busy(b, false, 'สมัครและรับบัตร Bronze');
   if (auth.currentUser) watchMember(auth.currentUser);
@@ -152,7 +152,7 @@ function renderHome() {
   $('helloName').textContent = 'สวัสดี ' + (m.nickname || 'สมาชิก');
   const since = toDate(m.createdAt);
   $('helloSince').textContent = (since ? 'สมาชิกตั้งแต่ ' + fMonthYear.format(since) + ' · ' : '') + memberNo(uid);
-  $('verifyBar').hidden = !!user.emailVerified; $('verifyEmail').textContent = user.email || '';
+  $('verifyBar').hidden = !!user.emailVerified; $('verifyEmail').textContent = user.email || ''; $('verifyHelp').hidden = !!user.emailVerified;
   $('delBar').hidden = !m.deleteRequested;
 
   const cb = $('cardBtn'); cb.textContent = '';
@@ -294,10 +294,25 @@ $('bookBtn').addEventListener('click', () => {
 });
 
 /* ---------- verify email ---------- */
+/* send the verification e-mail: try with a link back to this page, fall back to Firebase's default page */
+async function sendVerify(u) {
+  try { await sendEmailVerification(u, { url: location.origin + location.pathname, handleCodeInApp: false }); return true; }
+  catch (x1) {
+    if (x1 && x1.code === 'auth/too-many-requests') return x1;
+    try { await sendEmailVerification(u); return true; } catch (x2) { console.warn('verify email failed', x1 && x1.code, x2 && x2.code); return x2; }
+  }
+}
+let resendAt = 0;
 $('resendBtn').addEventListener('click', async () => {
-  try { await sendEmailVerification(user, { url: location.origin + location.pathname }); toast('ส่งลิงก์ยืนยันไปที่อีเมลแล้ว', 4000); }
-  catch (x) { toast(authMsg(x.code)); }
+  const wait = Math.ceil((resendAt - Date.now()) / 1000);
+  if (wait > 0) return toast('รออีก ' + wait + ' วินาที แล้วค่อยกดส่งใหม่');
+  const b = $('resendBtn'); b.disabled = true;
+  const r = await sendVerify(user);
+  b.disabled = false;
+  if (r === true) { resendAt = Date.now() + 60000; showSent(); toast('ส่งลิงก์ยืนยันไปที่ ' + user.email + ' แล้ว', 5000); }
+  else toast((r && r.code === 'auth/too-many-requests') ? 'ส่งถี่เกินไป รอสักครู่แล้วลองใหม่' : 'ส่งอีเมลไม่สำเร็จ (' + ((r && r.code) || 'unknown') + ')', 6000);
 });
+function showSent() { $('verifyHelp').hidden = false; }
 $('verifiedBtn').addEventListener('click', async () => {
   try {
     await reload(user);

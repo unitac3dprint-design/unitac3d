@@ -19,7 +19,9 @@ function av(m, s = 40) {
 /* ---------- owner session ---------- */
 onAuthStateChanged(auth, async (u) => {
   isOwner = !!u && u.uid === OWNER;
-  $('memLogin').hidden = isOwner; $('memPick').hidden = !isOwner || !!sel; $('saveOrderBtn').hidden = !isOwner;
+  $('memLogin').hidden = isOwner; $('memPick').hidden = !!sel; $('saveOrderBtn').hidden = !isOwner;
+  $('memSearch').disabled = !isOwner;
+  $('memSearch').placeholder = isOwner ? 'ชื่อเล่น ชื่อจริง เบอร์ อีเมล หรือเลขสมาชิก' : 'เข้าสู่ระบบเจ้าของร้านก่อนจึงค้นหาได้';
   if (!isOwner) { clearSel(); return; }
   await loadMembers();
   const q = new URLSearchParams(location.search).get('m');
@@ -39,18 +41,23 @@ $('loginForm').addEventListener('submit', async (e) => {
 
 /* ---------- search ---------- */
 function norm(v) { return (v || '').toLowerCase().replace(/[\s-]/g, ''); }
-$('memSearch').addEventListener('input', () => {
+function created(m) { const v = m.createdAt; return v ? (typeof v === 'string' ? Date.parse(v) : (v.seconds ? v.seconds * 1000 : 0)) : 0; }
+function showResults() {
   const q = norm($('memSearch').value), L = $('memRes'); L.textContent = '';
-  if (q.length < 2) return;
-  const hits = members.filter(m => [m.nickname, m.fullName, m.email, m.phone, m.no].some(v => norm(v).includes(q))).slice(0, 6);
-  if (!hits.length) { L.appendChild(h('li', 'hint', 'ไม่พบสมาชิก')); return; }
+  if (!isOwner) return;
+  let hits;
+  if (!q) { hits = members.slice().sort((a, b) => created(b) - created(a)).slice(0, 5); if (hits.length) L.appendChild(h('li', 'hint', 'สมาชิกล่าสุด')); }
+  else hits = members.filter(m => [m.nickname, m.fullName, m.email, m.phone, m.no].some(v => norm(v).includes(q))).slice(0, 8);
+  if (!hits.length) { L.appendChild(h('li', 'hint', q ? 'ไม่พบสมาชิกชื่อนี้ ถ้าเป็นลูกค้าทั่วไป พิมพ์ชื่อในช่อง "ชื่องาน / ลูกค้า" ได้เลย' : 'ยังไม่มีสมาชิก')); return; }
   hits.forEach(m => {
     const li = h('li'), b = h('button'); b.type = 'button';
     const t = h('span'); t.append(h('b', null, (m.nickname || 'สมาชิก') + (m.fullName ? ' · ' + m.fullName : '')), h('small', null, [m.no, m.phone].filter(Boolean).join(' · ')));
     const r = rankOf(m), rk = h('span', 'rk', r.key + ' ' + r.disc + '%'); rk.style.color = r.key === 'Rhodium' ? 'var(--ink)' : r.c;
     b.append(av(m), t, rk); b.addEventListener('click', () => pick(m.uid)); li.appendChild(b); L.appendChild(li);
   });
-});
+}
+$('memSearch').addEventListener('input', showResults);
+$('memSearch').addEventListener('focus', showResults);
 $('memScan').addEventListener('click', async () => {
   const t = await scanQR(); if (!t) return;
   const uid = parseMemberQR(t); if (!uid) return toast('QR นี้ไม่ใช่บัตรสมาชิก UNITAC');
@@ -63,6 +70,7 @@ function pick(uid) {
   sel = m; const r = rankOf(m), c = couponInfo(m, uid);
   U.sel = uid; U.rankPct = r.disc; U.rankKey = r.key; U.couponPct = c.pct; U.useCoupon = c.usable;
   $('memPick').hidden = true; $('memSel').hidden = false; $('memRes').textContent = ''; $('memSearch').value = '';
+  const jn = document.getElementById('jobName'); if (jn && !jn.value.trim()) { jn.value = 'งานพิมพ์ - คุณ' + (m.nickname || m.fullName || ''); jn.dispatchEvent(new Event('input', { bubbles: true })); }
   const a = $('msAv'); a.textContent = ''; a.appendChild(av(m, 44));
   $('msName').textContent = (m.nickname || 'สมาชิก') + (m.fullName ? ' · ' + m.fullName : '');
   $('msMeta').textContent = [m.no, m.phone].filter(Boolean).join(' · ');
@@ -87,7 +95,7 @@ function dupCheck(m, c) {
 }
 $('msCoupon').addEventListener('change', () => { U.useCoupon = $('msCoupon').checked; recalc(); });
 function clearSel() {
-  sel = null; U.sel = null; U.useCoupon = false; $('memSel').hidden = true; $('memPick').hidden = !isOwner;
+  sel = null; U.sel = null; U.useCoupon = false; $('memSel').hidden = true; $('memPick').hidden = false;
   $('discountFieldLabel').textContent = 'ส่วนลด'; recalc();
 }
 $('msClear').addEventListener('click', () => { clearSel(); hideWarranty(); $('memSearch').focus(); });

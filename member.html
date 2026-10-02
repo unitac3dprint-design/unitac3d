@@ -92,6 +92,8 @@
 .rankup__card{width:100%;max-width:340px}
 dialog[open] .rankup__card .rcard__in{animation:rankflip 1.1s var(--ease) .2s both}
 @keyframes rankflip{from{transform:rotateY(-180deg)}}
+
+.verify-help{display:block;margin-top:6px;font-size:12.5px;color:var(--ink-2)}
 </style>
 </head>
 <body>
@@ -157,7 +159,8 @@ dialog[open] .rankup__card .rcard__in{animation:rankflip 1.1s var(--ease) .2s bo
         <div><h1 id="helloName">สวัสดี</h1><p class="muted small" id="helloSince"></p></div>
       </div>
       <div class="banner" id="verifyBar" hidden>
-        <p>ยืนยันอีเมลก่อน จึงจะใช้คูปองต้อนรับได้ เราส่งลิงก์ไปที่ <b id="verifyEmail"></b> แล้ว</p>
+        <p>ยืนยันอีเมลก่อน จึงจะใช้คูปองต้อนรับได้ ระบบส่ง<b>ลิงก์ยืนยัน</b> (ไม่ใช่รหัสตัวเลข) ไปที่ <b id="verifyEmail"></b> กดลิงก์ในอีเมล แล้วกลับมากด "ยืนยันแล้ว"
+          <span class="verify-help" id="verifyHelp" hidden>ไม่เจออีเมล? ดูในโฟลเดอร์ <b>จดหมายขยะ / Spam</b> หรือแท็บ <b>Promotions / โปรโมชัน</b> ผู้ส่งคือ <b>noreply@unitac3d.firebaseapp.com</b> อาจใช้เวลา 1–5 นาที</span></p>
         <button type="button" class="btn btn--ghost btn--sm" id="resendBtn">ส่งลิงก์อีกครั้ง</button>
         <button type="button" class="btn btn--primary btn--sm" id="verifiedBtn">ยืนยันแล้ว</button>
       </div>
