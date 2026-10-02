@@ -37,11 +37,37 @@ function render() {
     row.append(hd, g); S.appendChild(row);
   });
 }
+/* entry: logos glide in from the right one after another; scroll: rows drift (parallax) */
+let mo = null, raf = 0;
+function motion() {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  document.body.classList.add('prt-anim');
+  const rows = [...document.querySelectorAll('.prow')];
+  rows.forEach(r => [...r.querySelectorAll('.ptile,.pinvite')].forEach((t, i) => t.style.setProperty('--d', (140 + i * 110) + 'ms')));
+  if (mo) mo.disconnect();
+  mo = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-in'); mo.unobserve(e.target); } }), { threshold: 0.18, rootMargin: '0px 0px -8% 0px' });
+  rows.forEach(r => mo.observe(r));
+  const hero = document.querySelector('.prt__hero'), mark = document.querySelector('.prt__mark');
+  const frame = () => {
+    raf = 0;
+    const vh = innerHeight, mid = vh / 2, wide = innerWidth > 760;
+    rows.forEach(r => {
+      const b = r.getBoundingClientRect(); if (b.bottom < -200 || b.top > vh + 200) return;
+      const t = Math.max(-1, Math.min(1, (b.top + b.height / 2 - mid) / vh));
+      r.style.setProperty('--px', (Math.max(0, t) * (wide ? 70 : 34)).toFixed(1) + 'px');
+      r.style.setProperty('--py', (t * (wide ? -26 : -14)).toFixed(1) + 'px');
+    });
+    if (hero && mark) mark.style.setProperty('--hy', (Math.min(scrollY, hero.offsetHeight) * 0.3).toFixed(1) + 'px');
+  };
+  const req = () => { if (!raf) raf = requestAnimationFrame(frame); };
+  addEventListener('scroll', req, { passive: true }); addEventListener('resize', req); frame();
+}
+
 (async () => {
   try {
     const qs = await getDocs(query(collection(db, 'partners'), where('visible', '==', true)));
     all = qs.docs.map(d => ({ id: d.id, ...d.data() })).filter(p => p.logo && /^https?:\/\//.test(p.url || ''))
       .sort((a, b) => (a.order || 0) - (b.order || 0));
   } catch (_) { all = []; }
-  stats(); render();
+  stats(); render(); motion();
 })();
