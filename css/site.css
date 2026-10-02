@@ -133,7 +133,7 @@ svg{display:block}
 .rcard__face::before{content:'';position:absolute;inset:0;background-image:repeating-linear-gradient(var(--slant),var(--rh) 0 2px,transparent 2px 9px)}
 .rcard__face::after{content:'';position:absolute;inset:0;background:linear-gradient(131deg,rgba(255,255,255,.06) 0%,rgba(255,255,255,0) 45%)}
 .rcard__front{display:flex;flex-direction:column;justify-content:space-between;padding:5.3cqw 5.9cqw}
-.rcard__front > *,.rcard__back > *{position:relative;z-index:1}
+
 .rcard__top{display:flex;align-items:center;justify-content:space-between}
 .rcard__top svg{height:5cqw;width:auto;color:var(--rink)}
 .rcard__tag{font-family:var(--font-num);font-size:3.1cqw;letter-spacing:.22em;color:var(--rsub)}
@@ -155,6 +155,60 @@ svg{display:block}
 .rcard--Rhodium .rcard__face{border:1.5px solid var(--accent);box-shadow:0 18px 40px -18px rgba(0,0,0,.85),inset 0 1px 0 rgba(255,255,255,.7)}
 .rcard--Rhodium .rcard__face::after{background:linear-gradient(131deg,rgba(255,255,255,.55) 0%,rgba(255,255,255,0) 38%,rgba(255,255,255,0) 62%,rgba(255,255,255,.35) 100%)}
 .rcard-btn{display:block;width:100%;max-width:360px;margin:0 auto;border-radius:18px;text-align:left}
+
+
+/* ---------- member card: light, material, emboss, progress edge ---------- */
+.rcard__tilt{position:relative;width:100%;height:100%;transform-style:preserve-3d;transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .6s var(--ease)}
+.rcard.is-tilting .rcard__tilt{transition:transform .1s linear}
+.rcard{--gx:50%;--gy:25%;touch-action:pan-y;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.rcard__mat,.rcard__holo,.rcard__glare,.rcard__glint{position:absolute;inset:0;pointer-events:none;border-radius:inherit}
+.rcard__mat{z-index:0}
+.rcard__glare{z-index:3;background:radial-gradient(circle at var(--gx) var(--gy),var(--gc,rgba(255,255,255,.22)),transparent 55%);mix-blend-mode:screen;opacity:.45;transition:opacity .5s var(--ease)}
+.rcard.is-tilting .rcard__glare,.rcard:hover .rcard__glare{opacity:1}
+.rcard__glint{z-index:4;overflow:hidden}
+.rcard__glint::before{content:'';position:absolute;top:-30%;bottom:-30%;left:-60%;width:45%;background:linear-gradient(105deg,transparent,rgba(255,255,255,.28),transparent);transform:translateX(-120%) skewX(-8deg);opacity:0}
+.rcard.is-glint .rcard__glint::before{animation:glint 1.5s cubic-bezier(.45,.05,.3,1) .5s both}
+@keyframes glint{0%{transform:translateX(0) skewX(-8deg);opacity:0}15%{opacity:1}100%{transform:translateX(420%) skewX(-8deg);opacity:0}}
+.rcard__edge{position:absolute;left:0;right:0;bottom:0;height:3px;z-index:2;background:rgba(255,255,255,.07);overflow:hidden}
+.rcard__edge i{position:absolute;left:0;top:0;bottom:0;background:var(--rc);box-shadow:0 0 12px var(--rc);border-radius:0 2px 2px 0}
+/* emboss */
+.rcard__top svg{filter:drop-shadow(0 1px 0 rgba(255,255,255,.16)) drop-shadow(0 -1px 0 rgba(0,0,0,.55))}
+.rcard__rank,.rcard__no,.rcard__disc b{text-shadow:0 1px 0 rgba(255,255,255,.1),0 -1px 0 rgba(0,0,0,.6)}
+/* materials */
+.rcard--Bronze .rcard__mat{background:repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 1px,transparent 1px 3px),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:auto,160px;opacity:.9;mix-blend-mode:overlay}
+.rcard--Bronze{--gc:rgba(255,196,150,.26)}
+.rcard--Silver .rcard__mat{background:linear-gradient(160deg,rgba(255,255,255,.08),transparent 38%,rgba(255,255,255,.05) 68%,transparent),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:auto,160px;mix-blend-mode:soft-light;opacity:.8}
+.rcard--Silver{--gc:rgba(235,242,250,.28)}
+.rcard--Gold .rcard__mat{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),radial-gradient(circle at var(--gx) var(--gy),rgba(255,214,120,.18),transparent 60%);background-size:160px,auto;mix-blend-mode:overlay;opacity:.9}
+.rcard--Gold{--gc:rgba(255,222,140,.34)}
+.rcard--Platinum .rcard__mat{background:linear-gradient(180deg,rgba(220,240,244,.06),rgba(220,240,244,0)),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:auto,120px;mix-blend-mode:soft-light;opacity:1}
+.rcard--Platinum{--gc:rgba(210,238,244,.26)}
+.rcard--Diamond{--gc:rgba(190,228,255,.3)}
+.rcard--Diamond .rcard__holo{z-index:2;padding:1.5px;background:conic-gradient(from calc(var(--ry,0deg) * 8 + 40deg),#ffb3dd,#a8dcff,#b9ffd9,#fff2a8,#d6b8ff,#ffb3dd);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:calc(.18 + var(--tilt,0) * .75);transition:opacity .4s var(--ease)}
+.rcard--Diamond .rcard__mat{background:conic-gradient(from calc(var(--rx,0deg) * 10),rgba(255,180,220,.05),rgba(160,220,255,.06),rgba(185,255,215,.05),rgba(255,240,170,.05),rgba(255,180,220,.05));mix-blend-mode:screen;opacity:calc(.4 + var(--tilt,0) * .6)}
+.rcard--Rhodium{--gc:rgba(255,255,255,.8)}
+.rcard--Rhodium .rcard__glare{mix-blend-mode:overlay}
+.rcard--Rhodium .rcard__mat{background:linear-gradient(115deg,transparent 18%,rgba(255,255,255,.75) 32%,transparent 42%,rgba(255,255,255,.45) 58%,transparent 70%);background-size:220% 100%;background-position:var(--gx) 0;opacity:.7;transition:background-position .6s var(--ease)}
+.rcard--Rhodium.is-tilting .rcard__mat{transition:none}
+.rcard--Rhodium .rcard__face{box-shadow:0 18px 40px -18px rgba(0,0,0,.85),0 0 26px -8px rgba(255,122,60,.55),inset 0 1px 0 rgba(255,255,255,.7)}
+.rcard--Rhodium .rcard__top svg{filter:drop-shadow(0 1px 0 rgba(255,255,255,.9)) drop-shadow(0 -1px 0 rgba(0,0,0,.18))}
+.rcard--Rhodium .rcard__rank,.rcard--Rhodium .rcard__no,.rcard--Rhodium .rcard__disc b{text-shadow:0 1px 0 rgba(255,255,255,.85),0 -1px 0 rgba(0,0,0,.15)}
+.rcard--Rhodium .rcard__edge{background:rgba(0,0,0,.08)}
+.rcard--Rhodium .rcard__edge i{background:var(--accent);box-shadow:0 0 12px var(--accent)}
+.rcard__front > *:not(.rcard__mat):not(.rcard__holo):not(.rcard__glare):not(.rcard__glint):not(.rcard__edge){position:relative;z-index:1}
+.rcard__back > *:not(.rcard__mat):not(.rcard__glare){position:relative;z-index:1}
+
+/* counter mode: big QR to show at the shop */
+.showcase{border:0;padding:0;margin:0;width:100vw;height:100dvh;max-width:none;max-height:none;background:#0E0D0B;color:var(--ink)}
+.showcase::backdrop{background:#0E0D0B}
+.showcase__in{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;text-align:center;cursor:pointer}
+.showcase__qr{background:#fff;border-radius:22px;padding:16px;width:min(78vw,52dvh,420px);aspect-ratio:1;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 30px 80px -30px var(--sc,#FF7A3C)}
+.showcase__qr svg{width:100%;height:100%}
+.showcase__rank{font-family:var(--font-head);font-size:28px;font-weight:600;letter-spacing:.08em;color:var(--sc)}
+.showcase__who{font-size:16px}
+.showcase__no{font-family:var(--font-num);font-size:15px;letter-spacing:.1em;color:var(--muted)}
+.showcase__hint{font-size:13px;color:var(--muted)}
+.showcase[open] .showcase__qr{animation:pop .4s var(--ease)}
 
 /* dialogs */
 dialog{border:0;padding:0;background:transparent;color:var(--ink);max-width:min(520px,calc(100vw - 24px));width:100%;max-height:calc(100dvh - 24px)}

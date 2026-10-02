@@ -119,23 +119,65 @@ export function avatarEl(m, size = 44) {
 export const MARK_PATH = 'M4.85 24.9Q4.85 22.05 7.7 22.05H10.5L12.4 24.9L16.6 22.05H26Q27.3 22.05 27.3 23.3V24.54L12.14 41.96Q11.1 43.16 11.1 44.56V45.25Q11.1 46.85 12.7 46.85H25.54L47.12 22.05H84.2L89.3 27.7V28.4Q89.3 30.1 86.9 30.1H72.56L48.73 57.5H40.02Q36.23 57.5 38.73 54.63L60.06 30.1H52.46L28.63 57.5H7.65Q4.85 57.5 4.85 54.7Z';
 export const LOGO_SVG = '<svg viewBox="4.25 5.75 86.1 52.35" role="img" aria-label="UNITAC"><path fill="currentColor" d="'+MARK_PATH+'"/><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="miter" stroke-miterlimit="8"><path d="M6.7 6.6V13.3Q6.7 14.85 8.25 14.85H19.25V6.6"/><path d="M21.8 15.75V8.9Q21.8 7.45 23.25 7.45H26.8V14.85H32.5Q34.45 14.85 34.45 12.9V6.6"/><path d="M36 7.45H38.8V14.85H41.4"/><path d="M41.7 10.2V7.45H54.4V10.2M48.1 7.45V14.85M45.7 14.85H50.5"/><path d="M57.2 15.75V7.45H65.5L68.7 11V15.75M67.3 14.85H69M68.3 11.2L64 14.85H57.2"/><path d="M83.85 10V7.45H71.15V10.5L75.8 14.85H83.7V12"/></g><g transform="translate(87.95 8.55)" fill="none" stroke="currentColor"><circle r="1.55" stroke-width=".42"/><path d="M-.55 .85V-.85H.15Q.65 -.85 .65 -.35Q.65 .15 .15 .15H-.55M.1 .15L.65 .85" stroke-width=".36"/></g></svg>';
 
-/* rank card element */
+/* rank card element: tilt + light, rank material, embossed marks, progress edge */
+export function rankProgress(m) {
+  const r = rankOf(m), nx = nextRank(m);
+  if (r.partner || !nx) return 1;
+  return Math.max(0.02, Math.min(1, (((m && +m.points) || 0) - r.min) / (nx.min - r.min)));
+}
 export function rankCard(m, uid, opts = {}) {
   const r = rankOf(m);
   const wrap = h('div', 'rcard rcard--' + r.key);
   wrap.style.cssText = `--rb:${r.base};--rc:${r.c};--rh:${r.hatch};--rink:${r.ink};--rsub:${r.sub}`;
-  const no = memberNo(uid);
-  wrap.innerHTML = `<div class="rcard__in">
+  const no = memberNo(uid), p = rankProgress(m);
+  wrap.innerHTML = `<div class="rcard__tilt"><div class="rcard__in">
     <div class="rcard__face rcard__front">
+      <span class="rcard__mat" aria-hidden="true"></span><span class="rcard__holo" aria-hidden="true"></span>
       <div class="rcard__top"><svg viewBox="4.3 21.5 85.5 36.5" aria-hidden="true"><path fill="currentColor" d="${MARK_PATH}"/></svg><span class="rcard__tag">${r.partner ? 'PARTNER' : 'MEMBER'}</span></div>
       <div class="rcard__rank">${r.key.toUpperCase()}</div>
       <div class="rcard__bot"><div class="rcard__who"><span class="rcard__nick"></span><span class="rcard__no">${no}</span></div>
         <div class="rcard__disc"><small>ส่วนลด</small><b>${r.disc}%</b></div></div>
+      <span class="rcard__edge" aria-hidden="true"><i style="width:${(p * 100).toFixed(1)}%"></i></span>
+      <span class="rcard__glare" aria-hidden="true"></span><span class="rcard__glint" aria-hidden="true"></span>
     </div>
     <div class="rcard__face rcard__back">
+      <span class="rcard__mat" aria-hidden="true"></span>
       <div class="rcard__qr">${opts.qr === false ? '' : qrSvg('UNITAC:M:' + uid)}</div>
       <div class="rcard__btxt"><b>แสดง QR นี้ที่ร้าน</b><span>สแกนแล้วระบบใส่ส่วนลด ${r.disc}% ให้ในใบเสนอราคา</span><i>${no}</i></div>
-    </div></div>`;
+      <span class="rcard__glare" aria-hidden="true"></span>
+    </div></div></div>`;
   wrap.querySelector('.rcard__nick').textContent = (m && m.nickname) || 'สมาชิก';
   return wrap;
+}
+
+/* pointer tilt: the card leans toward the finger / mouse and the light follows */
+export function attachTilt(card, host) {
+  host = host || card;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  let raf = 0, ev = null, active = false;
+  function apply() {
+    raf = 0; if (!ev) return;
+    const b = card.getBoundingClientRect();
+    const x = Math.max(0, Math.min(1, (ev.clientX - b.left) / b.width)), y = Math.max(0, Math.min(1, (ev.clientY - b.top) / b.height));
+    const flip = card.classList.contains('is-flipped') ? -1 : 1;
+    card.style.setProperty('--ry', ((x - 0.5) * 16 * flip).toFixed(2) + 'deg');
+    card.style.setProperty('--rx', ((0.5 - y) * 12).toFixed(2) + 'deg');
+    card.style.setProperty('--gx', ((flip > 0 ? x : 1 - x) * 100).toFixed(1) + '%');
+    card.style.setProperty('--gy', (y * 100).toFixed(1) + '%');
+    card.style.setProperty('--tilt', Math.min(1, Math.hypot(x - 0.5, y - 0.5) * 2).toFixed(3));
+  }
+  function move(e) {
+    if (e.pointerType !== 'mouse' && !active) return;
+    ev = e; card.classList.add('is-tilting'); if (!raf) raf = requestAnimationFrame(apply);
+  }
+  function reset() {
+    active = false; ev = null; card.classList.remove('is-tilting');
+    ['--rx', '--ry', '--tilt'].forEach(k => card.style.removeProperty(k));
+    card.style.setProperty('--gx', '50%'); card.style.setProperty('--gy', '25%');
+  }
+  host.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'mouse') { active = true; move(e); } });
+  host.addEventListener('pointermove', move);
+  host.addEventListener('pointerleave', reset);
+  host.addEventListener('pointerup', (e) => { if (e.pointerType !== 'mouse') reset(); });
+  host.addEventListener('pointercancel', reset);
 }

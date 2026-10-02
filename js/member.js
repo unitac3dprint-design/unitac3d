@@ -5,7 +5,7 @@ import {
 } from './fb.js';
 import {
   RANKS, rankOf, nextRank, couponInfo, memberNo, toDate, fDate, fDM, fMonthYear, money, intf, daysLeft,
-  COUPON_CAP, $, h, toast, reveal, toAvatar, avatarEl, rankCard, LOGO_SVG
+  COUPON_CAP, $, h, toast, reveal, toAvatar, avatarEl, rankCard, attachTilt, qrSvg, LOGO_SVG
 } from './core.js';
 
 document.querySelectorAll('[data-logo]').forEach(e => { e.innerHTML = LOGO_SVG; });
@@ -157,7 +157,9 @@ function renderHome() {
 
   const cb = $('cardBtn'); cb.textContent = '';
   const card = rankCard(m, uid); if (flipped) card.classList.add('is-flipped'); cb.appendChild(card);
-  $('flipHint').textContent = flipped ? 'แตะอีกครั้งเพื่อพลิกกลับ' : 'แตะบัตรเพื่อแสดง QR';
+  attachTilt(card, cb);
+  if (!glinted && !matchMedia('(prefers-reduced-motion: reduce)').matches) { glinted = true; requestAnimationFrame(() => card.classList.add('is-glint')); }
+  $('flipHint').textContent = flipped ? 'แตะอีกครั้งเพื่อพลิกกลับ' : 'แตะเพื่อพลิก · กดค้างเพื่อยื่นที่ร้าน';
 
   renderCoupon();
 
@@ -177,10 +179,32 @@ function renderHome() {
   renderOrders();
   renderBook();
 }
+let glinted = false, pressT = 0, pressXY = null, pressFired = false;
 $('cardBtn').addEventListener('click', () => {
+  if (pressFired) { pressFired = false; return; }
   flipped = !flipped; const c = $('cardBtn').querySelector('.rcard'); if (c) c.classList.toggle('is-flipped', flipped);
-  $('flipHint').textContent = flipped ? 'แตะอีกครั้งเพื่อพลิกกลับ' : 'แตะบัตรเพื่อแสดง QR';
+  $('flipHint').textContent = flipped ? 'แตะอีกครั้งเพื่อพลิกกลับ' : 'แตะเพื่อพลิก · กดค้างเพื่อยื่นที่ร้าน';
 });
+/* long press → counter mode */
+$('cardBtn').addEventListener('pointerdown', (e) => {
+  pressFired = false; pressXY = [e.clientX, e.clientY]; clearTimeout(pressT);
+  pressT = setTimeout(() => { pressFired = true; if (navigator.vibrate) try { navigator.vibrate(12); } catch (_) {} openShowcase(); }, 550);
+});
+['pointerup', 'pointercancel', 'pointerleave'].forEach(t => $('cardBtn').addEventListener(t, () => clearTimeout(pressT)));
+$('cardBtn').addEventListener('pointermove', (e) => { if (pressXY && Math.hypot(e.clientX - pressXY[0], e.clientY - pressXY[1]) > 10) clearTimeout(pressT); });
+$('cardBtn').addEventListener('contextmenu', (e) => e.preventDefault());
+$('showBtn').addEventListener('click', openShowcase);
+function openShowcase() {
+  if (!member || !user) return;
+  const r = rankOf(member);
+  $('showDlg').style.setProperty('--sc', r.key === 'Rhodium' ? '#FF7A3C' : r.c);
+  $('showQr').innerHTML = qrSvg('UNITAC:M:' + user.uid);
+  $('showRank').textContent = r.key.toUpperCase() + ' · ลด ' + r.disc + '%';
+  $('showWho').textContent = member.nickname || 'สมาชิก';
+  $('showNo').textContent = memberNo(user.uid);
+  $('showDlg').showModal();
+}
+$('showIn').addEventListener('click', () => $('showDlg').close());
 function renderLadder(r) {
   const box = $('ladder'); box.textContent = '';
   RANKS.forEach(x => {
@@ -345,6 +369,7 @@ function checkRankUp() {
   if (prev && idx(r.key) > idx(prev)) {
     $('upRank').textContent = r.key; $('upDisc').textContent = 'ส่วนลดค่าพิมพ์ของคุณตอนนี้ ' + r.disc + '%';
     const c = $('upCard'); c.textContent = ''; c.appendChild(rankCard(member, user.uid, { qr: false }));
+    $('forge').style.setProperty('--fc', r.key === 'Rhodium' ? '#E7E8EA' : r.c);
     $('upDlg').showModal();
   }
 }

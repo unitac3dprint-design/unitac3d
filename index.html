@@ -576,7 +576,7 @@ document.getElementById('root').outerHTML=
    '<button type="button" class="btn btn--ghost" id="editBtn" aria-label="แก้ไขคิว" hidden>'+ICON.edit+'<span class="editBtn__t">แก้ไขคิว</span></button>'+
   '</div>'+
  '</div>'+
- '<div class="wrap mast__spec"><span class="dot" id="specDot" aria-hidden="true"></span><p><span id="updText"></span><span class="sep" aria-hidden="true">·</span><span id="roleText">ร้านเป็นผู้อัปเดตตารางนี้ คุณดูได้อย่างเดียว</span></p></div>'+
+ '<div class="wrap mast__spec"><span class="dot" id="specDot" aria-hidden="true"></span><p><span id="updText"></span><span class="sep" id="roleSep" aria-hidden="true" hidden>·</span><span id="roleText"></span></p></div>'+
 '</header>'+
 '<main id="main" class="wrap">'+
  '<div class="restore" id="restoreBar" hidden><p>ระบบใหม่ยังไม่มีข้อมูลคิว นำเข้าคิว วันหยุด ช่องติดต่อ และรูปโปรไฟล์จากตารางเดิมได้ในคลิกเดียว</p><button type="button" class="btn btn--primary btn--sm" id="restoreYes">นำเข้าข้อมูลจากตารางเดิม</button></div>'+
@@ -920,7 +920,8 @@ function renderEditBar(){
   $('editBar').hidden=!editing;
   $('editBtn').hidden=!canEdit||editing;
   $('specDot').classList.toggle('dot--edit',editing);
-  $('roleText').textContent=editing?'กำลังแก้ไข ทุกการเปลี่ยนแปลงบันทึกและลูกค้าเห็นทันที':canEdit?'คุณเป็นเจ้าของ ลูกค้าดูได้อย่างเดียว':'ร้านเป็นผู้อัปเดตตารางนี้ คุณดูได้อย่างเดียว';
+  $('roleText').textContent=editing?'กำลังแก้ไข ทุกการเปลี่ยนแปลงบันทึกและลูกค้าเห็นทันที':canEdit?'คุณเป็นเจ้าของ ลูกค้าดูได้อย่างเดียว':'';
+  $('roleSep').hidden=!(editing||canEdit);
   $('restoreBar').hidden=!(canEdit&&loaded&&docExists===false);
   if(!editing) return;
   var m=$('editMsg');m.textContent='';
