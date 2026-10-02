@@ -8,7 +8,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%224.3 21.5 85.5 36.5%22%3E%3Cstyle%3Epath%7Bfill:#FF7A3C%7D%3C/style%3E%3Cpath d=%22M4.85 24.9Q4.85 22.05 7.7 22.05H10.5L12.4 24.9L16.6 22.05H26Q27.3 22.05 27.3 23.3V24.54L12.14 41.96Q11.1 43.16 11.1 44.56V45.25Q11.1 46.85 12.7 46.85H25.54L47.12 22.05H84.2L89.3 27.7V28.4Q89.3 30.1 86.9 30.1H72.56L48.73 57.5H40.02Q36.23 57.5 38.73 54.63L60.06 30.1H52.46L28.63 57.5H7.65Q4.85 57.5 4.85 54.7Z%22/%3E%3C/svg%3E">
 <script>
 /* apply a saved theme before first paint — harmless if storage is unavailable */
-try{var t=localStorage.getItem('unitac-theme');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}
+document.documentElement.setAttribute('data-theme','dark');
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -442,7 +442,7 @@ dialog.cd::backdrop{background:rgba(12,10,8,.6);backdrop-filter:blur(3px)}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
         เริ่มงานใหม่
       </button>
-      <button type="button" class="iconbtn" id="themeBtn" aria-label="สลับธีมสว่าง / มืด" aria-pressed="false">
+      <button type="button" class="iconbtn" id="themeBtn" hidden aria-label="สลับธีมสว่าง / มืด" aria-pressed="false">
         <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></svg>
         <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/></svg>
       </button>
@@ -487,7 +487,7 @@ dialog.cd::backdrop{background:rgba(12,10,8,.6);backdrop-filter:blur(3px)}
     <div id="memPick" class="stack">
       <div class="field">
         <label for="memSearch">ค้นหาชื่อลูกค้า</label>
-        <div class="memsearch"><div class="inp"><input type="text" id="memSearch" placeholder="ชื่อเล่น ชื่อจริง เบอร์ อีเมล หรือเลขสมาชิก" autocomplete="off"></div>
+        <div class="memsearch"><div class="inp"><input type="text" id="memSearch" placeholder="กำลังเชื่อมต่อระบบสมาชิก…" autocomplete="off" disabled></div>
           <button type="button" class="btn btn--ghost" id="memScan" aria-label="สแกน QR บัตรสมาชิก"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M7 12h10"/></svg>สแกน</button></div>
         <p class="hint" id="memHint">ลูกค้าทั่วไปไม่ต้องเลือก พิมพ์ชื่อในช่อง "ชื่องาน / ลูกค้า" ได้เลย</p>
         <div id="memLogin" hidden><button type="button" class="btn btn--ghost" id="memLoginBtn">เข้าสู่ระบบเจ้าของร้านเพื่อค้นหาสมาชิก</button></div>
@@ -1364,7 +1364,7 @@ FIELD_IDS.forEach(function(id){
   var el=$(id); if(!el||id==='matName') return;
   if(Object.prototype.hasOwnProperty.call(S.fields,id)&&S.fields[id]!=null) el.value=S.fields[id];
 });
-if(S.theme&&!root.getAttribute('data-theme')) root.setAttribute('data-theme',S.theme);
+root.setAttribute('data-theme','dark');
 syncTheme();
 buildOptions();
 setDiscountMode(val('discountMode'),true);

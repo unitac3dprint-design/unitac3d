@@ -97,6 +97,7 @@ function openMember(uid) {
   (m.addresses || []).forEach(a => ad.appendChild(h('div', 'addr', (a.label || 'ที่อยู่') + (a.main ? ' (หลัก)' : '') + '\n' + [a.name, a.phone].filter(Boolean).join(' · ') + '\n' + (a.addr || ''))));
   if (!(m.addresses || []).length) ad.appendChild(h('p', 'muted', 'ยังไม่มีที่อยู่'));
   $('cdRh').checked = !!m.rhodium;
+  $('cdVer').hidden = !!m.verified;
   $('cdPtsN').value = ''; $('cdPtsWhy').value = '';
   const mo = orders.filter(o => o.uid === uid);
   $('cdOCount').textContent = mo.length ? mo.length + ' รายการ' : '';
@@ -106,6 +107,10 @@ function openMember(uid) {
   $('cdCalc').href = 'calc.html?m=' + encodeURIComponent(uid);
   $('cDlg').showModal();
 }
+$('cdVerBtn').addEventListener('click', async () => {
+  try { await updateDoc(doc(db, 'members', cur.uid), { verified: true }); cur.verified = true; toast('ยืนยันแทนลูกค้าแล้ว ลูกค้าใช้คูปองต้อนรับได้'); renderMembers(); openMember(cur.uid); }
+  catch (x) { toast(authMsg(x.code)); }
+});
 $('cdRh').addEventListener('change', async () => {
   const on = $('cdRh').checked;
   try { await updateDoc(doc(db, 'members', cur.uid), { rhodium: on }); cur.rhodium = on; toast(on ? 'ตั้งเป็น Rhodium แล้ว' : 'ถอด Rhodium แล้ว'); renderMembers(); openMember(cur.uid); }

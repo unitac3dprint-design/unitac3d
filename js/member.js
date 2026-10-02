@@ -152,7 +152,7 @@ function renderHome() {
   $('helloName').textContent = 'สวัสดี ' + (m.nickname || 'สมาชิก');
   const since = toDate(m.createdAt);
   $('helloSince').textContent = (since ? 'สมาชิกตั้งแต่ ' + fMonthYear.format(since) + ' · ' : '') + memberNo(uid);
-  $('verifyBar').hidden = !!user.emailVerified; $('verifyEmail').textContent = user.email || ''; $('verifyHelp').hidden = !!user.emailVerified;
+  $('verifyBar').hidden = !!user.emailVerified || !!m.verified; $('verifyEmail').textContent = user.email || ''; $('verifyHelp').hidden = !!user.emailVerified; renderVerifyStatus();
   $('delBar').hidden = !m.deleteRequested;
 
   const cb = $('cardBtn'); cb.textContent = '';
@@ -296,11 +296,24 @@ $('bookBtn').addEventListener('click', () => {
 /* ---------- verify email ---------- */
 /* send the verification e-mail: try with a link back to this page, fall back to Firebase's default page */
 async function sendVerify(u) {
-  try { await sendEmailVerification(u, { url: location.origin + location.pathname, handleCodeInApp: false }); return true; }
+  let res;
+  try { await sendEmailVerification(u, { url: location.origin + location.pathname, handleCodeInApp: false }); res = true; }
   catch (x1) {
-    if (x1 && x1.code === 'auth/too-many-requests') return x1;
-    try { await sendEmailVerification(u); return true; } catch (x2) { console.warn('verify email failed', x1 && x1.code, x2 && x2.code); return x2; }
+    if (x1 && x1.code === 'auth/too-many-requests') res = x1;
+    else { try { await sendEmailVerification(u); res = true; } catch (x2) { console.warn('verify email failed', x1 && x1.code, x2 && x2.code); res = x2; } }
   }
+  try { sessionStorage.setItem('unitac-verify-last', JSON.stringify({ ok: res === true, code: res === true ? '' : ((res && res.code) || 'unknown'), at: Date.now(), to: u.email })); } catch (_) {}
+  renderVerifyStatus();
+  return res;
+}
+function renderVerifyStatus() {
+  const el = $('verifyStatus'); if (!el) return;
+  let r = null; try { r = JSON.parse(sessionStorage.getItem('unitac-verify-last') || 'null'); } catch (_) {}
+  if (!r) { el.hidden = true; return; }
+  const t = new Date(r.at), hm = String(t.getHours()).padStart(2, '0') + ':' + String(t.getMinutes()).padStart(2, '0');
+  el.hidden = false; el.className = 'verify-status ' + (r.ok ? 'is-ok' : 'is-bad');
+  el.textContent = r.ok ? 'ระบบส่งอีเมลยืนยันไปที่ ' + r.to + ' แล้วเมื่อ ' + hm + ' น.'
+    : 'ส่งอีเมลไม่สำเร็จเมื่อ ' + hm + ' น. (รหัส ' + r.code + ') แคปข้อความนี้ส่งให้ร้านได้';
 }
 let resendAt = 0;
 $('resendBtn').addEventListener('click', async () => {

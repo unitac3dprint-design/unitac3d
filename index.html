@@ -99,9 +99,10 @@ svg{display:block}
 
 /* ---------- layout ---------- */
 main{padding-top:26px;padding-bottom:110px}
-.grid{display:grid;grid-template-columns:minmax(0,7.4fr) minmax(0,4.6fr);grid-template-areas:"cal next" "cal day" "cal info";grid-template-rows:auto auto 1fr;gap:18px 22px;align-items:start}
-.a-cal{grid-area:cal}.a-next{grid-area:next}.a-day{grid-area:day}.a-info{grid-area:info}
-@media (max-width:1000px){.grid{grid-template-columns:minmax(0,1fr);grid-template-areas:"next" "cal" "day" "info";grid-template-rows:none}}
+.grid{display:grid;grid-template-columns:minmax(0,7.4fr) minmax(0,4.6fr);gap:18px 22px;align-items:start}
+.colL,.colR{display:flex;flex-direction:column;gap:18px;min-width:0}
+
+@media (max-width:1000px){.grid{grid-template-columns:minmax(0,1fr)}.colL,.colR{display:contents}.a-next{order:1}.a-cal{order:2}.a-day{order:3}.a-contact{order:4}.a-info{order:5}}
 .card{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r-lg);padding:22px;box-shadow:var(--shadow);min-width:0}
 @media (max-width:600px){.card{padding:16px;border-radius:14px}}
 .card__title{font-size:17px}
@@ -134,7 +135,7 @@ main{padding-top:26px;padding-bottom:110px}
 .wk span{font-size:12.5px;color:var(--muted);text-align:left;padding:0 8px;line-height:1.6}
 .wk span:first-child,.wk span:last-child{color:var(--accent)}
 .days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
-.day{position:relative;display:flex;flex-direction:column;align-items:stretch;gap:5px;min-height:96px;min-width:0;padding:7px 7px 8px;border-radius:var(--r-md);background:var(--surface);border:1px solid var(--rule);text-align:left;overflow:hidden;transition:border-color .2s var(--ease),transform .15s var(--ease)}
+.day{position:relative;display:flex;flex-direction:column;align-items:stretch;gap:5px;min-height:88px;min-width:0;padding:7px 7px 8px;border-radius:var(--r-md);background:var(--surface);border:1px solid var(--rule);text-align:left;overflow:hidden;transition:border-color .2s var(--ease),transform .15s var(--ease)}
 .day:hover{border-color:var(--rule-strong)}
 .day:active{transform:scale(.98)}
 .day__top{display:flex;align-items:center;justify-content:space-between;gap:4px;min-width:0}
@@ -231,6 +232,21 @@ main{padding-top:26px;padding-bottom:110px}
 .contact a.tel{color:var(--ink);font-family:var(--font-num);font-size:14px;text-decoration:none;border-bottom:1px solid var(--rule-strong)}
 .contact a.tel:hover{border-color:var(--accent);color:var(--accent)}
 .fbs{display:grid;gap:8px;margin:8px 0 10px;white-space:normal}
+.contactcard .fbs{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 12px;margin:14px 0 0}
+.contactcard .fbs > .fbmsg{grid-column:1/-1}
+@media (max-width:600px){.contactcard .fbs{grid-template-columns:minmax(0,1fr)}}
+.cc__head{display:flex;justify-content:space-between;align-items:baseline;gap:6px 16px;flex-wrap:wrap}
+.cc__tel{white-space:pre-line;font-size:13.5px;color:var(--ink-2);overflow-wrap:anywhere}
+.cc__tel a.tel{color:var(--ink);font-family:var(--font-num);font-size:15px;text-decoration:none;border-bottom:1px solid var(--rule-strong)}
+.cc__tel a.tel:hover{border-color:var(--accent);color:var(--accent)}
+@media (min-width:1001px){
+  .contactcard{display:grid;grid-template-columns:150px minmax(0,1fr);gap:16px;align-items:start;padding:16px 18px}
+  .contactcard .cc__head{flex-direction:column;align-items:flex-start;gap:4px;padding-top:4px}
+  .contactcard .fbs{margin:0}
+  .contactcard .fb{padding:8px 10px}
+  .contactcard .fbmsg{background:none;padding:2px 2px 0;display:block;font-size:12px}
+  .contactcard .fbmsg span{margin-right:6px}
+}
 .fb{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;min-height:44px;padding:10px 12px;border-radius:var(--r-md);border:1px solid var(--rule);background:var(--surface);color:var(--ink);text-decoration:none;transition:border-color .2s var(--ease),transform .2s var(--ease)}
 .fb:hover{border-color:var(--rule-strong);transform:translateY(-1px)}
 .fb:active{transform:scale(.98)}
@@ -412,7 +428,7 @@ html.is-splash,html.is-splash body{overflow:hidden}
 /* ---------- motion: gated on html.js, absent under reduced motion ---------- */
 html.js .rv{opacity:0;transform:translateY(12px)}
 html.js .rv.in{opacity:1;transform:none;transition:opacity .5s var(--ease) var(--d,0ms),transform .55s var(--ease) var(--d,0ms)}
-.a-next{--d:60ms}.a-day{--d:120ms}.a-info{--d:180ms}
+.a-next{--d:60ms}.a-day{--d:120ms}.a-contact{--d:100ms}.a-info{--d:180ms}
 html.js .days.slide-l{animation:slideL .38s var(--ease)}
 html.js .days.slide-r{animation:slideR .38s var(--ease)}
 @keyframes slideL{from{opacity:0;transform:translateX(18px)}}
@@ -565,12 +581,7 @@ document.getElementById('root').outerHTML=
 '<main id="main" class="wrap">'+
  '<div class="restore" id="restoreBar" hidden><p>ระบบใหม่ยังไม่มีข้อมูลคิว นำเข้าคิว วันหยุด ช่องติดต่อ และรูปโปรไฟล์จากตารางเดิมได้ในคลิกเดียว</p><button type="button" class="btn btn--primary btn--sm" id="restoreYes">นำเข้าข้อมูลจากตารางเดิม</button></div>'+
  '<div class="grid" id="grid">'+
-  '<section class="next rv a-next" aria-labelledby="nextK"><div class="next__glow" aria-hidden="true"></div>'+
-   '<p class="next__k" id="nextK">รับงานพิมพ์ใหม่ได้เร็วสุด</p>'+
-   '<p class="next__day" id="nextDay"></p>'+
-   '<ul class="next__rows" id="nextRows"></ul>'+
-   '<div class="next__book" id="nextBook" hidden><span>ทักจองคิว</span></div>'+
-  '</section>'+
+ '<div class="colL">'+
   '<section class="card cal rv a-cal" id="cal" aria-labelledby="monthTitle" tabindex="-1">'+
    '<div class="cal__head">'+
     '<h1 class="cal__title" id="monthTitle" aria-live="polite"></h1>'+
@@ -585,6 +596,18 @@ document.getElementById('root').outerHTML=
    '<div id="monthView"><div class="wk" aria-hidden="true">'+WD.map(function(w){return'<span>'+w+'</span>';}).join('')+'</div><div class="days" id="days"></div></div>'+
    '<p class="swipehint" id="swipeHint">ปัดซ้าย–ขวาเพื่อดูเดือนอื่น</p>'+
    '<div id="listView" hidden></div>'+
+  '</section>'+
+  '<section class="card rv a-contact contactcard" id="contact" hidden aria-labelledby="contactTitle">'+
+   '<div class="cc__head"><h2 class="card__title" id="contactTitle">ติดต่อจองคิว</h2><span class="cc__tel" id="contactText"></span></div>'+
+   '<div class="fbs" id="fbList"></div>'+
+  '</section>'+
+ '</div>'+
+ '<div class="colR">'+
+  '<section class="next rv a-next" aria-labelledby="nextK"><div class="next__glow" aria-hidden="true"></div>'+
+   '<p class="next__k" id="nextK">รับงานพิมพ์ใหม่ได้เร็วสุด</p>'+
+   '<p class="next__day" id="nextDay"></p>'+
+   '<ul class="next__rows" id="nextRows"></ul>'+
+   '<div class="next__book" id="nextBook" hidden><span>ทักจองคิว</span></div>'+
   '</section>'+
   '<section class="card rv a-day" id="dayCard" aria-labelledby="dayTitle">'+
    '<div class="dhead"><div><h2 id="dayTitle"></h2><p class="dstate" id="dayState"></p></div></div>'+
@@ -601,8 +624,8 @@ document.getElementById('root').outerHTML=
     '<li><span class="lg lg--closed" aria-hidden="true"><i></i></span>ร้านหยุด</li>'+
    '</ul>'+
    '<p class="notice" id="notice" hidden></p>'+
-   '<div class="contact" id="contact" hidden><b>ติดต่อจองคิว</b><div class="fbs" id="fbList"></div><span id="contactText"></span></div>'+
   '</section>'+
+ '</div>'+
  '</div>'+
 '</main>'+
 '<footer class="foot">UNITAC<span aria-hidden="true"> · </span>ตารางคิวงานพิมพ์<span aria-hidden="true"> · </span><button type="button" class="footlink" id="ownerBtn">สำหรับเจ้าของร้าน</button></footer>'+
