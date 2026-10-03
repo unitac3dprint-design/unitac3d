@@ -260,10 +260,13 @@ function renderOrders() {
   const sum = (k) => sales.reduce((s, o) => s + (+o[k] || 0), 0);
   const total = sum('total'), print = sum('printPaid'), disc = sum('discountTotal'), pts = mo.reduce((s, o) => s + (+o.points || 0), 0);
   const memN = sales.filter(o => o.uid).length;
+  const costed = sales.filter(o => o.realCost != null), cost = costed.reduce((s, o) => s + (+o.realCost || 0), 0), profit = costed.reduce((s, o) => s + (+o.profit || 0), 0);
   const S = $('moStats'); S.textContent = '';
   S.append(stat('ยอดขายรวม', money(total) + ' ฿', sales.length + ' ออเดอร์', true), stat('ค่าพิมพ์สุทธิ', money(print) + ' ฿', 'หลังหักส่วนลด'),
     stat('ส่วนลดที่ให้', money(disc) + ' ฿', 'สมาชิก + คูปอง + ส่วนลดพิเศษ'), stat('ค่าเขียนแบบ / ค่าส่ง', intf(sum('designFee')) + ' / ' + intf(sum('shippingFee')), 'บาท · ไม่นับเป็นแต้ม'),
-    stat('แต้มที่แจก', intf(pts), 'รวมการปรับแต้ม'), stat('ลูกค้าสมาชิก', memN + ' / ' + sales.length, 'ออเดอร์ของสมาชิก'));
+    stat('แต้มที่แจก', intf(pts), 'รวมการปรับแต้ม'), stat('ลูกค้าสมาชิก', memN + ' / ' + sales.length, 'ออเดอร์ของสมาชิก'),
+    stat('ต้นทุนจริง', money(cost) + ' ฿', costed.length < sales.length ? 'นับ ' + costed.length + ' จาก ' + sales.length + ' ออเดอร์' : 'วัสดุ ไฟ ค่าเสื่อม'),
+    stat('กำไรสุทธิ', money(profit) + ' ฿', costed.length ? 'มาร์จิ้น ' + (profit / Math.max(1, costed.reduce((s, o) => s + (+o.total || 0), 0)) * 100).toFixed(0) + '%' : 'ออเดอร์ใหม่จะคิดให้อัตโนมัติ'));
   /* last 12 months */
   const C = $('moChart'); C.textContent = ''; const now = new Date(), months = [];
   for (let i = 11; i >= 0; i--) { const d = new Date(now.getFullYear(), now.getMonth() - i, 1); months.push([d.getFullYear(), d.getMonth()]); }
@@ -284,6 +287,16 @@ function renderOrders() {
 }
 $('moPrev').addEventListener('click', () => { const d = new Date(mY, mM - 1, 1); mY = d.getFullYear(); mM = d.getMonth(); renderOrders(); });
 $('moNext').addEventListener('click', () => { const d = new Date(mY, mM + 1, 1); mY = d.getFullYear(); mM = d.getMonth(); renderOrders(); });
+$('moCsv').addEventListener('click', () => {
+  const mo = orders.filter(o => inMonth(o, mY, mM));
+  const rows = [['วันที่', 'ประเภท', 'ชื่องาน', 'ลูกค้า', 'เลขสมาชิก', 'วัสดุ', 'จำนวน', 'น้ำหนักรวม (g)', 'ชั่วโมงพิมพ์', 'ค่าพิมพ์ก่อนลด', 'ส่วนลดรวม', 'ค่าพิมพ์สุทธิ', 'ค่าเขียนแบบ', 'ค่าส่ง', 'ยอดรวม', 'ต้นทุนจริง', 'กำไร', 'แต้ม', 'รหัสประกัน']];
+  mo.slice().reverse().forEach(o => { const d = toDate(o.deliveredAt);
+    rows.push([d ? d.toISOString().slice(0, 10) : '', o.kind === 'adjust' ? 'ปรับแต้ม' : 'ขาย', o.title, o.uid ? o.nickname : 'ลูกค้าทั่วไป', o.memberNo || '', o.material || '', o.qty || '', o.weight || '', o.hours || '',
+      o.printSubtotal || '', o.discountTotal || '', o.printPaid || '', o.designFee || '', o.shippingFee || '', o.total || '', o.realCost != null ? o.realCost : '', o.profit != null ? o.profit : '', o.points || 0, o.warrantyCode || '']); });
+  const esc = (v) => { v = v == null ? '' : String(v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['\ufeff' + rows.map(r => r.map(esc).join(',')).join('\n')], { type: 'text/csv;charset=utf-8' }));
+  a.download = 'unitac-orders-' + mY + '-' + String(mM + 1).padStart(2, '0') + '.csv'; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+});
 $('moNow').addEventListener('click', () => { const d = new Date(); mY = d.getFullYear(); mM = d.getMonth(); renderOrders(); });
 
 /* ---------- warranties: all at a glance ---------- */

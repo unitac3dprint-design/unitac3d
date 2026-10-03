@@ -434,6 +434,7 @@ dialog.cd::backdrop{background:rgba(12,10,8,.6);backdrop-filter:blur(3px)}
 
 .mglow{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:0;transition:opacity .8s cubic-bezier(.23,1,.32,1);background:radial-gradient(560px circle at var(--mx,50%) var(--my,30%),rgba(255,122,60,.11),rgba(255,122,60,.04) 35%,transparent 62%)}
 .mglow.is-on{opacity:1}
+#saveTransactionBtn{display:none!important}
 </style>
 </head>
 <body>
@@ -669,6 +670,7 @@ dialog.cd::backdrop{background:rgba(12,10,8,.6);backdrop-filter:blur(3px)}
         </div>
       </div>
 
+      <div id="sheetBlock" hidden>
       <div class="rule" role="presentation"></div>
       <h4 class="subhead">เชื่อมต่อ Google Sheet<small>เว้นว่างไว้ได้ — โปรแกรมจะใช้ราคาวัสดุที่ติดมากับไฟล์ และปิดปุ่มบันทึกยอดขาย</small></h4>
       <div class="stack">
@@ -691,6 +693,7 @@ dialog.cd::backdrop{background:rgba(12,10,8,.6);backdrop-filter:blur(3px)}
           </div>
           <p class="hint" id="hostedNote" hidden>หมายเหตุ: หน้าเว็บเวอร์ชันนี้ต่อกับ Google Apps Script ไม่ได้ (ตัวหน้าเว็บถูกกันไม่ให้ยิงไปเซิร์ฟเวอร์ภายนอก) ใช้ราคาวัสดุที่ติดมากับโปรแกรมได้ตามปกติ แต่ถ้าต้องการซิงก์ราคาและบันทึกยอดขายเข้าชีต ให้เปิดจากไฟล์ที่ดาวน์โหลดไว้ในเครื่อง</p>
         </div>
+      </div>
       </div>
     </div>
   </details>
@@ -736,6 +739,10 @@ dialog.cd::backdrop{background:rgba(12,10,8,.6);backdrop-filter:blur(3px)}
       <button type="button" class="btn btn--primary" id="saveTransactionBtn" style="padding:8px 18px;font-size:13.5px;font-weight:600">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16.5A4.5 4.5 0 0 1 6 8a6 6 0 0 1 11.5 1.5A4 4 0 0 1 17 17H7"/><path d="M12 12v8M9 15l3-3 3 3"/></svg>
         <span id="saveTransactionLabel">บันทึกยอดขาย</span>
+      </button>
+      <button type="button" class="btn btn--ghost" id="queueBtn" style="padding:8px 16px;font-size:13.5px" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M12 14v4M10 16h4"/></svg>
+        ลงคิว
       </button>
       <button type="button" class="btn btn--primary" id="saveOrderBtn" style="padding:8px 18px;font-size:13.5px;font-weight:600" hidden>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5 10 17l9-10"/></svg>
@@ -959,6 +966,7 @@ themeBtn.addEventListener('click',function(){
 /* ================= materials ================= */
 function sheetUrl(){return (val('sheetUrl')||'').trim();}
 function materials(){
+  if(window.WEB_MATS&&window.WEB_MATS.length) return window.WEB_MATS;
   if(sheetUrl()&&S.materials&&S.materials.length) return S.materials;
   return FALLBACK_MATERIALS;
 }
@@ -1173,7 +1181,7 @@ function syncMaterials(mode){ /* mode: 'auto' | 'manual' | 'test' */
   });
 }
 /* a page served over http(s) inside a sandboxed frame cannot reach Apps Script */
-if(location.protocol!=='file:') $('hostedNote').hidden=false;
+/* GitHub Pages can reach Apps Script directly, so the old sandbox note stays hidden */
 
 $('matSyncBtn').addEventListener('click',function(){syncMaterials('manual');});
 $('testSheetBtn').addEventListener('click',function(){syncMaterials('test');});
@@ -1383,12 +1391,8 @@ applyLogo();
 updateSheetButtons();
 addBedRow(); addBedRow();
 recalc();
-if(sheetUrl()){
-  if(S.materialsAt) setSyncStatus(stampText(S.materialsAt));
-  syncMaterials('auto');
-}else{
-  setSyncStatus('ใช้ราคาในเครื่อง (ยังไม่ได้เชื่อมต่อชีต)');
-}
+setSyncStatus('ใช้ราคาในเครื่อง · เข้าสู่ระบบเจ้าของร้านเพื่อใช้ราคาจากสต็อกเส้น');
+window.__unitacSetMaterials=function(list,label){window.WEB_MATS=list;buildOptions();recalc();setSyncStatus(label||'ราคาจากสต็อกเส้นในหลังร้าน ✓');};
 
 /* reveal-on-scroll: gated on html.js so reduced motion and no-JS sit in the final state */
 if(!reduce){
@@ -1404,7 +1408,7 @@ if(!reduce){
 }
 
 /* verification hook (harmless in production) */
-window.__unitac={calc:calc,last:function(){return last;},materials:materials,recalc:recalc};
+window.__unitac={calc:calc,last:function(){return last;},materials:materials,recalc:recalc,buildOptions:buildOptions};
 })();
 </script>
 <dialog class="cd" id="orderDlg" aria-labelledby="odTitle"><form class="cd__box" id="orderForm" novalidate>
@@ -1417,6 +1421,21 @@ window.__unitac={calc:calc,last:function(){return last;},materials:materials,rec
     <p class="cd__err" id="odErr" hidden></p>
   </div>
   <div class="cd__f"><button type="button" class="btn btn--ghost" data-close>ยกเลิก</button><button type="submit" class="btn btn--primary" id="odOk">ยืนยันบันทึก</button></div>
+</form></dialog>
+<dialog class="cd" id="queueDlg" aria-labelledby="qdTitle"><form class="cd__box" id="queueForm" novalidate>
+  <div class="cd__h"><h2 id="qdTitle">ลงคิวในตาราง</h2></div>
+  <div class="cd__b">
+    <div class="field"><label for="qdName">ชื่องาน</label><div class="inp"><input type="text" id="qdName" maxlength="60"></div></div>
+    <div class="field"><label for="qdMachine">เครื่อง</label><div class="inp"><select id="qdMachine"></select></div></div>
+    <div class="frow frow--2">
+      <div class="field"><label for="qdStart">วันเริ่ม</label><div class="inp"><input type="date" id="qdStart"></div></div>
+      <div class="field"><label for="qdHours">เวลาพิมพ์ทั้งหมด</label><div class="inp inp--unit"><input type="number" id="qdHours" min="0.5" step="0.5" inputmode="decimal"><span class="unit">ชม.</span></div></div>
+    </div>
+    <dl class="cd__sum" id="qdSum"></dl>
+    <p class="hint">เครื่องพิมพ์ต่อเนื่อง 24 ชม. และข้ามวันที่ร้านหยุด ลูกค้าสมาชิกที่เลือกไว้จะเห็นงานนี้เป็นงานของตัวเอง</p>
+    <p class="cd__err" id="qdErr" hidden></p>
+  </div>
+  <div class="cd__f"><button type="button" class="btn btn--ghost" data-close>ยกเลิก</button><button type="submit" class="btn btn--primary" id="qdOk">ลงคิว</button></div>
 </form></dialog>
 <dialog class="cd" id="loginDlg" aria-labelledby="lgTitle"><form class="cd__box" id="loginForm" novalidate>
   <div class="cd__h"><h2 id="lgTitle">เข้าสู่ระบบเจ้าของร้าน</h2></div>
