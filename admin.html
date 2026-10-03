@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/site.css?v=20261003h">
+<link rel="stylesheet" href="css/site.css?v=20261003j">
 <title>หลังร้าน · UNITAC</title>
 <meta name="description" content="UNITAC 3D PRINT ยินดีให้บริการ">
 <meta property="og:type" content="website">
@@ -210,6 +210,22 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
 .ship__link{display:grid;gap:8px}
 .ship__link .num{color:var(--ink-2);overflow-wrap:anywhere}
 .ship__btns{display:flex;gap:8px;flex-wrap:wrap}
+
+/* shipment editor */
+.sh__grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:700px){.sh__grid{grid-template-columns:minmax(0,1fr)}}
+.sh__chips{display:flex;flex-wrap:wrap;gap:6px}
+.sh__chips button{min-height:38px;padding:0 12px;border-radius:999px;border:1px solid var(--rule-strong);color:var(--ink-2);font-size:13px}
+.sh__chips button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:600}
+.sh__list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.sh__list li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;padding:10px 12px;border-radius:10px;background:var(--sunk)}
+.sh__list li:first-child{box-shadow:inset 0 0 0 1px rgba(255,122,60,.5)}
+.sh__list b{display:block;font-weight:500;font-size:14px;overflow-wrap:anywhere}
+.sh__list span{font-family:var(--font-num);font-size:11.5px;color:var(--muted)}
+.sh__list button{width:32px;height:32px;border-radius:8px;color:var(--muted);display:grid;place-items:center}
+.sh__list button:hover{color:var(--stop)}
+.sh__list button svg{width:14px;height:14px}
+.sh__list .is-new{box-shadow:inset 0 0 0 1px var(--ok)}
 </style>
 </head>
 <body>
@@ -416,7 +432,7 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
       </div>
       <div class="ship__link" id="oLinkBox" hidden>
         <span class="num small" id="oLink"></span>
-        <div class="ship__btns"><button type="button" class="btn btn--primary btn--sm" id="oCopyMsg">คัดลอกข้อความส่งลูกค้า</button><button type="button" class="btn btn--ghost btn--sm" id="oCopyLink">คัดลอกลิงก์</button><a class="btn btn--ghost btn--sm" id="oOpen" target="_blank" rel="noopener">เปิดดู</a></div>
+        <div class="ship__btns"><button type="button" class="btn btn--primary btn--sm" id="oShipEdit">อัปเดตสถานะพัสดุ</button><button type="button" class="btn btn--ghost btn--sm" id="oCopyMsg">คัดลอกข้อความส่งลูกค้า</button><button type="button" class="btn btn--ghost btn--sm" id="oCopyLink">คัดลอกลิงก์</button><a class="btn btn--ghost btn--sm" id="oOpen" target="_blank" rel="noopener">เปิดดู</a></div>
       </div>
     </div>
     <div class="field oAdjOnly"><label for="oPts">แต้มที่ปรับ (ติดลบได้)</label><input type="number" id="oPts" step="1" inputmode="numeric"></div>
@@ -488,11 +504,38 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
   <div class="dlg__foot"><button type="button" class="btn btn--danger btn--sm" id="pfDel">ลบ</button><span class="sp"></span><button type="button" class="btn btn--ghost" data-close>ยกเลิก</button><button type="submit" class="btn btn--primary" id="pfSave">บันทึก</button></div>
 </form></dialog>
 
+<dialog id="shDlg" class="wide" aria-labelledby="shT"><div class="dlg">
+  <div class="dlg__head"><div><h2 id="shT">สถานะพัสดุ</h2><p class="muted small num" id="shNum"></p></div><button type="button" class="iconbtn" data-close aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="dlg__body">
+    <div class="sh__grid">
+      <div class="sec">
+        <div class="sec__h"><h2>เพิ่มสถานะ</h2></div>
+        <div class="sh__chips" id="shChips" role="group" aria-label="เลือกสถานะ"></div>
+        <div class="frow">
+          <div class="field"><label for="shPlace">สถานที่ (ไม่บังคับ)</label><input type="text" id="shPlace" maxlength="60" placeholder="เช่น สาขาลพบุรี, ศูนย์คัดแยก บางนา"></div>
+          <div class="field"><label for="shAt">เวลา</label><input type="datetime-local" id="shAt" class="input"></div>
+        </div>
+        <button type="button" class="btn btn--ghost" id="shAdd">เพิ่มสถานะนี้</button>
+        <div class="field"><label for="shPaste">หรือวางข้อความจากหน้า Flash</label><textarea id="shPaste" rows="4" placeholder="คัดลอกรายการสถานะจากเว็บหรือแอป Flash มาวาง หลายบรรทัดได้ ระบบแยกวันเวลาและสถานะให้"></textarea></div>
+        <button type="button" class="btn btn--ghost" id="shParse">แยกเป็นสถานะ</button>
+        <div class="field"><label for="shEta">คาดว่าถึงลูกค้า</label><input type="date" id="shEta" class="input"></div>
+      </div>
+      <div class="sec">
+        <div class="sec__h"><h2>ที่ลูกค้าเห็น</h2><a class="linkbtn" id="shOpen" target="_blank" rel="noopener">เปิดหน้าลูกค้า ↗</a></div>
+        <ol class="sh__list" id="shList"></ol>
+      </div>
+    </div>
+    <p class="err" id="shErr" hidden></p>
+  </div>
+  <div class="dlg__foot"><span class="hint" id="shHint">เปลี่ยนแล้วกดบันทึก ลูกค้าที่เปิดหน้าติดตามอยู่จะเห็นทันที</span><span class="sp"></span><button type="button" class="btn btn--ghost" data-close>ปิด</button><button type="button" class="btn btn--primary" id="shSave">บันทึกสถานะ</button></div>
+</div></dialog>
+
 <footer class="foot">UNITAC · <a href="./">ตารางคิว</a> · <a href="warranty.html">เช็กประกัน</a> · <a href="portfolio.html">ผลงาน</a> · <a href="partners.html">พาร์ทเนอร์</a> · <a href="privacy.html">นโยบายความเป็นส่วนตัว</a></footer>
-<script type="module" src="js/admin.js?v=20261003h"></script>
-<script type="module" src="js/admin-partners.js?v=20261003h"></script>
-<script type="module" src="js/admin-stock.js?v=20261003h"></script>
-<script type="module" src="js/admin-portfolio.js?v=20261003h"></script>
-<script type="module" src="js/admin-tools.js?v=20261003h"></script>
+<script type="module" src="js/admin.js?v=20261003j"></script>
+<script type="module" src="js/admin-partners.js?v=20261003j"></script>
+<script type="module" src="js/admin-stock.js?v=20261003j"></script>
+<script type="module" src="js/admin-portfolio.js?v=20261003j"></script>
+<script type="module" src="js/admin-tools.js?v=20261003j"></script>
+<script type="module" src="js/admin-ship.js?v=20261003j"></script>
 </body>
 </html>

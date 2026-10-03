@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/site.css?v=20261003h">
+<link rel="stylesheet" href="css/site.css?v=20261003j">
 <title>ติดตามพัสดุ · UNITAC 3D PRINT</title>
 <meta name="description" content="กดเพื่อดูสถานะพัสดุจาก UNITAC 3D PRINT ได้ทันที ไม่ต้องคัดลอกเลขพัสดุ">
 <meta property="og:type" content="website">
@@ -21,16 +21,50 @@
 <meta property="og:image:height" content="1260">
 <meta property="og:locale" content="th_TH">
 <meta name="twitter:card" content="summary_large_image">
-<style>.trk{padding-top:40px;padding-bottom:56px;display:flex;flex-direction:column;gap:18px}
-.trk__kick{font-family:var(--font-num);font-size:12px;letter-spacing:.24em;color:var(--accent)}
-.trk__head h1{font-size:30px;margin-top:6px}
-.trk__card{display:flex;flex-direction:column;gap:16px}
-.trk__num{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
-.trk__num b{font-size:26px;font-weight:500;letter-spacing:.06em;overflow-wrap:anywhere}
-.trk__live{border-radius:12px;overflow:hidden;background:#fff;min-height:0}
-.trk__live:empty{display:none}
-.trk__acts{display:grid;gap:10px}
-.trk__form{display:flex;gap:10px;align-items:flex-end}
+<style>.trk{padding-top:36px;padding-bottom:56px;display:flex;flex-direction:column;gap:18px}
+.trk__head{display:flex;flex-direction:column;gap:4px}
+.trk__kick{font-family:var(--font-num);font-size:11.5px;letter-spacing:.24em;color:var(--accent)}
+.trk__head h1{font-size:28px;line-height:1.3}
+.trk__job{font-size:14px;color:var(--ink-2)}
+.trk__card{display:flex;flex-direction:column;gap:18px;padding:20px 18px;border-radius:18px;background:var(--surface);border:1px solid var(--rule)}
+.trk__num{display:flex;flex-direction:column;gap:4px}
+.trk__numrow{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.trk__numrow b{font-size:22px;font-weight:500;letter-spacing:.05em;overflow-wrap:anywhere}
+.trk__copy{width:44px;height:44px;border-radius:12px;border:1px solid var(--rule-strong);color:var(--ink-2);display:grid;place-items:center;flex:none}
+.trk__copy:hover{color:var(--ink);border-color:var(--ink-2)}
+.trk__copy svg{width:16px;height:16px}
+.trk__now{display:flex;align-items:center;gap:12px;padding:14px;border-radius:12px;background:var(--accent-soft)}
+.trk__now.is-ok{background:var(--ok-soft)}
+.trk__now.is-bad{background:var(--stop-soft)}
+.trk__now.is-wait{background:var(--sunk)}
+.trk__nowic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;flex:none;background:var(--accent);color:var(--on-accent)}
+.is-ok .trk__nowic{background:var(--ok);color:#10241A}
+.is-bad .trk__nowic{background:var(--stop);color:#2A0F0D}
+.is-wait .trk__nowic{background:var(--rule-strong);color:var(--ink)}
+.trk__nowic svg{width:21px;height:21px}
+.trk__now b{display:block;font-weight:600;color:var(--accent-hi);line-height:1.4}
+.is-ok .trk__now b,.trk__now.is-ok b{color:var(--ok)}
+.trk__now.is-bad b{color:var(--stop)}
+.trk__now.is-wait b{color:var(--ink)}
+.trk__now span{font-size:12.5px;color:var(--ink-2)}
+.trk__tl{list-style:none;margin:0;padding:4px 0 0}
+.tli{position:relative;display:flex;gap:14px;padding-bottom:18px}
+.tli:last-child{padding-bottom:0}
+.tli::before{content:'';position:absolute;left:12px;top:30px;bottom:-4px;width:2px;background:var(--rule-strong)}
+.tli:last-child::before{display:none}
+.tli__dot{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;flex:none;background:var(--ok);color:#10241A}
+.tli__dot svg{width:14px;height:14px}
+.tli--now .tli__dot{background:var(--accent);color:var(--on-accent);box-shadow:0 0 0 6px rgba(255,122,60,.18)}
+.tli--bad .tli__dot{background:var(--stop);color:#2A0F0D}
+.tli--wait .tli__dot{background:none;border:2px solid var(--rule-strong)}
+.tli__t{display:flex;flex-direction:column;gap:2px;padding-top:2px;min-width:0}
+.tli__t b{font-size:14.5px;font-weight:500;line-height:1.45;overflow-wrap:anywhere}
+.tli--now .tli__t b{font-weight:600}
+.tli--wait .tli__t b{color:var(--muted)}
+.tli__t span{font-family:var(--font-num);font-size:12px;color:var(--muted)}
+.trk__go{gap:8px}
+.trk__go svg{width:16px;height:16px}
+.trk__form{display:flex;gap:10px;align-items:flex-end;margin-top:8px}
 .trk__form .field{flex:1}
 .trk__form input{font-family:var(--font-num);letter-spacing:.05em;text-transform:uppercase}
 </style>
@@ -53,26 +87,26 @@
 <main id="main" class="wrap wrap--narrow trk">
   <div class="trk__head rv">
     <span class="trk__kick">UNITAC · ติดตามพัสดุ</span>
-    <h1 id="tTitle">พัสดุของคุณ</h1>
+    <h1 id="tTitle">ติดตามพัสดุ</h1>
+    <span class="trk__job" id="tJob"></span>
   </div>
-  <section class="card trk__card rv" style="--d:60ms" id="tCard" hidden>
-    <div class="trk__num"><span class="muted small" id="tCarrier"></span><b class="num" id="tNum"></b>
-      <button type="button" class="btn btn--ghost btn--sm" id="tCopy">คัดลอกเลขพัสดุ</button></div>
-    <div id="YQContainer" class="trk__live"></div>
-    <p class="hint" id="tLiveNote">กำลังโหลดสถานะล่าสุด…</p>
-    <div class="trk__acts">
-      <a class="btn btn--primary btn--block" id="tOfficial" target="_blank" rel="noopener">เปิดหน้าติดตามของขนส่ง</a>
-      <a class="btn btn--ghost btn--block" id="t17" target="_blank" rel="noopener">ดูสถานะผ่าน 17TRACK</a>
+  <section class="trk__card rv" style="--d:60ms" id="tCard" hidden aria-live="polite">
+    <div class="trk__num">
+      <span class="muted small" id="tCarrier"></span>
+      <div class="trk__numrow"><b class="num" id="tNum"></b><button type="button" class="trk__copy" id="tCopy" aria-label="คัดลอกเลขพัสดุ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg></button></div>
     </div>
-    <p class="hint">กดปุ่มแล้ว ระบบคัดลอกเลขพัสดุไว้ให้ด้วย ถ้าหน้าขนส่งไม่เติมเลขให้เอง กดวางได้ทันที</p>
+    <div class="trk__now" id="tNow"></div>
+    <ol class="trk__tl" id="tList"></ol>
   </section>
-  <form id="tForm" class="trk__form rv" style="--d:100ms" novalidate>
+  <a class="btn btn--primary btn--block trk__go rv" style="--d:100ms" id="tOfficial" target="_blank" rel="noopener" hidden></a>
+  <p class="hint" id="tFoot" hidden></p>
+  <form id="tForm" class="trk__form rv" style="--d:140ms" novalidate>
     <div class="field"><label for="tIn" class="sr">เลขพัสดุ</label><input type="search" id="tIn" placeholder="ใส่เลขพัสดุ เช่น TH0123456789A" autocomplete="off" spellcheck="false" autocapitalize="characters"></div>
     <button type="submit" class="btn btn--ghost">ติดตาม</button>
   </form>
 </main>
 
 <footer class="foot">UNITAC · <a href="./">ตารางคิว</a> · <a href="warranty.html">เช็กประกัน</a> · <a href="portfolio.html">ผลงาน</a> · <a href="partners.html">พาร์ทเนอร์</a> · <a href="privacy.html">นโยบายความเป็นส่วนตัว</a></footer>
-<script type="module" src="js/track.js?v=20261003h"></script>
+<script type="module" src="js/track.js?v=20261003j"></script>
 </body>
 </html>
