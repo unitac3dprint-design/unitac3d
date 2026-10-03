@@ -50,6 +50,8 @@ export function authMsg(code) {
 /* signed in as the shop owner: the "สมาชิก" tab becomes "หลังร้าน" on every page */
 function swapNav(own) {
   const onAdmin = /admin\.html$/.test(location.pathname);
+  /* older pages appended their own "หลังร้าน" link: keep only the swapped tab */
+  document.querySelectorAll('.nav a[href="admin.html"]:not([data-nav])').forEach(a => a.remove());
   document.querySelectorAll('[data-nav="member"]').forEach(a => {
     a.textContent = own ? 'หลังร้าน' : 'สมาชิก';
     a.href = own ? 'admin.html' : 'member.html';
