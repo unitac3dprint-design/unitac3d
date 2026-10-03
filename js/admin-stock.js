@@ -1,5 +1,5 @@
-import { auth, db, OWNER, authMsg, onAuthStateChanged, doc, collection, getDocs, setDoc, updateDoc, deleteDoc, writeBatch, serverTimestamp } from './fb.js?v=20261003o';
-import { $, h, toast, money, intf, sellPerSpoolOf, sellPerGramOf } from './core.js?v=20261003o';
+import { auth, db, OWNER, authMsg, onAuthStateChanged, doc, collection, getDocs, setDoc, updateDoc, deleteDoc, writeBatch, serverTimestamp } from './fb.js?v=20261003p';
+import { $, h, toast, money, intf, sellPerSpoolOf, sellPerGramOf } from './core.js?v=20261003p';
 
 /* filament stock: counted in spools (no automatic deduction), with cost and selling price per material */
 let mats = [], cur = null, loaded = false, typeFilter = 'all';
@@ -21,9 +21,9 @@ function render() {
   const S = $('stkStats'); S.textContent = '';
   const act = mats.filter(m => m.active !== false), low = act.filter(isLow);
   const sealed = act.reduce((s, m) => s + (+m.sealed || 0), 0), open = act.reduce((s, m) => s + (+m.open || 0), 0);
-  const value = act.reduce((s, m) => s + (+m.sealed || 0) * (+m.spoolCost || 0), 0);
+  const value = act.reduce((s, m) => s + ((+m.sealed || 0) + (+m.open || 0)) * (+m.spoolCost || 0), 0);
   S.append(stat('ม้วนทั้งหมด', intf(sealed + open), 'ใหม่ ' + sealed + ' · เปิดใช้ ' + open, true), stat('รายการเส้น', intf(act.length), 'ยี่ห้อ ชนิด และสี'),
-    stat('มูลค่าม้วนใหม่ในสต็อก', money(value) + ' ฿', 'คิดจากราคาทุน'), stat('ใกล้หมด', intf(low.length), low.length ? low.slice(0, 2).map(label).join(', ') + (low.length > 2 ? ' …' : '') : 'ยังไม่มีรายการที่ต้องสั่ง'));
+    stat('มูลค่าวัสดุพิมพ์ทั้งหมด', money(value) + ' ฿', 'ราคาทุน · ม้วนใหม่ + ม้วนที่เปิดใช้'), stat('ใกล้หมด', intf(low.length), low.length ? low.slice(0, 2).map(label).join(', ') + (low.length > 2 ? ' …' : '') : 'ยังไม่มีรายการที่ต้องสั่ง'));
   const types = [...new Set(mats.map(m => m.type || 'อื่นๆ'))].sort();
   const C = $('stkChips'); C.textContent = '';
   [['all', 'ทั้งหมด', mats.length], ['low', 'ใกล้หมด', low.length]].concat(types.map(t => [t, t, mats.filter(m => (m.type || 'อื่นๆ') === t).length])).forEach(([k, n, c]) => {
