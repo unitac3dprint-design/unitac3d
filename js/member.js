@@ -2,11 +2,11 @@ import {
   auth, db, OWNER, authMsg, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword,
   sendEmailVerification, sendPasswordResetEmail, signOut, reload,
   doc, collection, getDoc, getDocs, setDoc, updateDoc, onSnapshot, query, where, serverTimestamp
-} from './fb.js?v=20261003t';
+} from './fb.js?v=20261003u';
 import {
   RANKS, rankOf, nextRank, couponInfo, memberNo, toDate, fDate, fDM, fMonthYear, money, intf, daysLeft,
   COUPON_CAP, $, h, toast, reveal, toAvatar, avatarEl, rankCard, attachTilt, requestGyro, deviceId, qrSvg, LOGO_SVG
-} from './core.js?v=20261003t';
+} from './core.js?v=20261003u';
 
 document.querySelectorAll('[data-logo]').forEach(e => { e.innerHTML = LOGO_SVG; });
 document.querySelector('[data-nav="member"]').setAttribute('aria-current', 'page');

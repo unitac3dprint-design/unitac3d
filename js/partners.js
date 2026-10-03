@@ -1,6 +1,6 @@
-import { db, collection, getDocs, query, where } from './fb.js?v=20261003t';
-import { $, h, reveal, LOGO_SVG, MARK_PATH } from './core.js?v=20261003t';
-import { PCATS } from './pcats.js?v=20261003t';
+import { db, collection, getDocs, query, where } from './fb.js?v=20261003u';
+import { $, h, reveal, LOGO_SVG, MARK_PATH } from './core.js?v=20261003u';
+import { PCATS } from './pcats.js?v=20261003u';
 document.querySelectorAll('[data-logo]').forEach(e => { e.innerHTML = LOGO_SVG; });
 document.querySelectorAll('[data-mark]').forEach(e => { e.innerHTML = '<svg viewBox="4.3 21.5 85.5 36.5"><path fill="currentColor" d="' + MARK_PATH + '"/></svg>'; });
 document.querySelector('[data-nav="partners"]').setAttribute('aria-current', 'page');
@@ -13,6 +13,17 @@ function stats() {
   const parts = PCATS.filter(c => has(c.key)).map(c => [all.filter(p => p.cat === c.key).length, c.name]);
   parts.forEach(([n, name], i) => { if (i) el.append(' · '); const s = h('span'); s.style.whiteSpace = 'nowrap'; s.append(h('b', null, String(n)), ' ' + name); el.appendChild(s); });
 }
+/* logo leans toward the mouse; its shadow falls the other way */
+const fineTilt = matchMedia('(hover:hover) and (pointer:fine)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+function tiltLogo(a, im) {
+  let raf = 0, ev = null;
+  const go = () => { raf = 0; if (!ev) return; const r = a.querySelector('.ptile__stage').getBoundingClientRect();
+    const x = Math.max(0, Math.min(1, (ev.clientX - r.left) / r.width)), y = Math.max(0, Math.min(1, (ev.clientY - r.top) / r.height));
+    a.style.setProperty('--ry', ((x - .5) * 28).toFixed(2) + 'deg'); a.style.setProperty('--rx', ((.5 - y) * 22).toFixed(2) + 'deg');
+    a.style.setProperty('--sx', ((.5 - x) * 22).toFixed(1) + 'px'); a.style.setProperty('--sy', (14 + (.5 - y) * 12).toFixed(1) + 'px'); };
+  a.addEventListener('pointermove', (e) => { if (e.pointerType !== 'mouse') return; ev = e; a.classList.add('is-tilt'); if (!raf) raf = requestAnimationFrame(go); });
+  a.addEventListener('pointerleave', () => { ev = null; a.classList.remove('is-tilt'); ['--rx', '--ry', '--sx', '--sy'].forEach(k => a.style.removeProperty(k)); });
+}
 export function partnerTile(p) {
   const a = h('a', 'ptile' + (p.tone === 'dark' ? ' ptile--dark' : ''));
   a.href = p.url; a.target = '_blank'; a.rel = 'noopener'; a.setAttribute('aria-label', p.name + ' (เปิดในแท็บใหม่)');
@@ -20,6 +31,7 @@ export function partnerTile(p) {
   const st = h('span', 'ptile__stage'), im = h('img'); im.src = p.logo; im.alt = ''; im.loading = 'lazy'; im.decoding = 'async'; st.appendChild(im);
   const go = h('span', 'ptile__go'); go.innerHTML = 'เยี่ยมชม ' + GO;
   a.append(st, h('span', 'ptile__nm', p.name), go);
+  if (fineTilt) tiltLogo(a, im);
   return a;
 }
 function render() {

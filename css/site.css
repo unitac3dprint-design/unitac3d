@@ -224,15 +224,16 @@ svg{display:block}
 
 /* partner logo (public page + admin preview): no frame, floating logo with a deep shadow */
 .ptile{position:relative;display:flex;flex-direction:column;align-items:center;gap:16px;text-decoration:none;color:var(--ink);padding:8px 6px 4px;border-radius:18px;--s:1}
-.ptile__stage{position:relative;width:100%;aspect-ratio:4/3;display:grid;place-items:center}
+.ptile__stage{position:relative;width:100%;aspect-ratio:4/3;display:grid;place-items:center;perspective:800px}
 .ptile__stage::before{content:'';position:absolute;left:12%;right:12%;bottom:6%;height:22%;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.55),transparent 75%);filter:blur(6px);transition:transform .45s var(--ease),opacity .45s var(--ease)}
 .ptile__stage::after{content:'';position:absolute;inset:8% 6%;border-radius:50%;background:radial-gradient(closest-side,rgba(255,122,60,.20),transparent 72%);opacity:0;transition:opacity .45s var(--ease)}
-.ptile img{position:relative;z-index:1;max-width:calc(74% * var(--s));max-height:calc(84% * var(--s));object-fit:contain;display:block;filter:drop-shadow(0 14px 18px rgba(0,0,0,.55)) drop-shadow(0 3px 4px rgba(0,0,0,.45));transition:transform .45s var(--ease),filter .45s var(--ease)}
-.ptile--dark img{filter:invert(1) hue-rotate(180deg) drop-shadow(0 14px 18px rgba(0,0,0,.55)) drop-shadow(0 3px 4px rgba(0,0,0,.45))}
+.ptile img{position:relative;z-index:1;max-width:calc(74% * var(--s));max-height:calc(84% * var(--s));object-fit:contain;display:block;transform:translateY(var(--ty,0px)) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) scale(var(--sc,1));filter:drop-shadow(var(--sx,0px) var(--sy,14px) 18px rgba(0,0,0,.55)) drop-shadow(0 3px 4px rgba(0,0,0,.45));transition:transform .55s var(--ease),filter .55s var(--ease)}
+.ptile.is-tilt img{transition:transform .12s linear,filter .12s linear}
+.ptile--dark img{filter:invert(1) hue-rotate(180deg) drop-shadow(var(--sx,0px) var(--sy,14px) 18px rgba(0,0,0,.55)) drop-shadow(0 3px 4px rgba(0,0,0,.45))}
 .ptile__nm{font-family:var(--font-head);font-size:16px;font-weight:600;line-height:1.4;text-align:center;color:var(--ink);overflow-wrap:anywhere;max-width:100%}
 .ptile__go{display:inline-flex;align-items:center;gap:4px;margin-top:-10px;font-size:12px;color:var(--muted);transition:color .3s var(--ease)}
 .ptile__go svg{width:13px;height:13px}
-.ptile:hover img,.ptile:focus-visible img{transform:translateY(-6px) scale(1.04)}
+.ptile:hover img,.ptile:focus-visible img{--ty:-6px;--sc:1.05}
 .ptile:hover .ptile__stage::before,.ptile:focus-visible .ptile__stage::before{transform:scale(.86);opacity:.7}
 .ptile:hover .ptile__stage::after,.ptile:focus-visible .ptile__stage::after{opacity:1}
 .ptile:hover .ptile__go,.ptile:focus-visible .ptile__go{color:var(--accent)}
