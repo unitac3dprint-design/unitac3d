@@ -1,9 +1,10 @@
 import {
   auth, db, OWNER, authMsg, onAuthStateChanged, signInWithEmailAndPassword, signOut,
   doc, collection, getDoc, getDocs, updateDoc, deleteDoc, query, where, writeBatch, serverTimestamp, increment
-} from './fb.js?v=20261003f';
-import { RANKS, rankOf, couponInfo, memberNo, toDate, fDate, fDM, money, intf, daysLeft, warrantyCode, $, h, toast, avatarEl, LOGO_SVG } from './core.js?v=20261003f';
-import { scanQR, parseMemberQR } from './scan.js?v=20261003f';
+} from './fb.js?v=20261003h';
+import { RANKS, rankOf, couponInfo, memberNo, toDate, fDate, fDM, money, intf, daysLeft, warrantyCode, $, h, toast, avatarEl, LOGO_SVG } from './core.js?v=20261003h';
+import { CARRIERS, trackPage, cleanTrack } from './carriers.js?v=20261003h';
+import { scanQR, parseMemberQR } from './scan.js?v=20261003h';
 
 document.querySelectorAll('[data-logo]').forEach(e => { e.innerHTML = LOGO_SVG; });
 
@@ -184,7 +185,7 @@ function orderRow(o, withWho = true) {
   const d = toDate(o.deliveredAt);
   const meta = [d ? fDate.format(d) : '', withWho && o.uid ? (o.nickname || '') + ' ' + (o.memberNo || '') : (withWho && o.kind !== 'adjust' ? 'ลูกค้าทั่วไป' : ''),
     o.kind !== 'adjust' && o.points ? '+' + intf(o.points) + ' แต้ม' : '', o.couponPct ? 'คูปอง +' + o.couponPct + '%' : '',
-    o.kind !== 'adjust' ? (o.profit != null ? 'กำไร ' + money(o.profit) + ' ฿' : 'ยังไม่มีต้นทุน') : ''].filter(Boolean).join(' · ');
+    o.kind !== 'adjust' ? (o.profit != null ? 'กำไร ' + money(o.profit) + ' ฿' : 'ยังไม่มีต้นทุน') : '', o.shipTrack ? '📦 ' + o.shipTrack : ''].filter(Boolean).join(' · ');
   body.append(hd, h('span', 'row__m', meta));
   if (o.warrantyCode) {
     const w = h('button', 'linkbtn', 'ประกัน ' + o.warrantyCode); w.type = 'button';
@@ -212,6 +213,18 @@ function ptsNote() {
   $('oPtsNote').textContent = 'แต้มของออเดอร์นี้: ' + intf(o.points || 0) + ' → ' + intf(np) + (diff ? ' (ลูกค้าจะ' + (diff > 0 ? 'ได้เพิ่ม ' : 'ถูกหัก ') + intf(Math.abs(diff)) + ' แต้ม)' : '');
 }
 ['oPrint', 'oDesign', 'oShip', 'oCost'].forEach(id => $(id).addEventListener('input', calcTotal));
+function shipLink() {
+  const n = cleanTrack($('oTrack').value), c = $('oCarrier').value, box = $('oLinkBox');
+  box.hidden = !n; if (!n) return; const url = trackPage(n, c);
+  $('oLink').textContent = url; $('oOpen').href = url;
+}
+function shipMsg() {
+  const n = cleanTrack($('oTrack').value), c = $('oCarrier').value, o = editing;
+  return 'ส่งของแล้วครับ 📦 ' + ((o && o.title) || '') + '\nขนส่ง ' + CARRIERS[c].name + ' เลขพัสดุ ' + n + '\nกดดูสถานะได้เลย ' + trackPage(n, c);
+}
+$('oTrack').addEventListener('input', shipLink); $('oCarrier').addEventListener('change', shipLink);
+$('oCopyLink').addEventListener('click', () => navigator.clipboard.writeText(trackPage(cleanTrack($('oTrack').value), $('oCarrier').value)).then(() => toast('คัดลอกลิงก์แล้ว')));
+$('oCopyMsg').addEventListener('click', () => navigator.clipboard.writeText(shipMsg()).then(() => toast('คัดลอกข้อความแล้ว วางในแชทลูกค้าได้เลย', 4000)));
 function editOrder(o) {
   editing = o; const adj = o.kind === 'adjust';
   document.querySelectorAll('.oSaleOnly').forEach(e => e.hidden = adj); document.querySelectorAll('.oAdjOnly').forEach(e => e.hidden = !adj);
@@ -222,6 +235,7 @@ function editOrder(o) {
   $('oPrint').value = o.printPaid != null ? o.printPaid : ''; $('oDesign').value = o.designFee || 0; $('oShip').value = o.shippingFee || 0;
   $('oPts').value = o.points || 0; $('oErr').hidden = true;
   $('oCost').value = o.realCost != null ? o.realCost : '';
+  $('oCarrier').value = o.shipCarrier || 'flash'; $('oTrack').value = o.shipTrack || ''; shipLink();
   if (!adj) calcTotal(); else $('oPtsNote').textContent = '';
   $('oDlg').showModal();
 }
@@ -246,6 +260,8 @@ $('oForm').addEventListener('submit', async (e) => {
     if (days) b.set(doc(db, 'warranties', code), { title, days, deliveredAt: dAt, expiresAt: exp, claims: (warranties.find(w => w.id === code) || {}).claims || [] });
     else if (code) { b.delete(doc(db, 'warranties', code)); code = ''; }
     upd = { title, deliveredAt: dAt, printPaid: +pp.toFixed(2), designFee: +df.toFixed(2), shippingFee: +sf.toFixed(2), total: +(pp + df + sf).toFixed(2), points: np, warrantyDays: days, warrantyCode: code, expiresAt: exp };
+    const tn = cleanTrack($('oTrack').value);
+    upd.shipCarrier = $('oCarrier').value; upd.shipTrack = tn; if (tn && !o.shipTrack) upd.shippedAt = new Date();
     const cv = $('oCost').value.trim();
     if (cv !== '') { upd.realCost = +Math.max(0, +cv || 0).toFixed(2); upd.profit = +(upd.total - upd.realCost).toFixed(2); }
   }

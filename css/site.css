@@ -47,7 +47,7 @@ svg{display:block}
 .nav a[aria-current="page"]{background:var(--sunk);color:var(--ink);font-weight:500}
 .top__end{margin-left:auto;display:flex;align-items:center;gap:10px}
 .top__end a{text-decoration:none}
-@media (max-width:640px){.top__logo svg{height:36px}.top__row{gap:12px;flex-wrap:wrap}.nav{order:3;width:100%}.nav a{padding:6px 11px;font-size:13.5px}}
+@media (max-width:640px){.top__logo svg{height:36px}.top__row{gap:12px;flex-wrap:wrap}.nav{order:3;width:calc(100% + 32px);margin:0 -16px;padding:0 16px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.nav::-webkit-scrollbar{display:none}.nav a{flex:none;padding:6px 11px;font-size:13.5px}}
 
 /* buttons */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:10px 18px;border-radius:var(--r-pill);font-weight:600;line-height:1.5;border:1px solid transparent;white-space:nowrap;text-decoration:none;transition:transform .25s var(--ease),background .2s var(--ease),color .2s var(--ease),border-color .2s var(--ease)}

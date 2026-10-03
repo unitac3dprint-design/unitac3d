@@ -2,11 +2,11 @@ import {
   auth, db, OWNER, authMsg, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword,
   sendEmailVerification, sendPasswordResetEmail, signOut, reload,
   doc, collection, getDoc, getDocs, setDoc, updateDoc, onSnapshot, query, where, serverTimestamp
-} from './fb.js?v=20261003f';
+} from './fb.js?v=20261003h';
 import {
   RANKS, rankOf, nextRank, couponInfo, memberNo, toDate, fDate, fDM, fMonthYear, money, intf, daysLeft,
   COUPON_CAP, $, h, toast, reveal, toAvatar, avatarEl, rankCard, attachTilt, requestGyro, deviceId, qrSvg, LOGO_SVG
-} from './core.js?v=20261003f';
+} from './core.js?v=20261003h';
 
 document.querySelectorAll('[data-logo]').forEach(e => { e.innerHTML = LOGO_SVG; });
 document.querySelector('[data-nav="member"]').setAttribute('aria-current', 'page');
@@ -355,7 +355,9 @@ function renderOrders() {
     hd.append(h('span', 'row__t', adj ? 'ปรับแต้มโดยร้าน: ' + (o.title || '') : (o.title || 'งานพิมพ์')), h('span', adj ? 'pill' : 'pill pill--ok', adj ? 'ปรับแต้ม' : 'ส่งมอบแล้ว'));
     const d = toDate(o.deliveredAt);
     const meta = [d ? fDate.format(d) : '', o.points ? (o.points > 0 ? '+' : '') + intf(o.points) + ' แต้ม' : '', o.warrantyCode ? 'ประกัน ' + o.warrantyDays + ' วัน' : ''].filter(Boolean).join(' · ');
-    row.append(hd, h('span', 'row__m', meta)); L.appendChild(row);
+    row.append(hd, h('span', 'row__m', meta));
+    if (o.shipTrack) { const t = h('a', 'linkbtn', '📦 ติดตามพัสดุ ' + o.shipTrack); t.href = 'track.html?n=' + encodeURIComponent(o.shipTrack) + '&c=' + encodeURIComponent(o.shipCarrier || 'flash'); row.appendChild(t); }
+    L.appendChild(row);
   });
   $('oAllBtn').hidden = orders.length <= 3;
   $('oAllBtn').textContent = showAllOrders ? 'แสดงน้อยลง' : 'ดูทั้งหมด (' + orders.length + ')';

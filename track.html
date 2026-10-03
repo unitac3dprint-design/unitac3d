@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#141311">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%224.3 21.5 85.5 36.5%22%3E%3Cstyle%3Epath%7Bfill:#FF7A3C%7D%3C/style%3E%3Cpath d=%22M4.85 24.9Q4.85 22.05 7.7 22.05H10.5L12.4 24.9L16.6 22.05H26Q27.3 22.05 27.3 23.3V24.54L12.14 41.96Q11.1 43.16 11.1 44.56V45.25Q11.1 46.85 12.7 46.85H25.54L47.12 22.05H84.2L89.3 27.7V28.4Q89.3 30.1 86.9 30.1H72.56L48.73 57.5H40.02Q36.23 57.5 38.73 54.63L60.06 30.1H52.46L28.63 57.5H7.65Q4.85 57.5 4.85 54.7Z%22/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/site.css?v=20261003h">
+<title>ติดตามพัสดุ · UNITAC 3D PRINT</title>
+<meta name="description" content="กดเพื่อดูสถานะพัสดุจาก UNITAC 3D PRINT ได้ทันที ไม่ต้องคัดลอกเลขพัสดุ">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="UNITAC 3D PRINT">
+<meta property="og:title" content="ติดตามพัสดุ · UNITAC 3D PRINT">
+<meta property="og:description" content="กดเพื่อดูสถานะพัสดุจาก UNITAC 3D PRINT ได้ทันที ไม่ต้องคัดลอกเลขพัสดุ">
+<meta property="og:url" content="https://unitac3dprint-design.github.io/unitac3d/track.html">
+<meta property="og:image" content="https://unitac3dprint-design.github.io/unitac3d/og.png">
+<meta property="og:image:width" content="2400">
+<meta property="og:image:height" content="1260">
+<meta property="og:locale" content="th_TH">
+<meta name="twitter:card" content="summary_large_image">
+<style>.trk{padding-top:40px;padding-bottom:56px;display:flex;flex-direction:column;gap:18px}
+.trk__kick{font-family:var(--font-num);font-size:12px;letter-spacing:.24em;color:var(--accent)}
+.trk__head h1{font-size:30px;margin-top:6px}
+.trk__card{display:flex;flex-direction:column;gap:16px}
+.trk__num{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.trk__num b{font-size:26px;font-weight:500;letter-spacing:.06em;overflow-wrap:anywhere}
+.trk__live{border-radius:12px;overflow:hidden;background:#fff;min-height:0}
+.trk__live:empty{display:none}
+.trk__acts{display:grid;gap:10px}
+.trk__form{display:flex;gap:10px;align-items:flex-end}
+.trk__form .field{flex:1}
+.trk__form input{font-family:var(--font-num);letter-spacing:.05em;text-transform:uppercase}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap top__row">
+    <a class="top__logo" href="./" aria-label="UNITAC กลับหน้าตารางคิว" data-logo></a>
+    <nav class="nav" aria-label="เมนูหลัก">
+      <a href="./" data-nav="queue">ตารางคิว</a>
+      <a href="member.html" data-nav="member">สมาชิก</a>
+      <a href="warranty.html" data-nav="warranty">เช็กประกัน</a>
+      <a href="portfolio.html" data-nav="works">ผลงาน</a>
+      <a href="partners.html" data-nav="partners">พาร์ทเนอร์</a>
+    </nav>
+    <div class="top__end" id="topEnd"></div>
+  </div>
+</header>
+
+<main id="main" class="wrap wrap--narrow trk">
+  <div class="trk__head rv">
+    <span class="trk__kick">UNITAC · ติดตามพัสดุ</span>
+    <h1 id="tTitle">พัสดุของคุณ</h1>
+  </div>
+  <section class="card trk__card rv" style="--d:60ms" id="tCard" hidden>
+    <div class="trk__num"><span class="muted small" id="tCarrier"></span><b class="num" id="tNum"></b>
+      <button type="button" class="btn btn--ghost btn--sm" id="tCopy">คัดลอกเลขพัสดุ</button></div>
+    <div id="YQContainer" class="trk__live"></div>
+    <p class="hint" id="tLiveNote">กำลังโหลดสถานะล่าสุด…</p>
+    <div class="trk__acts">
+      <a class="btn btn--primary btn--block" id="tOfficial" target="_blank" rel="noopener">เปิดหน้าติดตามของขนส่ง</a>
+      <a class="btn btn--ghost btn--block" id="t17" target="_blank" rel="noopener">ดูสถานะผ่าน 17TRACK</a>
+    </div>
+    <p class="hint">กดปุ่มแล้ว ระบบคัดลอกเลขพัสดุไว้ให้ด้วย ถ้าหน้าขนส่งไม่เติมเลขให้เอง กดวางได้ทันที</p>
+  </section>
+  <form id="tForm" class="trk__form rv" style="--d:100ms" novalidate>
+    <div class="field"><label for="tIn" class="sr">เลขพัสดุ</label><input type="search" id="tIn" placeholder="ใส่เลขพัสดุ เช่น TH0123456789A" autocomplete="off" spellcheck="false" autocapitalize="characters"></div>
+    <button type="submit" class="btn btn--ghost">ติดตาม</button>
+  </form>
+</main>
+
+<footer class="foot">UNITAC · <a href="./">ตารางคิว</a> · <a href="warranty.html">เช็กประกัน</a> · <a href="portfolio.html">ผลงาน</a> · <a href="partners.html">พาร์ทเนอร์</a> · <a href="privacy.html">นโยบายความเป็นส่วนตัว</a></footer>
+<script type="module" src="js/track.js?v=20261003h"></script>
+</body>
+</html>

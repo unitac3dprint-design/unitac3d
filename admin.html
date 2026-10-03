@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/site.css?v=20261003f">
+<link rel="stylesheet" href="css/site.css?v=20261003h">
 <title>หลังร้าน · UNITAC</title>
 <meta name="description" content="UNITAC 3D PRINT ยินดีให้บริการ">
 <meta property="og:type" content="website">
@@ -205,6 +205,11 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
 .rk__mode button{min-height:38px;font-size:13px}
 @media (max-width:620px){.rk__row--pts{grid-template-columns:minmax(0,1fr)}.rk__mode{min-width:0}}
 #cdNow{font-family:var(--font-num);font-size:12.5px;color:var(--muted)}
+
+.shipbox{display:grid;gap:10px;padding:12px 14px;border-radius:var(--r-md);background:var(--sunk)}
+.ship__link{display:grid;gap:8px}
+.ship__link .num{color:var(--ink-2);overflow-wrap:anywhere}
+.ship__btns{display:flex;gap:8px;flex-wrap:wrap}
 </style>
 </head>
 <body>
@@ -404,6 +409,16 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
       <div class="field"><label for="oCost">ต้นทุนจริง (บาท)</label><input type="number" id="oCost" step="0.01" min="0" inputmode="decimal" placeholder="ไม่ทราบ เว้นว่างได้"><p class="hint">วัสดุ ไฟ ค่าเสื่อม ออเดอร์จากเครื่องคิดเลขรุ่นใหม่ใส่ให้เอง</p></div>
       <div class="field"><span class="lab">กำไร</span><div class="emailbox num" id="oProfit">-</div></div>
     </div>
+    <div class="oSaleOnly shipbox">
+      <div class="frow">
+        <div class="field"><label for="oCarrier">ขนส่ง</label><select id="oCarrier"><option value="flash">Flash Express</option><option value="thp">ไปรษณีย์ไทย</option><option value="kex">KEX Express</option><option value="jt">J&amp;T Express</option><option value="other">ขนส่งอื่น</option></select></div>
+        <div class="field"><label for="oTrack">เลขพัสดุ</label><input type="text" id="oTrack" maxlength="30" autocomplete="off" spellcheck="false" placeholder="TH…" style="text-transform:uppercase;font-family:var(--font-num)"></div>
+      </div>
+      <div class="ship__link" id="oLinkBox" hidden>
+        <span class="num small" id="oLink"></span>
+        <div class="ship__btns"><button type="button" class="btn btn--primary btn--sm" id="oCopyMsg">คัดลอกข้อความส่งลูกค้า</button><button type="button" class="btn btn--ghost btn--sm" id="oCopyLink">คัดลอกลิงก์</button><a class="btn btn--ghost btn--sm" id="oOpen" target="_blank" rel="noopener">เปิดดู</a></div>
+      </div>
+    </div>
     <div class="field oAdjOnly"><label for="oPts">แต้มที่ปรับ (ติดลบได้)</label><input type="number" id="oPts" step="1" inputmode="numeric"></div>
     <p class="hint" id="oPtsNote"></p>
     <p class="err" id="oErr" hidden></p>
@@ -474,10 +489,10 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
 </form></dialog>
 
 <footer class="foot">UNITAC · <a href="./">ตารางคิว</a> · <a href="warranty.html">เช็กประกัน</a> · <a href="portfolio.html">ผลงาน</a> · <a href="partners.html">พาร์ทเนอร์</a> · <a href="privacy.html">นโยบายความเป็นส่วนตัว</a></footer>
-<script type="module" src="js/admin.js?v=20261003f"></script>
-<script type="module" src="js/admin-partners.js?v=20261003f"></script>
-<script type="module" src="js/admin-stock.js?v=20261003f"></script>
-<script type="module" src="js/admin-portfolio.js?v=20261003f"></script>
-<script type="module" src="js/admin-tools.js?v=20261003f"></script>
+<script type="module" src="js/admin.js?v=20261003h"></script>
+<script type="module" src="js/admin-partners.js?v=20261003h"></script>
+<script type="module" src="js/admin-stock.js?v=20261003h"></script>
+<script type="module" src="js/admin-portfolio.js?v=20261003h"></script>
+<script type="module" src="js/admin-tools.js?v=20261003h"></script>
 </body>
 </html>
