@@ -1,6 +1,6 @@
-import { db, doc, getDoc, collection, getDocs, query, where } from './fb.js?v=20261003q';
-import { $, h, reveal, LOGO_SVG } from './core.js?v=20261003q';
-import { PFCATS } from './pfcats.js?v=20261003q';
+import { db, doc, getDoc, collection, getDocs, query, where } from './fb.js?v=20261003r';
+import { $, h, reveal, LOGO_SVG } from './core.js?v=20261003r';
+import { PFCATS } from './pfcats.js?v=20261003r';
 document.querySelectorAll('[data-logo]').forEach(e => { e.innerHTML = LOGO_SVG; });
 const nv = document.querySelector('[data-nav="works"]'); if (nv) nv.setAttribute('aria-current', 'page');
 reveal();
@@ -65,7 +65,7 @@ function para() {
 }
 addEventListener('scroll', para, { passive: true });
 let rsT = 0; addEventListener('resize', () => { clearTimeout(rsT); rsT = setTimeout(() => { if (cols.length !== nCols()) grid(false); else para(); }, 200); });
-/* cursor bubble "ดูภาพ" */
+/* cursor: the × turns into a + over a picture */
 if (fine && !reduce) {
   const cur = $('pCur'); let cx = 0, cy = 0, craf = 0;
   addEventListener('pointermove', (e) => { cx = e.clientX; cy = e.clientY; const on = !!e.target.closest('.pw');

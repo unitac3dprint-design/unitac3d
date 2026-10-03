@@ -1,8 +1,8 @@
-import { db, doc, onSnapshot } from './fb.js?v=20261003q';
-import { $, h, reveal, toast, LOGO_SVG } from './core.js?v=20261003q';
-import { CARRIERS, cleanTrack } from './carriers.js?v=20261003q';
-import { FLASH_FN_URL } from './config.js?v=20261003q';
-import { latest, fmtWhen, titleOf, detailOf, toneOf } from './shipstatus.js?v=20261003q';
+import { db, doc, onSnapshot } from './fb.js?v=20261003r';
+import { $, h, reveal, toast, LOGO_SVG } from './core.js?v=20261003r';
+import { CARRIERS, cleanTrack } from './carriers.js?v=20261003r';
+import { FLASH_FN_URL } from './config.js?v=20261003r';
+import { latest, fmtWhen, titleOf, detailOf, toneOf } from './shipstatus.js?v=20261003r';
 document.querySelectorAll('[data-logo]').forEach(e => { e.innerHTML = LOGO_SVG; });
 reveal();
 const I = {

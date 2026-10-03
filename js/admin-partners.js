@@ -1,6 +1,6 @@
-import { auth, db, OWNER, authMsg, onAuthStateChanged, doc, collection, getDocs, setDoc, updateDoc, deleteDoc, writeBatch, serverTimestamp } from './fb.js?v=20261003q';
-import { $, h, toast, normalizeImage, isHeic } from './core.js?v=20261003q';
-import { PCATS } from './pcats.js?v=20261003q';
+import { auth, db, OWNER, authMsg, onAuthStateChanged, doc, collection, getDocs, setDoc, updateDoc, deleteDoc, writeBatch, serverTimestamp } from './fb.js?v=20261003r';
+import { $, h, toast, normalizeImage, isHeic } from './core.js?v=20261003r';
+import { PCATS } from './pcats.js?v=20261003r';
 
 let list = [], cur = null, logo = '', loaded = false;
 const UP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg>';
