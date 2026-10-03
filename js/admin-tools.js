@@ -1,5 +1,5 @@
-import { auth, db, OWNER, authMsg, onAuthStateChanged, doc, collection, getDoc, getDocs, setDoc, writeBatch, serverTimestamp } from './fb.js?v=20261003b';
-import { $, h, toast, toDate, daysLeft, intf } from './core.js?v=20261003b';
+import { auth, db, OWNER, authMsg, onAuthStateChanged, doc, collection, getDoc, getDocs, setDoc, writeBatch, serverTimestamp } from './fb.js?v=20261003c';
+import { $, h, toast, toDate, daysLeft, intf } from './core.js?v=20261003c';
 
 /* ---------- what needs attention: strip + tab badges ---------- */
 const COLS = ['members', 'orders', 'warranties', 'partners', 'materials', 'portfolio', 'portfolioFull', 'admin'];
@@ -89,12 +89,27 @@ $('rsFile').addEventListener('change', async () => {
 
 /* ---------- install as an app (home-screen icon) ---------- */
 let deferred = null;
-addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferred = e; $('installBtn').hidden = false; });
-const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
-if (!standalone && /iphone|ipad|ipod/i.test(navigator.userAgent)) $('installBtn').hidden = false;
+const ua = navigator.userAgent, standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+const isIOS = /iphone|ipad|ipod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const inApp = /FBAN|FBAV|FB_IAB|Instagram|Line\/|Messenger|MicroMessenger/i.test(ua);
+if (!standalone) $('installBtn').hidden = false;
+addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferred = e; });
 $('installBtn').addEventListener('click', async () => {
   if (deferred) { deferred.prompt(); const r = await deferred.userChoice; deferred = null; if (r.outcome === 'accepted') $('installBtn').hidden = true; return; }
-  toast('iPhone: กดปุ่มแชร์ (สี่เหลี่ยมมีลูกศรขึ้น) แล้วเลือก "เพิ่มไปยังหน้าจอโฮม"', 7000);
+  const box = $('instDlg') || (() => {
+    const d = document.createElement('dialog'); d.id = 'instDlg';
+    d.innerHTML = '<div class="dlg"><div class="dlg__head"><h2>ติดตั้งหลังร้านเป็นแอป</h2></div><div class="dlg__body" id="instBody"></div><div class="dlg__foot"><span class="sp"></span><button type="button" class="btn btn--primary" id="instOk">เข้าใจแล้ว</button></div></div>';
+    document.body.appendChild(d); d.querySelector('#instOk').addEventListener('click', () => d.close()); return d;
+  })();
+  const steps = inApp ? ['ตอนนี้เปิดอยู่ในแอป Facebook / Messenger / LINE ซึ่งติดตั้งไม่ได้', 'กดเมนู ⋯ มุมขวาบน แล้วเลือก "เปิดในเบราว์เซอร์" (Chrome หรือ Safari)', 'เข้าหลังร้านอีกครั้ง แล้วกดปุ่ม "ติดตั้งเป็นแอป"']
+    : isIOS ? ['ต้องเปิดใน Safari (Chrome บน iPhone ติดตั้งไม่ได้)', 'กดปุ่มแชร์ ⬆︎ ด้านล่างจอ', 'เลื่อนหาแล้วเลือก "เพิ่มไปยังหน้าจอโฮม" แล้วกด "เพิ่ม"']
+    : ['กดเมนู ⋮ มุมขวาบนของ Chrome', 'เลือก "ติดตั้งแอป" หรือ "เพิ่มลงในหน้าจอหลัก"', 'กด "ติดตั้ง" ไอคอน UNITAC จะขึ้นบนหน้าจอ'];
+  const b = box.querySelector('#instBody'); b.textContent = '';
+  const ol = document.createElement('ol'); ol.style.cssText = 'margin:0;padding-left:1.3em;display:grid;gap:10px;line-height:1.6';
+  steps.forEach(s => { const li = document.createElement('li'); li.textContent = s; ol.appendChild(li); });
+  b.appendChild(ol);
+  if (inApp) { const c = h('button', 'btn btn--ghost btn--sm', 'คัดลอกลิงก์หลังร้าน'); c.type = 'button'; c.addEventListener('click', () => { navigator.clipboard && navigator.clipboard.writeText(location.href).then(() => toast('คัดลอกลิงก์แล้ว')); }); b.appendChild(c); }
+  box.showModal();
 });
 addEventListener('appinstalled', () => { $('installBtn').hidden = true; toast('ติดตั้งแล้ว เปิดหลังร้านจากไอคอนบนหน้าจอได้เลย'); });
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});

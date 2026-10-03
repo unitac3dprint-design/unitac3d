@@ -1,9 +1,9 @@
 import {
   auth, db, OWNER, authMsg, onAuthStateChanged, signInWithEmailAndPassword, signOut,
   doc, collection, getDoc, getDocs, updateDoc, deleteDoc, query, where, writeBatch, serverTimestamp, increment
-} from './fb.js?v=20261003b';
-import { rankOf, couponInfo, memberNo, toDate, fDate, fDM, money, intf, daysLeft, warrantyCode, $, h, toast, avatarEl, LOGO_SVG } from './core.js?v=20261003b';
-import { scanQR, parseMemberQR } from './scan.js?v=20261003b';
+} from './fb.js?v=20261003c';
+import { rankOf, couponInfo, memberNo, toDate, fDate, fDM, money, intf, daysLeft, warrantyCode, $, h, toast, avatarEl, LOGO_SVG } from './core.js?v=20261003c';
+import { scanQR, parseMemberQR } from './scan.js?v=20261003c';
 
 document.querySelectorAll('[data-logo]').forEach(e => { e.innerHTML = LOGO_SVG; });
 
@@ -150,7 +150,8 @@ function orderRow(o, withWho = true) {
   hd.append(t, right);
   const d = toDate(o.deliveredAt);
   const meta = [d ? fDate.format(d) : '', withWho && o.uid ? (o.nickname || '') + ' ' + (o.memberNo || '') : (withWho && o.kind !== 'adjust' ? 'ลูกค้าทั่วไป' : ''),
-    o.kind !== 'adjust' && o.points ? '+' + intf(o.points) + ' แต้ม' : '', o.couponPct ? 'คูปอง +' + o.couponPct + '%' : ''].filter(Boolean).join(' · ');
+    o.kind !== 'adjust' && o.points ? '+' + intf(o.points) + ' แต้ม' : '', o.couponPct ? 'คูปอง +' + o.couponPct + '%' : '',
+    o.kind !== 'adjust' ? (o.profit != null ? 'กำไร ' + money(o.profit) + ' ฿' : 'ยังไม่มีต้นทุน') : ''].filter(Boolean).join(' · ');
   body.append(hd, h('span', 'row__m', meta));
   if (o.warrantyCode) {
     const w = h('button', 'linkbtn', 'ประกัน ' + o.warrantyCode); w.type = 'button';
@@ -166,14 +167,18 @@ function orderRow(o, withWho = true) {
 }
 const isoDay = (d) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
 let editing = null;
-function calcTotal() { const t = (+$('oPrint').value || 0) + (+$('oDesign').value || 0) + (+$('oShip').value || 0); $('oTotal').textContent = money(t) + ' ฿'; ptsNote(); return t; }
+function calcTotal() {
+  const t = (+$('oPrint').value || 0) + (+$('oDesign').value || 0) + (+$('oShip').value || 0); $('oTotal').textContent = money(t) + ' ฿';
+  const cv = $('oCost').value.trim(); $('oProfit').textContent = cv === '' ? '-' : money(t - (+cv || 0)) + ' ฿ (' + (t > 0 ? ((t - (+cv || 0)) / t * 100).toFixed(0) : 0) + '%)';
+  ptsNote(); return t;
+}
 function ptsNote() {
   const o = editing; if (!o) return;
   if (o.kind === 'adjust' || !o.uid) { $('oPtsNote').textContent = o.uid ? '' : 'ลูกค้าทั่วไป ไม่มีแต้ม'; return; }
   const np = Math.max(0, Math.floor((+$('oPrint').value || 0) / 10)), diff = np - (o.points || 0);
   $('oPtsNote').textContent = 'แต้มของออเดอร์นี้: ' + intf(o.points || 0) + ' → ' + intf(np) + (diff ? ' (ลูกค้าจะ' + (diff > 0 ? 'ได้เพิ่ม ' : 'ถูกหัก ') + intf(Math.abs(diff)) + ' แต้ม)' : '');
 }
-['oPrint', 'oDesign', 'oShip'].forEach(id => $(id).addEventListener('input', calcTotal));
+['oPrint', 'oDesign', 'oShip', 'oCost'].forEach(id => $(id).addEventListener('input', calcTotal));
 function editOrder(o) {
   editing = o; const adj = o.kind === 'adjust';
   document.querySelectorAll('.oSaleOnly').forEach(e => e.hidden = adj); document.querySelectorAll('.oAdjOnly').forEach(e => e.hidden = !adj);
@@ -183,6 +188,7 @@ function editOrder(o) {
   $('oWar').value = String(o.warrantyDays || 0); if (!$('oWar').value) $('oWar').value = '0';
   $('oPrint').value = o.printPaid != null ? o.printPaid : ''; $('oDesign').value = o.designFee || 0; $('oShip').value = o.shippingFee || 0;
   $('oPts').value = o.points || 0; $('oErr').hidden = true;
+  $('oCost').value = o.realCost != null ? o.realCost : '';
   if (!adj) calcTotal(); else $('oPtsNote').textContent = '';
   $('oDlg').showModal();
 }
@@ -207,6 +213,8 @@ $('oForm').addEventListener('submit', async (e) => {
     if (days) b.set(doc(db, 'warranties', code), { title, days, deliveredAt: dAt, expiresAt: exp, claims: (warranties.find(w => w.id === code) || {}).claims || [] });
     else if (code) { b.delete(doc(db, 'warranties', code)); code = ''; }
     upd = { title, deliveredAt: dAt, printPaid: +pp.toFixed(2), designFee: +df.toFixed(2), shippingFee: +sf.toFixed(2), total: +(pp + df + sf).toFixed(2), points: np, warrantyDays: days, warrantyCode: code, expiresAt: exp };
+    const cv = $('oCost').value.trim();
+    if (cv !== '') { upd.realCost = +Math.max(0, +cv || 0).toFixed(2); upd.profit = +(upd.total - upd.realCost).toFixed(2); }
   }
   if (ptsDiff && mem) {
     if ((mem.points || 0) + ptsDiff < 0) return err('แต้มของลูกค้าจะติดลบ ตรวจตัวเลขอีกครั้ง');
@@ -263,7 +271,7 @@ function renderOrders() {
   S.append(stat('ยอดขายรวม', money(total) + ' ฿', sales.length + ' ออเดอร์', true), stat('ค่าพิมพ์สุทธิ', money(print) + ' ฿', 'หลังหักส่วนลด'),
     stat('ส่วนลดที่ให้', money(disc) + ' ฿', 'สมาชิก + คูปอง + ส่วนลดพิเศษ'), stat('ค่าเขียนแบบ / ค่าส่ง', intf(sum('designFee')) + ' / ' + intf(sum('shippingFee')), 'บาท · ไม่นับเป็นแต้ม'),
     stat('แต้มที่แจก', intf(pts), 'รวมการปรับแต้ม'), stat('ลูกค้าสมาชิก', memN + ' / ' + sales.length, 'ออเดอร์ของสมาชิก'),
-    stat('ต้นทุนจริง', money(cost) + ' ฿', costed.length < sales.length ? 'นับ ' + costed.length + ' จาก ' + sales.length + ' ออเดอร์' : 'วัสดุ ไฟ ค่าเสื่อม'),
+    stat('ต้นทุนจริง', money(cost) + ' ฿', costed.length < sales.length ? 'นับ ' + costed.length + ' จาก ' + sales.length + ' ออเดอร์ · ออเดอร์เก่าใส่ต้นทุนได้ที่ปุ่มแก้ไข' : 'วัสดุ ไฟ ค่าเสื่อม'),
     stat('กำไรสุทธิ', money(profit) + ' ฿', costed.length ? 'มาร์จิ้น ' + (profit / Math.max(1, costed.reduce((s, o) => s + (+o.total || 0), 0)) * 100).toFixed(0) + '%' : 'ออเดอร์ใหม่จะคิดให้อัตโนมัติ'));
   /* last 12 months */
   const C = $('moChart'); C.textContent = ''; const now = new Date(), months = [];

@@ -1,6 +1,6 @@
-import { db, doc, getDoc, collection, getDocs, query, where } from './fb.js?v=20261003b';
-import { $, h, reveal, LOGO_SVG } from './core.js?v=20261003b';
-import { PFCATS } from './pfcats.js?v=20261003b';
+import { db, doc, getDoc, collection, getDocs, query, where } from './fb.js?v=20261003c';
+import { $, h, reveal, LOGO_SVG } from './core.js?v=20261003c';
+import { PFCATS } from './pfcats.js?v=20261003c';
 document.querySelectorAll('[data-logo]').forEach(e => { e.innerHTML = LOGO_SVG; });
 const nv = document.querySelector('[data-nav="works"]'); if (nv) nv.setAttribute('aria-current', 'page');
 reveal();

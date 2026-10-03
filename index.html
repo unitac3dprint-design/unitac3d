@@ -360,6 +360,14 @@ dialog[open] .dlg{animation:pop .3s var(--ease)}
 @media (max-width:600px){.calcfab span{display:none}.calcfab{padding:0;width:56px;justify-content:center}.is-editing .calcfab{bottom:calc(150px + env(safe-area-inset-bottom,0px))}}
 .foot a{color:var(--muted)}
 .foot a:hover{color:var(--ink)}
+.mpick{position:relative}
+.mpick__sel{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:46px;padding:4px 6px 4px 14px;border-radius:var(--r-md);background:var(--accent-soft);border:1px solid rgba(255,122,60,.45);color:var(--ink)}
+.mpick__list{list-style:none;margin:4px 0 0;padding:6px;position:absolute;left:0;right:0;top:100%;z-index:5;max-height:260px;overflow:auto;border-radius:var(--r-md);background:var(--surface);border:1px solid var(--rule-strong);box-shadow:var(--shadow-float)}
+.mpick__list button{display:grid;gap:1px;width:100%;padding:8px 10px;border-radius:8px;text-align:left}
+.mpick__list button:hover{background:var(--sunk)}
+.mpick__list b{font-weight:500;font-size:14px}
+.mpick__list span{font-family:var(--font-num);font-size:11.5px;color:var(--muted)}
+.mpick__empty{padding:10px;color:var(--muted);font-size:13px}
 .footlink{background:none;border:0;color:var(--muted);text-decoration:underline;text-underline-offset:3px;font-size:12.5px;padding:6px 4px;min-height:32px;cursor:pointer}
 .footlink:hover{color:var(--ink)}
 .foot{color:var(--muted);font-size:12.5px;padding:24px;text-align:center;border-top:1px solid var(--rule)}
@@ -667,7 +675,12 @@ document.getElementById('root').outerHTML=
    '<label><input type="radio" name="kind" value="job" checked><span>งานพิมพ์</span></label>'+
    '<label><input type="radio" name="kind" value="off"><span>ร้านหยุด</span></label></div></div>'+
   '<div class="field" id="fTitle"><label for="iTitle" id="iTitleLab">ชื่อที่ลูกค้าเห็น</label><input type="text" id="iTitle" maxlength="60" autocomplete="off"><p class="hint" id="iTitleHint">ทุกคนที่มีลิงก์เห็นช่องนี้ ใช้ชื่อย่อหรือเลขคิวก็พอ เช่น คิว #12 หรือ คุณ ก.</p></div>'+
-  '<div class="field job-only" id="fMember"><label for="iMember">ลูกค้าสมาชิก (ไม่บังคับ)</label><select id="iMember"><option value="">ไม่ระบุ / ลูกค้าทั่วไป</option></select><p class="hint">เลือกแล้ว ลูกค้าคนนั้นจะเห็นงานนี้เด่นในตารางเมื่อเข้าสู่ระบบ</p></div>'+
+  '<div class="field job-only mpick" id="fMember"><label for="iMemberQ">ลูกค้าสมาชิก (ไม่บังคับ)</label>'+
+   '<input type="hidden" id="iMember">'+
+   '<div class="mpick__sel" id="iMemberSel" hidden><span id="iMemberName"></span><button type="button" class="minibtn" id="iMemberClr" aria-label="ไม่ระบุลูกค้า">'+ICON.x+'</button></div>'+
+   '<input type="text" id="iMemberQ" autocomplete="off" placeholder="ค้นหาชื่อ เบอร์ อีเมล หรือเลขสมาชิก (UT-…)" role="combobox" aria-expanded="false" aria-controls="iMemberList">'+
+   '<ul class="mpick__list" id="iMemberList" role="listbox" hidden></ul>'+
+   '<p class="hint">เลือกแล้ว ลูกค้าคนนั้นจะเห็นงานนี้เด่นในตารางเมื่อเข้าสู่ระบบ</p></div>'+
   '<div class="frow job-only"><div class="field"><label for="iMachine">ช่องงาน</label><select id="iMachine"></select></div>'+
    '<div class="field"><label for="iStatus">สถานะ</label><select id="iStatus"><option value="queued">รอคิว</option><option value="printing">กำลังพิมพ์</option><option value="done">เสร็จแล้ว</option></select></div></div>'+
   '<div class="frow"><div class="field" id="fStart"><label for="iStart">วันเริ่ม</label><input type="date" id="iStart" required></div>'+
@@ -830,12 +843,24 @@ function renderList(st){
 var MEMBERS=[];
 function isMine(it){return !!(user&&!canEdit&&it&&it.uid&&it.uid===user.uid);}
 function memberName(u){for(var i=0;i<MEMBERS.length;i++)if(MEMBERS[i].uid===u)return MEMBERS[i].nickname||'สมาชิก';return '';}
-function fillMembers(cur){
-  var sel=$('iMember');sel.length=1;
-  MEMBERS.slice().sort(function(a,b){return (a.nickname||'').localeCompare(b.nickname||'','th');}).forEach(function(m){
-    var o=document.createElement('option');o.value=m.uid;o.textContent=(m.nickname||'สมาชิก')+(m.fullName?' · '+m.fullName:'')+(m.phone?' · '+m.phone:'');sel.appendChild(o);});
-  if(cur&&!MEMBERS.some(function(m){return m.uid===cur;})){var o2=document.createElement('option');o2.value=cur;o2.textContent='(สมาชิกที่ลบไปแล้ว)';sel.appendChild(o2);}
-  sel.value=cur||'';
+function memNo(uid){var h=0x811c9dc5,s='unitac-member:'+uid;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,0x01000193)>>>0;}return 'UT-'+('0000000'+(h>>>0).toString(36).toUpperCase()).slice(-7);}
+function memLabel(m){return (m.nickname||'สมาชิก')+(m.fullName?' · '+m.fullName:'')+' · '+memNo(m.uid);}
+function pickMember(uid){
+  $('iMember').value=uid||'';
+  var m=MEMBERS.filter(function(x){return x.uid===uid;})[0];
+  $('iMemberSel').hidden=!uid;$('iMemberQ').hidden=!!uid;$('iMemberList').hidden=true;$('iMemberQ').value='';
+  $('iMemberName').textContent=uid?(m?memLabel(m):'(สมาชิกที่ลบไปแล้ว)'):'';
+}
+function fillMembers(cur){pickMember(cur||'');}
+function searchMembers(){
+  var q=$('iMemberQ').value.toLowerCase().replace(/[\s-]/g,''),L=$('iMemberList');L.textContent='';
+  var list=MEMBERS.filter(function(m){if(!q)return true;return [m.nickname,m.fullName,m.phone,m.email,memNo(m.uid),m.uid].some(function(v){return (v||'').toLowerCase().replace(/[\s-]/g,'').indexOf(q)>-1;});})
+    .sort(function(a,b){return (a.nickname||'').localeCompare(b.nickname||'','th');}).slice(0,8);
+  if(!list.length){L.appendChild(h('li','mpick__empty',MEMBERS.length?'ไม่พบสมาชิก':'ยังไม่มีสมาชิก'));}
+  list.forEach(function(m){var li=h('li');li.setAttribute('role','option');var b=h('button');b.type='button';
+    b.appendChild(h('b',null,(m.nickname||'สมาชิก')+(m.fullName?' · '+m.fullName:'')));b.appendChild(h('span',null,[memNo(m.uid),m.phone].filter(Boolean).join(' · ')));
+    b.addEventListener('mousedown',function(e){e.preventDefault();pickMember(m.uid);});li.appendChild(b);L.appendChild(li);});
+  L.hidden=false;$('iMemberQ').setAttribute('aria-expanded','true');
 }
 function itemPill(st,it){
   if(it.kind==='off') return h('span','pill pill--off','ร้านหยุด');
@@ -1043,6 +1068,10 @@ function syncKind(){
   $('iTitleHint').hidden=!job;
 }
 Array.prototype.forEach.call(itemDlg.querySelectorAll('input[name=kind]'),function(r){r.addEventListener('change',syncKind);});
+$('iMemberQ').addEventListener('input',searchMembers);$('iMemberQ').addEventListener('focus',searchMembers);
+$('iMemberQ').addEventListener('blur',function(){setTimeout(function(){$('iMemberList').hidden=true;$('iMemberQ').setAttribute('aria-expanded','false');},150);});
+$('iMemberQ').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();var f=$('iMemberList').querySelector('button');if(f)f.dispatchEvent(new MouseEvent('mousedown'));}});
+$('iMemberClr').addEventListener('click',function(){pickMember('');$('iMemberQ').focus();});
 function syncStatusLabel(){var o=$('iStatus').querySelector('option[value=printing]');if(o)o.textContent=isDesign(D,$('iMachine').value)?'กำลังเขียนแบบ':'กำลังพิมพ์';}
 function openItem(id,kind,wantDesign){
   var st=D, it=null;

@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/site.css?v=20261003b">
+<link rel="stylesheet" href="css/site.css?v=20261003c">
 <title>หลังร้าน · UNITAC</title>
 <meta name="description" content="UNITAC 3D PRINT ยินดีให้บริการ">
 <meta property="og:type" content="website">
@@ -387,6 +387,10 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
       <div class="field"><label for="oShip">ค่าจัดส่ง (บาท)</label><input type="number" id="oShip" step="0.01" min="0" inputmode="decimal"></div>
       <div class="field"><span class="lab">ยอดรวม</span><div class="emailbox num" id="oTotal"></div></div>
     </div>
+    <div class="frow oSaleOnly">
+      <div class="field"><label for="oCost">ต้นทุนจริง (บาท)</label><input type="number" id="oCost" step="0.01" min="0" inputmode="decimal" placeholder="ไม่ทราบ เว้นว่างได้"><p class="hint">วัสดุ ไฟ ค่าเสื่อม ออเดอร์จากเครื่องคิดเลขรุ่นใหม่ใส่ให้เอง</p></div>
+      <div class="field"><span class="lab">กำไร</span><div class="emailbox num" id="oProfit">-</div></div>
+    </div>
     <div class="field oAdjOnly"><label for="oPts">แต้มที่ปรับ (ติดลบได้)</label><input type="number" id="oPts" step="1" inputmode="numeric"></div>
     <p class="hint" id="oPtsNote"></p>
     <p class="err" id="oErr" hidden></p>
@@ -457,10 +461,10 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
 </form></dialog>
 
 <footer class="foot">UNITAC · <a href="./">ตารางคิว</a> · <a href="warranty.html">เช็กประกัน</a> · <a href="portfolio.html">ผลงาน</a> · <a href="partners.html">พาร์ทเนอร์</a> · <a href="privacy.html">นโยบายความเป็นส่วนตัว</a></footer>
-<script type="module" src="js/admin.js?v=20261003b"></script>
-<script type="module" src="js/admin-partners.js?v=20261003b"></script>
-<script type="module" src="js/admin-stock.js?v=20261003b"></script>
-<script type="module" src="js/admin-portfolio.js?v=20261003b"></script>
-<script type="module" src="js/admin-tools.js?v=20261003b"></script>
+<script type="module" src="js/admin.js?v=20261003c"></script>
+<script type="module" src="js/admin-partners.js?v=20261003c"></script>
+<script type="module" src="js/admin-stock.js?v=20261003c"></script>
+<script type="module" src="js/admin-portfolio.js?v=20261003c"></script>
+<script type="module" src="js/admin-tools.js?v=20261003c"></script>
 </body>
 </html>
