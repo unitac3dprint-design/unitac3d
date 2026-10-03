@@ -1,5 +1,5 @@
-import { auth, db, OWNER, authMsg, onAuthStateChanged, doc, collection, getDocs, setDoc, updateDoc, deleteDoc, writeBatch, serverTimestamp } from './fb.js?v=20261003c';
-import { $, h, toast, money, intf } from './core.js?v=20261003c';
+import { auth, db, OWNER, authMsg, onAuthStateChanged, doc, collection, getDocs, setDoc, updateDoc, deleteDoc, writeBatch, serverTimestamp } from './fb.js?v=20261003e';
+import { $, h, toast, money, intf } from './core.js?v=20261003e';
 
 /* filament stock: counted in spools (no automatic deduction), with cost and selling price per material */
 let mats = [], cur = null, loaded = false, typeFilter = 'all';

@@ -1,6 +1,6 @@
-import { auth, db, OWNER, authMsg, onAuthStateChanged, doc, collection, getDocs, setDoc, updateDoc, deleteDoc, writeBatch, serverTimestamp } from './fb.js?v=20261003c';
-import { $, h, toast } from './core.js?v=20261003c';
-import { PFCATS } from './pfcats.js?v=20261003c';
+import { auth, db, OWNER, authMsg, onAuthStateChanged, doc, collection, getDocs, setDoc, updateDoc, deleteDoc, writeBatch, serverTimestamp } from './fb.js?v=20261003e';
+import { $, h, toast } from './core.js?v=20261003e';
+import { PFCATS } from './pfcats.js?v=20261003e';
 
 /* portfolio: small thumbnail doc for the grid + full image doc loaded only when opened */
 let items = [], cur = null, loaded = false;
@@ -21,7 +21,7 @@ function render() {
   list.forEach((p, i) => {
     const c = h('article', 'pfc' + (p.visible ? '' : ' is-off'));
     const im = h('img', 'pfc__img'); im.src = p.thumb; im.alt = ''; im.loading = 'lazy'; im.addEventListener('click', () => edit(p));
-    const bd = h('div', 'pfc__b'); bd.append(h('b', null, p.title || 'ไม่มีชื่อ'), h('span', null, catName(p.cat) + (p.visible ? '' : ' · ซ่อนอยู่')));
+    const bd = h('div', 'pfc__b'); bd.append(h('b', null, p.title || catName(p.cat)), h('span', null, catName(p.cat) + (p.visible ? '' : ' · ซ่อนอยู่')));
     const a = h('div', 'pfc__a');
     const l = h('button'); l.type = 'button'; l.innerHTML = UP; l.setAttribute('aria-label', 'เลื่อนไปก่อน'); l.disabled = i === 0; l.addEventListener('click', () => move(p, -1));
     const r = h('button'); r.type = 'button'; r.innerHTML = DN; r.setAttribute('aria-label', 'เลื่อนไปหลัง'); r.disabled = i === list.length - 1; r.addEventListener('click', () => move(p, 1));
@@ -40,8 +40,11 @@ function loadImg(file) { return new Promise((res, rej) => { const u = URL.create
 function draw(im, max, q, limit) {
   const s = Math.min(1, max / Math.max(im.naturalWidth, im.naturalHeight));
   const c = document.createElement('canvas'); c.width = Math.round(im.naturalWidth * s); c.height = Math.round(im.naturalHeight * s);
-  const g = c.getContext('2d'); g.fillStyle = '#141311'; g.fillRect(0, 0, c.width, c.height); g.drawImage(im, 0, 0, c.width, c.height);
-  let type = c.toDataURL('image/webp', 0.5).startsWith('data:image/webp') ? 'image/webp' : 'image/jpeg', d = c.toDataURL(type, q);
+  const g = c.getContext('2d');
+  const type = c.toDataURL('image/webp', 0.5).startsWith('data:image/webp') ? 'image/webp' : 'image/jpeg';
+  if (type === 'image/jpeg') { g.fillStyle = '#141311'; g.fillRect(0, 0, c.width, c.height); }   /* WebP keeps transparent backgrounds */
+  g.drawImage(im, 0, 0, c.width, c.height);
+  let d = c.toDataURL(type, q);
   while (d.length > limit && q > 0.4) { q -= 0.08; d = c.toDataURL(type, q); }
   if (d.length > limit) { c.width = Math.round(c.width * 0.75); c.height = Math.round(c.height * 0.75); c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); d = c.toDataURL(type, q); }
   return { d, w: c.width, h: c.height };
@@ -54,12 +57,12 @@ $('pfFiles').addEventListener('change', async () => {
     try {
       const im = await loadImg(f), th = draw(im, 640, 0.8, 140000), full = draw(im, 1800, 0.86, 900000);
       const ref = doc(collection(db, 'portfolio'));
-      const data = { title: f.name.replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' ').slice(0, 80), cat: 'other', desc: '', thumb: th.d, w: th.w, h: th.h, order: base + n, visible: false, createdAt: serverTimestamp() };
+      const data = { title: '', cat: 'other', desc: '', thumb: th.d, w: th.w, h: th.h, order: base + n, visible: true, createdAt: serverTimestamp() };
       await setDoc(doc(db, 'portfolioFull', ref.id), { img: full.d });
       await setDoc(ref, data); items.push({ id: ref.id, ...data, createdAt: new Date() }); n++; render();
     } catch (x) { toast('เพิ่มรูป ' + f.name + ' ไม่สำเร็จ ' + (x && x.code ? authMsg(x.code) : ''), 5000); }
   }
-  $('pfProg').textContent = n ? 'เพิ่มแล้ว ' + n + ' รูป รูปใหม่ยังซ่อนอยู่ กดที่รูปเพื่อใส่ชื่องาน เลือกหมวด แล้วติ๊กแสดงบนหน้าผลงาน' : '';
+  $('pfProg').textContent = n ? 'เพิ่มแล้ว ' + n + ' รูป ขึ้นหน้าผลงานทันที (หมวด อื่นๆ) กดที่รูปเพื่อเลือกหมวดหรือซ่อนได้' : '';
 });
 
 /* edit */
@@ -70,7 +73,6 @@ function edit(p) {
 $('pfForm').addEventListener('submit', async (e) => {
   e.preventDefault(); if (!cur) return;
   const data = { title: $('pfTitle').value.trim().slice(0, 80), cat: $('pfCat').value, desc: $('pfDesc').value.trim().slice(0, 300), visible: $('pfVis').checked };
-  if (!data.title) { $('pfErr').textContent = 'ใส่ชื่องาน'; $('pfErr').hidden = false; return; }
   try { await updateDoc(doc(db, 'portfolio', cur.id), data); Object.assign(cur, data); $('pfDlg').close(); render(); toast('บันทึกแล้ว'); }
   catch (x) { $('pfErr').textContent = authMsg(x.code); $('pfErr').hidden = false; }
 });

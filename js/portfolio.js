@@ -1,6 +1,6 @@
-import { db, doc, getDoc, collection, getDocs, query, where } from './fb.js?v=20261003c';
-import { $, h, reveal, LOGO_SVG } from './core.js?v=20261003c';
-import { PFCATS } from './pfcats.js?v=20261003c';
+import { db, doc, getDoc, collection, getDocs, query, where } from './fb.js?v=20261003e';
+import { $, h, reveal, LOGO_SVG } from './core.js?v=20261003e';
+import { PFCATS } from './pfcats.js?v=20261003e';
 document.querySelectorAll('[data-logo]').forEach(e => { e.innerHTML = LOGO_SVG; });
 const nv = document.querySelector('[data-nav="works"]'); if (nv) nv.setAttribute('aria-current', 'page');
 reveal();
@@ -22,17 +22,16 @@ function grid() {
   if (io) io.disconnect();
   io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -6% 0px' });
   shown.forEach((p, i) => {
-    const b = h('button', 'pw'); b.type = 'button'; b.setAttribute('aria-label', 'ดูรูป ' + p.title);
+    const b = h('button', 'pw'); b.type = 'button'; b.setAttribute('aria-label', 'ดูรูปขนาดใหญ่' + (p.title ? ' ' + p.title : ''));
     b.style.setProperty('--d', (i % 6) * 70 + 'ms');
     const im = h('img'); im.src = p.thumb; im.alt = ''; im.loading = 'lazy'; im.decoding = 'async'; if (p.w && p.h) { im.width = p.w; im.height = p.h; }
-    const cap = h('span', 'pw__cap'); cap.append(h('b', null, p.title), h('span', null, catName(p.cat)));
-    b.append(im, cap); b.addEventListener('click', () => open(i)); G.appendChild(b); io.observe(b);
+    b.append(im); b.addEventListener('click', () => open(i)); G.appendChild(b); io.observe(b);
   });
 }
 const full = {};
 async function open(i) {
   idx = (i + shown.length) % shown.length; const p = shown[idx];
-  $('lbT').textContent = p.title; $('lbC').textContent = catName(p.cat); $('lbD').textContent = p.desc || ''; $('lbD').hidden = !p.desc;
+  $('lbT').textContent = p.title || ''; $('lbT').className = 'sr'; $('lbC').hidden = true; $('lbD').textContent = p.desc || ''; $('lbD').hidden = !p.desc;
   const img = $('lbImg'); img.src = p.thumb;
   if (!$('lb').open) $('lb').showModal();
   try {

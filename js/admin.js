@@ -1,9 +1,9 @@
 import {
   auth, db, OWNER, authMsg, onAuthStateChanged, signInWithEmailAndPassword, signOut,
   doc, collection, getDoc, getDocs, updateDoc, deleteDoc, query, where, writeBatch, serverTimestamp, increment
-} from './fb.js?v=20261003c';
-import { rankOf, couponInfo, memberNo, toDate, fDate, fDM, money, intf, daysLeft, warrantyCode, $, h, toast, avatarEl, LOGO_SVG } from './core.js?v=20261003c';
-import { scanQR, parseMemberQR } from './scan.js?v=20261003c';
+} from './fb.js?v=20261003e';
+import { RANKS, rankOf, couponInfo, memberNo, toDate, fDate, fDM, money, intf, daysLeft, warrantyCode, $, h, toast, avatarEl, LOGO_SVG } from './core.js?v=20261003e';
+import { scanQR, parseMemberQR } from './scan.js?v=20261003e';
 
 document.querySelectorAll('[data-logo]').forEach(e => { e.innerHTML = LOGO_SVG; });
 
@@ -97,9 +97,9 @@ function openMember(uid) {
   const ad = $('cdAddr'); ad.textContent = '';
   (m.addresses || []).forEach(a => ad.appendChild(h('div', 'addr', (a.label || 'ที่อยู่') + (a.main ? ' (หลัก)' : '') + '\n' + [a.name, a.phone].filter(Boolean).join(' · ') + '\n' + (a.addr || ''))));
   if (!(m.addresses || []).length) ad.appendChild(h('p', 'muted', 'ยังไม่มีที่อยู่'));
-  $('cdRh').checked = !!m.rhodium;
+  fillRank(m);
   $('cdVer').hidden = !!m.verified;
-  $('cdPtsN').value = ''; $('cdPtsWhy').value = '';
+  $('cdPtsN').value = ''; $('cdPtsWhy').value = ''; setMode(ptsMode);
   const mo = orders.filter(o => o.uid === uid);
   $('cdOCount').textContent = mo.length ? mo.length + ' รายการ' : '';
   const ol = $('cdOrders'); ol.textContent = '';
@@ -112,25 +112,58 @@ $('cdVerBtn').addEventListener('click', async () => {
   try { await updateDoc(doc(db, 'members', cur.uid), { verified: true }); cur.verified = true; toast('ยืนยันแทนลูกค้าแล้ว ลูกค้าใช้คูปองต้อนรับได้'); renderMembers(); openMember(cur.uid); }
   catch (x) { toast(authMsg(x.code)); }
 });
-$('cdRh').addEventListener('change', async () => {
-  const on = $('cdRh').checked;
-  try { await updateDoc(doc(db, 'members', cur.uid), { rhodium: on }); cur.rhodium = on; toast(on ? 'ตั้งเป็น Rhodium แล้ว' : 'ถอด Rhodium แล้ว'); renderMembers(); openMember(cur.uid); }
-  catch (x) { $('cdRh').checked = !on; toast(authMsg(x.code)); }
-});
-$('cdPtsForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const n = Math.trunc(Number($('cdPtsN').value)), why = $('cdPtsWhy').value.trim();
-  if (!n) return toast('ใส่จำนวนแต้มที่ไม่ใช่ 0');
-  if (!why) return toast('ใส่เหตุผลด้วย จะได้ย้อนดูได้');
-  if ((cur.points || 0) + n < 0) return toast('แต้มติดลบไม่ได้');
+/* ---------- rank & points ---------- */
+function fillRank(m) {
+  const r = rankOf(m), sel = $('cdRankSel'); sel.textContent = '';
+  RANKS.forEach(x => { const o = h('option', null, x.key + ' · ลด ' + x.disc + '%' + (x.partner ? ' (partner)' : x.min ? ' · ' + intf(x.min) + ' แต้มขึ้นไป' : ' · เริ่มต้น')); o.value = x.key; sel.appendChild(o); });
+  sel.value = r.key; $('cdNow').textContent = 'ตอนนี้ ' + r.key + ' · ' + intf(m.points || 0) + ' แต้ม'; rankNote();
+}
+function rankNote() {
+  const m = cur; if (!m) return; const t = RANKS.find(x => x.key === $('cdRankSel').value), r = rankOf(m), p = m.points || 0;
+  let s = '';
+  if (t.key === r.key) s = 'แรงค์ปัจจุบัน';
+  else if (t.partner) s = 'ตั้งเป็น Rhodium (partner) ส่วนลด 30% แต้มเดิมยังอยู่ ถ้าถอดออกภายหลัง ระบบคืนแรงค์ตามแต้มให้';
+  else { const delta = t.min - p; s = (m.rhodium ? 'ถอดสถานะ Rhodium และ' : '') + 'ปรับแต้มเป็น ' + intf(t.min) + ' (' + (delta >= 0 ? '+' : '') + intf(delta) + ') เพื่อให้เป็น ' + t.key; }
+  $('cdRankNote').textContent = s; $('cdRankOk').disabled = t.key === r.key;
+}
+$('cdRankSel').addEventListener('change', rankNote);
+async function writePoints(newPts, why, extra) {
+  const delta = newPts - (cur.points || 0), b = writeBatch(db), upd = Object.assign({}, extra || {});
+  if (delta) upd.points = increment(delta);
+  if (!Object.keys(upd).length) return toast('ไม่มีอะไรเปลี่ยน');
+  b.update(doc(db, 'members', cur.uid), upd);
+  let oref = null;
+  if (delta) { oref = doc(collection(db, 'orders')); b.set(oref, { kind: 'adjust', uid: cur.uid, memberNo: cur.no, nickname: cur.nickname || '', title: why, points: delta, deliveredAt: serverTimestamp() }); }
+  await b.commit();
+  cur.points = newPts; if (extra && 'rhodium' in extra) cur.rhodium = extra.rhodium;
+  if (oref) orders.unshift({ id: oref.id, kind: 'adjust', uid: cur.uid, memberNo: cur.no, nickname: cur.nickname || '', title: why, points: delta, deliveredAt: new Date() });
+  return delta;
+}
+$('cdRankOk').addEventListener('click', async () => {
+  const t = RANKS.find(x => x.key === $('cdRankSel').value); if (!cur || !t) return;
   try {
-    const b = writeBatch(db), oref = doc(collection(db, 'orders'));
-    b.update(doc(db, 'members', cur.uid), { points: increment(n) });
-    b.set(oref, { kind: 'adjust', uid: cur.uid, memberNo: cur.no, nickname: cur.nickname || '', title: why, points: n, deliveredAt: serverTimestamp() });
-    await b.commit();
-    cur.points = (cur.points || 0) + n; orders.unshift({ id: oref.id, kind: 'adjust', uid: cur.uid, title: why, points: n, deliveredAt: new Date() });
-    toast((n > 0 ? '+' : '') + n + ' แต้ม บันทึกแล้ว'); refreshAll();
+    if (t.partner) await writePoints(cur.points || 0, '', { rhodium: true });
+    else await writePoints(t.min, ($('cdPtsWhy').value.trim() || 'ปรับแรงค์เป็น ' + t.key + ' โดยร้าน').slice(0, 80), cur.rhodium ? { rhodium: false } : null);
+    toast('ตั้งแรงค์เป็น ' + t.key + ' แล้ว'); refreshAll();
   } catch (x) { toast(authMsg(x.code)); }
+});
+let ptsMode = 'add';
+function setMode(m) {
+  ptsMode = m; $('cdModeAdd').setAttribute('aria-selected', String(m === 'add')); $('cdModeSet').setAttribute('aria-selected', String(m === 'set'));
+  $('cdPtsNL').textContent = m === 'add' ? 'จำนวน (ติดลบได้)' : 'แต้มรวมใหม่'; $('cdPtsN').min = m === 'set' ? '0' : '';
+  $('cdPtsN').placeholder = m === 'set' && cur ? String(cur.points || 0) : '';
+}
+$('cdModeAdd').addEventListener('click', () => setMode('add'));
+$('cdModeSet').addEventListener('click', () => setMode('set'));
+$('cdPtsOk').addEventListener('click', async () => {
+  const v = $('cdPtsN').value.trim(), why = $('cdPtsWhy').value.trim();
+  if (v === '') return toast('ใส่จำนวนแต้ม');
+  const n = Math.trunc(Number(v)), target = ptsMode === 'add' ? (cur.points || 0) + n : n;
+  if (ptsMode === 'add' && !n) return toast('ใส่จำนวนแต้มที่ไม่ใช่ 0');
+  if (target < 0) return toast('แต้มติดลบไม่ได้');
+  if (!why) return toast('ใส่เหตุผลด้วย จะได้ย้อนดูได้');
+  try { const d = await writePoints(target, why.slice(0, 80)); if (d !== undefined) { toast((d > 0 ? '+' : '') + intf(d) + ' แต้ม · รวม ' + intf(target) + ' แต้ม · ' + rankOf(cur).key); refreshAll(); } }
+  catch (x) { toast(authMsg(x.code)); }
 });
 $('cdDelBtn').addEventListener('click', async () => {
   if (!confirm('ลบข้อมูลสมาชิก ' + (cur.nickname || '') + ' ถาวร? ประวัติออเดอร์และประกันยังอยู่')) return;
