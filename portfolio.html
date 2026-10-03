@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/site.css?v=20261003p">
+<link rel="stylesheet" href="css/site.css?v=20261003q">
 <title>ผลงาน · UNITAC 3D PRINT</title>
 <meta name="description" content="ผลงานพิมพ์ 3 มิติ ของแต่ง Airsoft อะไหล่ โมเดล และงานเขียนแบบ จาก UNITAC 3D PRINT">
 <meta property="og:type" content="website">
@@ -40,14 +40,20 @@
 .pfo__tabs button:hover{color:var(--ink)}
 .pfo__tabs b{font-family:var(--font-num);font-weight:400;font-size:12px;margin-left:6px;opacity:.6}
 @media (max-width:760px){.pfo__tabs{gap:20px;margin:0 -16px;padding:0 16px}.pfo__tabs button{font-size:14px}}
-.pfo__grid{columns:3 300px;column-gap:16px}
-.pw{position:relative;display:block;width:100%;margin:0 0 14px;padding:0;border:0;background:none;break-inside:avoid;cursor:zoom-in;opacity:0;transform:translateY(18px);transition:opacity .7s cubic-bezier(.16,1,.3,1) var(--d,0ms),transform .8s cubic-bezier(.16,1,.3,1) var(--d,0ms)}
-.pw.in{opacity:1;transform:none}
+.pfo__grid{display:flex;gap:18px;align-items:flex-start;padding-bottom:60px}
+.pcol{flex:1;min-width:0;display:flex;flex-direction:column;gap:18px;will-change:transform}
+.pw{position:relative;display:block;width:100%;margin:0;padding:0;border:0;background:none;cursor:zoom-in;perspective:900px;opacity:0;transform:translateY(40px) scale(.96);filter:blur(6px);transition:opacity .9s cubic-bezier(.16,1,.3,1) var(--d,0ms),transform 1.1s cubic-bezier(.16,1,.3,1) var(--d,0ms),filter .9s cubic-bezier(.16,1,.3,1) var(--d,0ms)}
+.pw.in{opacity:1;transform:none;filter:none}
+.pw__in{position:relative;display:block;transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateZ(0);transition:transform .6s cubic-bezier(.23,1,.32,1)}
+.pw.is-tilt .pw__in{transition:transform .12s linear}
 .pw img{display:block;width:100%;height:auto;filter:drop-shadow(0 16px 22px rgba(0,0,0,.5));transition:transform .7s cubic-bezier(.16,1,.3,1),filter .5s}
-.pw:hover img,.pw:focus-visible img{transform:translateY(-4px) scale(1.02);filter:drop-shadow(0 22px 30px rgba(0,0,0,.6))}
+.pw__glare{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at var(--gx,50%) var(--gy,30%),rgba(255,255,255,.22),transparent 55%);mix-blend-mode:soft-light;opacity:0;transition:opacity .4s}
+.pw:hover .pw__glare{opacity:1}
+.pw:hover img,.pw:focus-visible img{transform:scale(1.03);filter:drop-shadow(0 26px 34px rgba(0,0,0,.65)) drop-shadow(0 0 30px rgba(255,122,60,.12))}
+.pfo__grid.is-swap{opacity:0;transform:translateY(10px);transition:opacity .25s,transform .25s}
 .pw:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 @media (prefers-reduced-motion: reduce){.pw{opacity:1;transform:none}}
-@media (max-width:600px){.pfo__grid{columns:2 150px;column-gap:10px}.pw{margin-bottom:10px}}
+@media (max-width:600px){.pfo__grid{gap:10px}.pcol{gap:10px}}
 .pempty{padding:40px 0;color:var(--muted)}
 /* lightbox */
 .lb{border:0;padding:0;margin:0;width:100vw;height:100dvh;max-width:none;max-height:none;background:rgba(10,9,8,.96);color:var(--ink)}
@@ -63,6 +69,29 @@
 .lb__nav{width:48px;height:48px;background:rgba(29,27,24,.8)}
 @media (max-width:600px){.lb__in{grid-template-columns:minmax(0,1fr);padding:56px 10px 16px}.lb__nav{position:absolute;bottom:calc(18px + env(safe-area-inset-bottom,0px))}.lb__prev{left:16px}.lb__next{right:16px}.lb__fig img{max-height:calc(100dvh - 220px)}}
 dialog[open].lb .lb__fig img{animation:pop .35s var(--ease)}
+
+/* hero: slow cross-fading showcase of the works behind the title */
+.pfo__show{position:absolute;right:0;top:0;bottom:0;width:62%;pointer-events:none;-webkit-mask-image:linear-gradient(90deg,transparent,#000 45%);mask-image:linear-gradient(90deg,transparent,#000 45%)}
+.pfo__show img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.12);filter:saturate(.9) brightness(.55);transition:opacity 1.8s ease,transform 7s linear}
+.pfo__show img.on{opacity:.75;transform:scale(1)}
+.pfo__show::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,var(--ground))}
+@media (max-width:760px){.pfo__show{width:100%;-webkit-mask-image:linear-gradient(180deg,#000,transparent 95%);mask-image:linear-gradient(180deg,#000,transparent 95%)}.pfo__show img.on{opacity:.4}}
+.pfo__heroin h1{text-shadow:0 2px 30px rgba(0,0,0,.6)}
+.pfo__stats b{display:inline-block;min-width:1ch}
+/* cursor bubble */
+.pcur{position:fixed;left:0;top:0;z-index:60;pointer-events:none;width:84px;height:84px;margin:-42px 0 0 -42px;border-radius:50%;background:rgba(255,122,60,.92);color:#1A0E07;display:grid;place-items:center;font-weight:600;font-size:13.5px;transform:translate3d(var(--cx,-200px),var(--cy,-200px),0) scale(0);transition:transform .35s cubic-bezier(.23,1,.32,1);box-shadow:0 10px 30px -8px rgba(255,122,60,.6)}
+.pcur.on{transform:translate3d(var(--cx),var(--cy),0) scale(1)}
+@media (hover:none),(pointer:coarse){.pcur{display:none}}
+.pfo .pw{cursor:none}
+@media (hover:none),(pointer:coarse){.pfo .pw{cursor:pointer}}
+/* lightbox: thumbnail strip */
+.lb__strip{display:flex;gap:8px;overflow-x:auto;max-width:min(92vw,900px);padding:6px 4px;scrollbar-width:none}
+.lb__strip::-webkit-scrollbar{display:none}
+.lb__strip button{flex:none;width:56px;height:56px;border-radius:10px;overflow:hidden;opacity:.45;transition:opacity .25s,transform .25s;outline-offset:2px}
+.lb__strip button img{width:100%;height:100%;object-fit:cover;display:block}
+.lb__strip button:hover{opacity:.8}
+.lb__strip button.on{opacity:1;transform:translateY(-2px);box-shadow:0 0 0 2px var(--accent)}
+@media (prefers-reduced-motion: reduce){.pfo__show img{transition:none}.pw__in{transform:none!important}.pcol{transform:none!important}}
 </style>
 </head>
 <body>
@@ -82,6 +111,7 @@ dialog[open].lb .lb__fig img{animation:pop .35s var(--ease)}
 
 <main id="main" class="pfo">
   <section class="pfo__hero">
+    <div class="pfo__show" id="pfShow" aria-hidden="true"></div>
     <div class="wrap pfo__heroin rv">
       <span class="pfo__kick">UNITAC WORKS</span>
       <h1>ผลงานของเรา</h1>
@@ -97,12 +127,13 @@ dialog[open].lb .lb__fig img{animation:pop .35s var(--ease)}
   <div class="lb__in">
     <button type="button" class="lb__x iconbtn" id="lbX" aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
     <button type="button" class="lb__nav lb__prev iconbtn" id="lbPrev" aria-label="รูปก่อนหน้า"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg></button>
-    <figure class="lb__fig"><img id="lbImg" alt=""><figcaption><b id="lbT"></b><span id="lbC"></span><p id="lbD"></p></figcaption></figure>
+    <figure class="lb__fig"><img id="lbImg" alt=""><figcaption><b id="lbT"></b><span id="lbC"></span><p id="lbD"></p></figcaption><div class="lb__strip" id="lbStrip"></div></figure>
     <button type="button" class="lb__nav lb__next iconbtn" id="lbNext" aria-label="รูปถัดไป"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
   </div>
 </dialog>
+<div class="pcur" id="pCur" aria-hidden="true"><span>ดูภาพ</span></div>
 
 <footer class="foot">UNITAC · <a href="./">ตารางคิว</a> · <a href="warranty.html">เช็กประกัน</a> · <a href="portfolio.html">ผลงาน</a> · <a href="partners.html">พาร์ทเนอร์</a> · <a href="privacy.html">นโยบายความเป็นส่วนตัว</a></footer>
-<script type="module" src="js/portfolio.js?v=20261003p"></script>
+<script type="module" src="js/portfolio.js?v=20261003q"></script>
 </body>
 </html>
