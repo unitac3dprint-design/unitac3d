@@ -348,6 +348,16 @@ dialog[open] .dlg{animation:pop .3s var(--ease)}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 .mastlink{text-decoration:none}
 @media (max-width:620px){.mastlink[href="warranty.html"],.mastlink[href="partners.html"]{display:none}}
+.chip--mine{background:var(--accent)!important;color:var(--on-accent)!important;font-weight:600;border-left-color:var(--accent-hi)!important;box-shadow:0 0 0 1px rgba(255,138,80,.6),0 4px 12px -4px rgba(255,122,60,.7)}
+.chip--mine .liq{background:rgba(26,14,7,.25)}
+.day.has-mine{border-color:var(--accent)!important;box-shadow:0 0 0 1px var(--accent),0 0 22px -8px var(--accent)}
+.ditem--mine{background:linear-gradient(90deg,rgba(255,122,60,.16),var(--sunk) 60%);box-shadow:inset 0 0 0 1px rgba(255,122,60,.45)}
+.pill--mine{background:var(--accent);color:var(--on-accent);font-weight:600}
+.calcfab{position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:35;display:inline-flex;align-items:center;gap:10px;min-height:56px;padding:0 22px 0 18px;border-radius:999px;background:var(--accent);color:var(--on-accent);font-weight:600;font-size:15px;text-decoration:none;box-shadow:0 14px 30px -10px rgba(255,122,60,.65),0 4px 10px rgba(0,0,0,.4);transition:transform .25s var(--ease),background .2s}
+.calcfab:hover{transform:translateY(-2px);background:var(--accent-hi);color:var(--on-accent)}
+.calcfab svg{width:22px;height:22px}
+.is-editing .calcfab{bottom:calc(90px + env(safe-area-inset-bottom,0px))}
+@media (max-width:600px){.calcfab span{display:none}.calcfab{padding:0;width:56px;justify-content:center}.is-editing .calcfab{bottom:calc(150px + env(safe-area-inset-bottom,0px))}}
 .footlink{background:none;border:0;color:var(--muted);text-decoration:underline;text-underline-offset:3px;font-size:12.5px;padding:6px 4px;min-height:32px;cursor:pointer}
 .footlink:hover{color:var(--ink)}
 .foot{color:var(--muted);font-size:12.5px;padding:24px;text-align:center;border-top:1px solid var(--rule)}
@@ -481,7 +491,7 @@ function normalize(s){
   var items=Array.isArray(s.items)?s.items.filter(function(it){return it&&DATE_RE.test(it.start)&&(it.kind==='job'||it.kind==='off');}).map(function(it){
     var o={id:str(it.id,32)||uid(),kind:it.kind,title:str(it.title,60),start:it.start,end:DATE_RE.test(it.end)?it.end:it.start,note:str(it.note,160)};
     if(o.end<o.start) o.end=o.start;
-    if(o.kind==='job'){o.machine=ids[it.machine]?it.machine:machines[0].id;o.status=STATUS[it.status]?it.status:'queued';}
+    if(o.kind==='job'){o.machine=ids[it.machine]?it.machine:machines[0].id;o.status=STATUS[it.status]?it.status:'queued';if(typeof it.uid==='string'&&/^[A-Za-z0-9]{10,64}$/.test(it.uid))o.uid=it.uid;}
     return o;
   }):[];
   return{v:2,rev:+s.rev||0,saveId:typeof s.saveId==='string'?s.saveId:null,updated:typeof s.updated==='string'?s.updated:null,
@@ -654,6 +664,7 @@ document.getElementById('root').outerHTML=
    '<label><input type="radio" name="kind" value="job" checked><span>งานพิมพ์</span></label>'+
    '<label><input type="radio" name="kind" value="off"><span>ร้านหยุด</span></label></div></div>'+
   '<div class="field" id="fTitle"><label for="iTitle" id="iTitleLab">ชื่อที่ลูกค้าเห็น</label><input type="text" id="iTitle" maxlength="60" autocomplete="off"><p class="hint" id="iTitleHint">ทุกคนที่มีลิงก์เห็นช่องนี้ ใช้ชื่อย่อหรือเลขคิวก็พอ เช่น คิว #12 หรือ คุณ ก.</p></div>'+
+  '<div class="field job-only" id="fMember"><label for="iMember">ลูกค้าสมาชิก (ไม่บังคับ)</label><select id="iMember"><option value="">ไม่ระบุ / ลูกค้าทั่วไป</option></select><p class="hint">เลือกแล้ว ลูกค้าคนนั้นจะเห็นงานนี้เด่นในตารางเมื่อเข้าสู่ระบบ</p></div>'+
   '<div class="frow job-only"><div class="field"><label for="iMachine">ช่องงาน</label><select id="iMachine"></select></div>'+
    '<div class="field"><label for="iStatus">สถานะ</label><select id="iStatus"><option value="queued">รอคิว</option><option value="printing">กำลังพิมพ์</option><option value="done">เสร็จแล้ว</option></select></div></div>'+
   '<div class="frow"><div class="field" id="fStart"><label for="iStart">วันเริ่ม</label><input type="date" id="iStart" required></div>'+
@@ -685,6 +696,7 @@ document.getElementById('root').outerHTML=
  '</div>'+
  '<div class="dlg__foot"><span class="sp"></span><button type="button" class="btn btn--ghost" data-close>ยกเลิก</button><button type="submit" class="btn btn--primary" id="lOk">เข้าสู่ระบบ</button></div>'+
 '</form></dialog>'+
+'<a class="calcfab" id="calcFab" href="calc.html" hidden aria-label="เปิดเครื่องคิดเลข"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M8.5 7h7M8.5 11h.01M12 11h.01M15.5 11h.01M8.5 14.5h.01M12 14.5h.01M15.5 14.5h.01M8.5 18h.01M12 18h3.5"/></svg><span>เครื่องคิดเลข</span></a>'+
 '<div class="toast" id="toast" role="status" aria-live="polite"></div>';
 
 /* ================= view state ================= */
@@ -754,6 +766,7 @@ function renderMonth(st,slide){
     if(info.closed)b.classList.add('is-closed');
     if(info.full)b.classList.add('is-full');
     if(ds===sel)b.classList.add('is-sel');
+    if(info.jobs.some(isMine))b.classList.add('has-mine');
     b.setAttribute('aria-pressed',ds===sel?'true':'false');
     var top=h('span','day__top');top.appendChild(h('span','day__n',String(d.getDate())));
     var tag='';
@@ -770,7 +783,7 @@ function renderMonth(st,slide){
     if(info.jobs.length){
       var ch=h('span','day__chips');ch.setAttribute('aria-hidden','true');
       info.jobs.slice(0,info.jobs.length>3?2:3).forEach(function(j){
-        var c=h('span','chip chip--'+j.status);c.dataset.id=j.id;c.style.setProperty('--mc',mColor(st,j.machine));
+        var c=h('span','chip chip--'+j.status+(isMine(j)?' chip--mine':''));c.dataset.id=j.id;c.style.setProperty('--mc',mColor(st,j.machine));
         if(j.status==='printing'){var lq=h('span','liq');lq.dataset.prog='day:'+ds;c.appendChild(lq);}
         c.appendChild(h('span','chip__t',j.title||mName(st,j.machine)));ch.appendChild(c);
       });
@@ -811,6 +824,16 @@ function renderList(st){
   });
   box.appendChild(ul);
 }
+var MEMBERS=[];
+function isMine(it){return !!(user&&!canEdit&&it&&it.uid&&it.uid===user.uid);}
+function memberName(u){for(var i=0;i<MEMBERS.length;i++)if(MEMBERS[i].uid===u)return MEMBERS[i].nickname||'สมาชิก';return '';}
+function fillMembers(cur){
+  var sel=$('iMember');sel.length=1;
+  MEMBERS.slice().sort(function(a,b){return (a.nickname||'').localeCompare(b.nickname||'','th');}).forEach(function(m){
+    var o=document.createElement('option');o.value=m.uid;o.textContent=(m.nickname||'สมาชิก')+(m.fullName?' · '+m.fullName:'')+(m.phone?' · '+m.phone:'');sel.appendChild(o);});
+  if(cur&&!MEMBERS.some(function(m){return m.uid===cur;})){var o2=document.createElement('option');o2.value=cur;o2.textContent='(สมาชิกที่ลบไปแล้ว)';sel.appendChild(o2);}
+  sel.value=cur||'';
+}
 function itemPill(st,it){
   if(it.kind==='off') return h('span','pill pill--off','ร้านหยุด');
   var p=h('span','pill pill--'+it.status);
@@ -832,7 +855,7 @@ function renderDay(st){
     ul.appendChild(h('li','empty',info.weekly?'วันหยุดประจำของร้าน':editing?'ยังไม่มีงานวันนี้ เพิ่มได้จากปุ่มด้านล่าง':'ยังไม่มีงานลงวันนี้'));
   }
   list.forEach(function(it){
-    var li=h('li','ditem'+(it.kind==='off'?' ditem--off':''));li.dataset.id=it.id;
+    var li=h('li','ditem'+(it.kind==='off'?' ditem--off':'')+(isMine(it)?' ditem--mine':''));li.dataset.id=it.id;
     var bar=h('span','ditem__bar');bar.setAttribute('aria-hidden','true');
     if(it.kind==='job')bar.style.setProperty('--mc',mColor(st,it.machine));
     li.appendChild(bar);
@@ -840,7 +863,10 @@ function renderDay(st){
     t.appendChild(h('b',null,it.title||(it.kind==='off'?'ร้านหยุด':'งานพิมพ์')));
     if(it.start!==it.end&&it.kind==='job'){var wdn=workDays(st,it).length,skip=diffDays(it.start,it.end)+1-wdn;t.appendChild(h('p','ditem__range',rangeText(it)+' · '+wdn+' วันทำงาน'+(skip?' (เว้นวันหยุด '+skip+' วัน)':'')));}
     else if(it.start!==it.end)t.appendChild(h('p','ditem__range',rangeText(it)+' ('+(diffDays(it.start,it.end)+1)+' วัน)'));
-    var meta=h('div','ditem__meta');meta.appendChild(itemPill(st,it));t.appendChild(meta);
+    var meta=h('div','ditem__meta');meta.appendChild(itemPill(st,it));
+    if(isMine(it))meta.prepend(h('span','pill pill--mine','★ งานของคุณ'));
+    else if(canEdit&&it.uid){var mn=memberName(it.uid);if(mn)meta.appendChild(h('span','pill pill--queued','สมาชิก: '+mn));}
+    t.appendChild(meta);
     if(it.kind==='job'&&it.status==='printing'){
       var pg=h('div','prog');var tk=h('span','tank');tk.style.setProperty('--mc',mColor(st,it.machine));
       var lq=h('span','liq');lq.dataset.prog='job:'+it.id;lq.dataset.pct='1';tk.appendChild(lq);
@@ -934,7 +960,10 @@ function renderEditBar(){
   $('editBtn').hidden=!canEdit||editing;
   $('specDot').classList.toggle('dot--edit',editing);
   $('roleText').textContent=editing?'กำลังแก้ไข ทุกการเปลี่ยนแปลงบันทึกและลูกค้าเห็นทันที':canEdit?'คุณเป็นเจ้าของ ลูกค้าดูได้อย่างเดียว':'';
-  $('roleSep').hidden=!(editing||canEdit);
+  var mineN=user&&!canEdit?S.items.filter(function(x){return x.kind==='job'&&x.status!=='done'&&isMine(x);}).length:0;
+  if(!editing&&!canEdit&&mineN){$('roleText').textContent='★ คุณมีงานในคิว '+mineN+' ชิ้น (ไฮไลต์สีส้มในตาราง)';}
+  $('roleSep').hidden=!(editing||canEdit||mineN);
+  $('calcFab').hidden=!canEdit;
   $('restoreBar').hidden=!(canEdit&&loaded&&docExists===false);
   if(!editing) return;
   var m=$('editMsg');m.textContent='';
@@ -1025,6 +1054,7 @@ function openItem(id,kind,wantDesign){
   $('iEnd').value=it?it.end:sel;
   $('iNote').value=it?it.note:'';
   $('iStatus').value=it&&it.status?it.status:'queued';
+  fillMembers(it&&it.uid||'');
   if(it&&it.machine)ms.value=it.machine;
   else{var info=dayInfo(st,sel);var pool=(wantDesign&&designs(st).length)?designs(st):printers(st);var free=pool.filter(function(m){return!info.busy[m.id];})[0];ms.value=(free||pool[0]).id;}
   syncStatusLabel();
@@ -1050,7 +1080,7 @@ $('itemForm').addEventListener('submit',function(e){
   if(diffDays(s,en)>120){err.textContent='ช่วงยาวเกิน 120 วัน แบ่งเป็นหลายรายการแทน';err.hidden=false;$('fEnd').classList.add('is-bad');return;}
   var k=kindVal();
   var o={id:editId||uid(),kind:k,title:$('iTitle').value.trim().slice(0,60),start:s,end:en,note:$('iNote').value.trim().slice(0,160)};
-  if(k==='job'){o.machine=$('iMachine').value;o.status=$('iStatus').value;}
+  if(k==='job'){o.machine=$('iMachine').value;o.status=$('iStatus').value;var mu=$('iMember').value;if(mu)o.uid=mu;}
   var found=false;
   D.items=D.items.map(function(x){if(x.id===o.id){found=true;return o;}return x;});
   if(!found)D.items.push(o);
@@ -1277,6 +1307,7 @@ function fbBoot(){
   },function(){loaded=true;$('updText').textContent='โหลดคิวไม่สำเร็จ ลองรีเฟรชหน้า';});
   F.onAuth(function(u){
     user=u;canEdit=!!u&&u.uid===F.owner;
+    if(canEdit&&F.listMembers&&!MEMBERS.length)F.listMembers().then(function(l){MEMBERS=l;render();},function(){});
     if(!canEdit&&editing){editing=false;D=null;}
     $('ownerBtn').textContent=u?'ออกจากระบบ':'สำหรับเจ้าของร้าน';
     render();
@@ -1327,7 +1358,7 @@ $('restoreYes').addEventListener('click',function(){
 <script type="module" id="fb">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js';
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js';
-import { getFirestore, doc, onSnapshot, setDoc } from 'https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js';
+import { getFirestore, doc, onSnapshot, setDoc, collection, getDocs } from 'https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js';
 const firebaseConfig = {
   apiKey: "AIzaSyDBK59GWOsP_vaneuypqPjHIK-44Lqj6-4",
   authDomain: "unitac3d.firebaseapp.com",
@@ -1348,6 +1379,7 @@ window.UFB = {
   onAuth: (cb) => onAuthStateChanged(auth, cb),
   signIn: (email, pass) => signInWithEmailAndPassword(auth, email, pass),
   signOut: () => signOut(auth),
+  listMembers: () => getDocs(collection(db, 'members')).then(q => q.docs.map(d => ({ uid: d.id, ...d.data() }))),
   reset: (email) => sendPasswordResetEmail(auth, email)
 };
 window.dispatchEvent(new Event('ufb-ready'));

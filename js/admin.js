@@ -2,7 +2,7 @@ import {
   auth, db, OWNER, authMsg, onAuthStateChanged, signInWithEmailAndPassword, signOut,
   doc, collection, getDoc, getDocs, updateDoc, deleteDoc, query, where, writeBatch, serverTimestamp, increment
 } from './fb.js';
-import { rankOf, couponInfo, memberNo, toDate, fDate, fDM, money, intf, daysLeft, $, h, toast, avatarEl, LOGO_SVG } from './core.js';
+import { rankOf, couponInfo, memberNo, toDate, fDate, fDM, money, intf, daysLeft, warrantyCode, $, h, toast, avatarEl, LOGO_SVG } from './core.js';
 import { scanQR, parseMemberQR } from './scan.js';
 
 document.querySelectorAll('[data-logo]').forEach(e => { e.innerHTML = LOGO_SVG; });
@@ -14,9 +14,10 @@ const P = { loading: $('aLoading'), login: $('aLogin'), denied: $('aDenied'), ap
 function show(k) { Object.entries(P).forEach(([n, el]) => el.hidden = n !== k); }
 
 onAuthStateChanged(auth, (u) => {
+  $('calcFab').hidden = true;
   if (!u) return show('login');
   if (u.uid !== OWNER) return show('denied');
-  show('app'); loadAll();
+  show('app'); $('calcFab').hidden = false; loadAll();
 });
 $('alForm').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -38,8 +39,9 @@ async function loadAll() {
     const [ms, os] = await Promise.all([getDocs(collection(db, 'members')), getDocs(collection(db, 'orders'))]);
     members = ms.docs.map(d => ({ uid: d.id, ...d.data(), no: memberNo(d.id) }));
     orders = os.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (toDate(b.deliveredAt) || 0) - (toDate(a.deliveredAt) || 0));
+    await reloadWarranties();
   } catch (x) { toast(authMsg(x.code), 5000); }
-  renderMembers(); renderOrders();
+  renderMembers(); renderOrders(); renderWarranties();
 }
 
 /* ---------- customers ---------- */
@@ -129,7 +131,7 @@ $('cdPtsForm').addEventListener('submit', async (e) => {
     b.set(oref, { kind: 'adjust', uid: cur.uid, memberNo: cur.no, nickname: cur.nickname || '', title: why, points: n, deliveredAt: serverTimestamp() });
     await b.commit();
     cur.points = (cur.points || 0) + n; orders.unshift({ id: oref.id, kind: 'adjust', uid: cur.uid, title: why, points: n, deliveredAt: new Date() });
-    toast((n > 0 ? '+' : '') + n + ' แต้ม บันทึกแล้ว'); renderMembers(); renderOrders(); openMember(cur.uid);
+    toast((n > 0 ? '+' : '') + n + ' แต้ม บันทึกแล้ว'); refreshAll();
   } catch (x) { toast(authMsg(x.code)); }
 });
 $('cdDelBtn').addEventListener('click', async () => {
@@ -139,40 +141,192 @@ $('cdDelBtn').addEventListener('click', async () => {
 });
 
 /* ---------- orders ---------- */
+/* ---------- orders: edit / delete ---------- */
+const ICO_E = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4Z"/><path d="m13.5 6.5 4 4"/></svg>';
+const ICO_D = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>';
 function orderRow(o, withWho = true) {
-  const row = h('div', 'row'), hd = h('div', 'row__h');
+  const row = h('div', 'orow'), body = h('div', 'row'), hd = h('div', 'row__h');
+  body.style.padding = '0'; body.style.border = '0';
   const t = h('span', 'row__t', (o.kind === 'adjust' ? 'ปรับแต้ม: ' : '') + (o.title || 'งานพิมพ์'));
   const right = o.kind === 'adjust' ? h('span', 'pill', (o.points > 0 ? '+' : '') + intf(o.points) + ' แต้ม') : h('span', 'num small', money(o.total) + ' ฿');
   hd.append(t, right);
   const d = toDate(o.deliveredAt);
-  const meta = [d ? fDate.format(d) : '', withWho && o.uid ? (o.nickname || '') + ' ' + (o.memberNo || '') : (withWho ? 'ลูกค้าทั่วไป' : ''),
-    o.kind !== 'adjust' && o.points ? '+' + intf(o.points) + ' แต้ม' : ''].filter(Boolean).join(' · ');
-  row.append(hd, h('span', 'row__m', meta));
+  const meta = [d ? fDate.format(d) : '', withWho && o.uid ? (o.nickname || '') + ' ' + (o.memberNo || '') : (withWho && o.kind !== 'adjust' ? 'ลูกค้าทั่วไป' : ''),
+    o.kind !== 'adjust' && o.points ? '+' + intf(o.points) + ' แต้ม' : '', o.couponPct ? 'คูปอง +' + o.couponPct + '%' : ''].filter(Boolean).join(' · ');
+  body.append(hd, h('span', 'row__m', meta));
   if (o.warrantyCode) {
     const w = h('button', 'linkbtn', 'ประกัน ' + o.warrantyCode); w.type = 'button';
-    w.addEventListener('click', () => { if ($('cDlg').open) $('cDlg').close(); $('tWar').click(); $('wCode').value = o.warrantyCode; lookupWarranty(o.warrantyCode); });
-    row.appendChild(w);
+    w.addEventListener('click', () => { if ($('cDlg').open) $('cDlg').close(); openWarranty(o.warrantyCode); });
+    body.appendChild(w);
   }
+  const acts = h('div', 'orow__acts');
+  const eb = h('button'); eb.type = 'button'; eb.innerHTML = ICO_E; eb.setAttribute('aria-label', 'แก้ไข ' + (o.title || 'ออเดอร์')); eb.addEventListener('click', () => editOrder(o));
+  const db_ = h('button', 'del'); db_.type = 'button'; db_.innerHTML = ICO_D; db_.setAttribute('aria-label', 'ลบ ' + (o.title || 'ออเดอร์')); db_.addEventListener('click', () => askDelete(o));
+  acts.append(eb, db_);
+  row.append(body, acts);
   return row;
 }
-function renderOrders() {
-  const L = $('oList'); L.textContent = '';
-  const sales = orders.filter(o => o.kind !== 'adjust');
-  const sum = sales.reduce((s, o) => s + (+o.total || 0), 0);
-  $('oCount').textContent = 'ออเดอร์ ' + sales.length + ' รายการ · ยอดรวม ' + money(sum) + ' บาท';
-  if (!orders.length) L.appendChild(h('p', 'empty', 'ออเดอร์ที่บันทึกจากเครื่องคิดเลขจะขึ้นที่นี่'));
-  orders.slice(0, 100).forEach(o => L.appendChild(orderRow(o)));
+const isoDay = (d) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+let editing = null;
+function calcTotal() { const t = (+$('oPrint').value || 0) + (+$('oDesign').value || 0) + (+$('oShip').value || 0); $('oTotal').textContent = money(t) + ' ฿'; ptsNote(); return t; }
+function ptsNote() {
+  const o = editing; if (!o) return;
+  if (o.kind === 'adjust' || !o.uid) { $('oPtsNote').textContent = o.uid ? '' : 'ลูกค้าทั่วไป ไม่มีแต้ม'; return; }
+  const np = Math.max(0, Math.floor((+$('oPrint').value || 0) / 10)), diff = np - (o.points || 0);
+  $('oPtsNote').textContent = 'แต้มของออเดอร์นี้: ' + intf(o.points || 0) + ' → ' + intf(np) + (diff ? ' (ลูกค้าจะ' + (diff > 0 ? 'ได้เพิ่ม ' : 'ถูกหัก ') + intf(Math.abs(diff)) + ' แต้ม)' : '');
 }
+['oPrint', 'oDesign', 'oShip'].forEach(id => $(id).addEventListener('input', calcTotal));
+function editOrder(o) {
+  editing = o; const adj = o.kind === 'adjust';
+  document.querySelectorAll('.oSaleOnly').forEach(e => e.hidden = adj); document.querySelectorAll('.oAdjOnly').forEach(e => e.hidden = !adj);
+  $('oDlgT').textContent = adj ? 'แก้ไขการปรับแต้ม' : 'แก้ไขออเดอร์';
+  $('oWho').textContent = o.uid ? 'ลูกค้า: ' + (o.nickname || '') + ' ' + (o.memberNo || '') : 'ลูกค้าทั่วไป';
+  $('oTitle').value = o.title || ''; const d = toDate(o.deliveredAt) || new Date(); $('oDate').value = isoDay(d);
+  $('oWar').value = String(o.warrantyDays || 0); if (!$('oWar').value) $('oWar').value = '0';
+  $('oPrint').value = o.printPaid != null ? o.printPaid : ''; $('oDesign').value = o.designFee || 0; $('oShip').value = o.shippingFee || 0;
+  $('oPts').value = o.points || 0; $('oErr').hidden = true;
+  if (!adj) calcTotal(); else $('oPtsNote').textContent = '';
+  $('oDlg').showModal();
+}
+$('oForm').addEventListener('submit', async (e) => {
+  e.preventDefault(); const o = editing; if (!o) return;
+  const err = (m) => { $('oErr').textContent = m; $('oErr').hidden = false; };
+  const title = $('oTitle').value.trim().slice(0, 80); if (!title) return err('ใส่ชื่องาน');
+  const dv = $('oDate').value; if (!/^\d{4}-\d{2}-\d{2}$/.test(dv)) return err('เลือกวันส่งมอบ');
+  const [y, mo, da] = dv.split('-').map(Number), old = toDate(o.deliveredAt) || new Date();
+  const dAt = new Date(y, mo - 1, da, old.getHours(), old.getMinutes());
+  const b = writeBatch(db), oref = doc(db, 'orders', o.id), mem = o.uid && members.find(m => m.uid === o.uid);
+  let upd, ptsDiff = 0;
+  if (o.kind === 'adjust') {
+    const np = Math.trunc(+$('oPts').value || 0); if (!np) return err('แต้มต้องไม่เป็น 0');
+    ptsDiff = np - (o.points || 0); upd = { title, deliveredAt: dAt, points: np };
+  } else {
+    const pp = Math.max(0, +$('oPrint').value || 0), df = Math.max(0, +$('oDesign').value || 0), sf = Math.max(0, +$('oShip').value || 0);
+    const np = o.uid ? Math.floor(pp / 10) : 0; ptsDiff = np - (o.points || 0);
+    const days = +$('oWar').value || 0; let code = o.warrantyCode || '';
+    const exp = days ? new Date(dAt.getTime() + days * 864e5) : null;
+    if (days && !code) code = warrantyCode();
+    if (days) b.set(doc(db, 'warranties', code), { title, days, deliveredAt: dAt, expiresAt: exp, claims: (warranties.find(w => w.id === code) || {}).claims || [] });
+    else if (code) { b.delete(doc(db, 'warranties', code)); code = ''; }
+    upd = { title, deliveredAt: dAt, printPaid: +pp.toFixed(2), designFee: +df.toFixed(2), shippingFee: +sf.toFixed(2), total: +(pp + df + sf).toFixed(2), points: np, warrantyDays: days, warrantyCode: code, expiresAt: exp };
+  }
+  if (ptsDiff && mem) {
+    if ((mem.points || 0) + ptsDiff < 0) return err('แต้มของลูกค้าจะติดลบ ตรวจตัวเลขอีกครั้ง');
+    b.update(doc(db, 'members', o.uid), { points: increment(ptsDiff) });
+  }
+  b.update(oref, upd);
+  $('oSave').disabled = true;
+  try { await b.commit(); Object.assign(o, upd); if (mem) mem.points = (mem.points || 0) + ptsDiff; $('oDlg').close(); toast('บันทึกการแก้ไขแล้ว' + (ptsDiff && mem ? ' · แต้ม ' + (ptsDiff > 0 ? '+' : '') + ptsDiff : '')); await reloadWarranties(); refreshAll(); }
+  catch (x) { err(authMsg(x.code)); }
+  $('oSave').disabled = false;
+});
+let deleting = null;
+function askDelete(o) {
+  deleting = o; const mem = o.uid && members.find(m => m.uid === o.uid);
+  $('odWhat').textContent = 'ลบ "' + (o.title || 'ออเดอร์') + '"' + (o.kind !== 'adjust' ? ' ยอด ' + money(o.total) + ' บาท' : '') + ' ออกจากระบบถาวร';
+  $('odPtsL').hidden = !(mem && o.points); $('odPtsT').textContent = (o.points > 0 ? 'หัก ' : 'คืน ') + intf(Math.abs(o.points || 0)) + ' แต้มจากลูกค้า ' + (o.nickname || '');
+  $('odWarL').hidden = !o.warrantyCode; $('odWarT').textContent = 'ลบประกัน ' + (o.warrantyCode || '') + ' ด้วย';
+  $('odCouL').hidden = !(mem && o.couponPct);
+  $('odPts').checked = $('odWar').checked = $('odCou').checked = true; $('odErr').hidden = true;
+  $('odDlg').showModal();
+}
+$('odOk').addEventListener('click', async () => {
+  const o = deleting; if (!o) return; const mem = o.uid && members.find(m => m.uid === o.uid);
+  const b = writeBatch(db); b.delete(doc(db, 'orders', o.id));
+  const mu = {};
+  if (mem && o.points && $('odPts').checked) { const take = Math.min(o.points, mem.points || 0); if (o.points > 0 ? take : o.points) mu.points = increment(o.points > 0 ? -take : -o.points); }
+  if (mem && o.couponPct && $('odCou').checked) mu.welcomeUsed = false;
+  if (Object.keys(mu).length) b.update(doc(db, 'members', o.uid), mu);
+  if (o.warrantyCode && $('odWar').checked) b.delete(doc(db, 'warranties', o.warrantyCode));
+  $('odOk').disabled = true;
+  try {
+    await b.commit(); orders = orders.filter(x => x.id !== o.id);
+    if (mem && mu.points) mem.points = Math.max(0, (mem.points || 0) - (o.points > 0 ? Math.min(o.points, mem.points || 0) : o.points));
+    if (mem && mu.welcomeUsed === false) mem.welcomeUsed = false;
+    $('odDlg').close(); toast('ลบออเดอร์แล้ว'); await reloadWarranties(); refreshAll();
+  } catch (x) { $('odErr').textContent = authMsg(x.code); $('odErr').hidden = false; }
+  $('odOk').disabled = false;
+});
+function refreshAll() { renderOrders(); renderMembers(); renderWarranties(); if ($('cDlg').open && cur) openMember(cur.uid); }
 
-/* ---------- warranty ---------- */
-$('wForm').addEventListener('submit', (e) => { e.preventDefault(); lookupWarranty($('wCode').value); });
+/* ---------- monthly summary ---------- */
+const fMon = new Intl.DateTimeFormat('th-TH', { month: 'long', year: 'numeric' }), fMonS = new Intl.DateTimeFormat('th-TH', { month: 'short' });
+let mY = new Date().getFullYear(), mM = new Date().getMonth();
+const inMonth = (o, y, m) => { const d = toDate(o.deliveredAt); return d && d.getFullYear() === y && d.getMonth() === m; };
+function stat(label, value, sub, main) { const s = h('div', 'mstat' + (main ? ' mstat--main' : '')); s.append(h('span', null, label), h('b', null, value)); if (sub) s.appendChild(h('small', null, sub)); return s; }
+function renderOrders() {
+  $('moTitle').textContent = fMon.format(new Date(mY, mM, 1));
+  const mo = orders.filter(o => inMonth(o, mY, mM)), sales = mo.filter(o => o.kind !== 'adjust');
+  const sum = (k) => sales.reduce((s, o) => s + (+o[k] || 0), 0);
+  const total = sum('total'), print = sum('printPaid'), disc = sum('discountTotal'), pts = mo.reduce((s, o) => s + (+o.points || 0), 0);
+  const memN = sales.filter(o => o.uid).length;
+  const S = $('moStats'); S.textContent = '';
+  S.append(stat('ยอดขายรวม', money(total) + ' ฿', sales.length + ' ออเดอร์', true), stat('ค่าพิมพ์สุทธิ', money(print) + ' ฿', 'หลังหักส่วนลด'),
+    stat('ส่วนลดที่ให้', money(disc) + ' ฿', 'สมาชิก + คูปอง + ส่วนลดพิเศษ'), stat('ค่าเขียนแบบ / ค่าส่ง', intf(sum('designFee')) + ' / ' + intf(sum('shippingFee')), 'บาท · ไม่นับเป็นแต้ม'),
+    stat('แต้มที่แจก', intf(pts), 'รวมการปรับแต้ม'), stat('ลูกค้าสมาชิก', memN + ' / ' + sales.length, 'ออเดอร์ของสมาชิก'));
+  /* last 12 months */
+  const C = $('moChart'); C.textContent = ''; const now = new Date(), months = [];
+  for (let i = 11; i >= 0; i--) { const d = new Date(now.getFullYear(), now.getMonth() - i, 1); months.push([d.getFullYear(), d.getMonth()]); }
+  const vals = months.map(([y, m]) => orders.filter(o => o.kind !== 'adjust' && inMonth(o, y, m)).reduce((s, o) => s + (+o.total || 0), 0));
+  const max = Math.max(1, ...vals);
+  months.forEach(([y, m], i) => {
+    const b = h('button', 'bar2' + (y === mY && m === mM ? ' is-on' : '')); b.type = 'button';
+    b.setAttribute('aria-label', fMon.format(new Date(y, m, 1)) + ' ยอด ' + money(vals[i]) + ' บาท');
+    const bar = h('i'); bar.style.height = Math.max(2, vals[i] / max * 130) + 'px';
+    b.append(h('em', null, vals[i] ? (vals[i] >= 1000 ? (vals[i] / 1000).toFixed(1) + 'k' : intf(vals[i])) : ''), bar, h('span', null, fMonS.format(new Date(y, m, 1))));
+    b.addEventListener('click', () => { mY = y; mM = m; renderOrders(); }); C.appendChild(b);
+  });
+  $('oHead').textContent = 'ออเดอร์ ' + fMon.format(new Date(mY, mM, 1));
+  $('oCount').textContent = mo.length ? mo.length + ' รายการ' : '';
+  const L = $('oList'); L.textContent = '';
+  if (!mo.length) L.appendChild(h('p', 'empty', 'ไม่มีออเดอร์ในเดือนนี้'));
+  mo.forEach(o => L.appendChild(orderRow(o)));
+}
+$('moPrev').addEventListener('click', () => { const d = new Date(mY, mM - 1, 1); mY = d.getFullYear(); mM = d.getMonth(); renderOrders(); });
+$('moNext').addEventListener('click', () => { const d = new Date(mY, mM + 1, 1); mY = d.getFullYear(); mM = d.getMonth(); renderOrders(); });
+$('moNow').addEventListener('click', () => { const d = new Date(); mY = d.getFullYear(); mM = d.getMonth(); renderOrders(); });
+
+/* ---------- warranties: all at a glance ---------- */
+let warranties = [], wFilter = 'all';
+async function reloadWarranties() {
+  try { const s = await getDocs(collection(db, 'warranties')); warranties = s.docs.map(d => ({ id: d.id, ...d.data() })); } catch (_) {}
+}
+function wState(w) { const left = daysLeft(toDate(w.expiresAt)); return left <= 0 ? 'exp' : left <= 7 ? 'soon' : 'ok'; }
+function renderWarranties() {
+  const q = ($('wSearch').value || '').toLowerCase().trim(), now = new Date();
+  const withOrder = warranties.map(w => ({ w, o: orders.find(o => o.warrantyCode === w.id) }));
+  const counts = { all: withOrder.length, ok: 0, soon: 0, exp: 0 }; withOrder.forEach(x => counts[wState(x.w)]++);
+  const C = $('wChips'); C.textContent = '';
+  [['all', 'ทั้งหมด'], ['ok', 'คุ้มครองอยู่'], ['soon', 'ใกล้หมด (ไม่เกิน 7 วัน)'], ['exp', 'หมดแล้ว']].forEach(([k, n]) => {
+    const b = h('button'); b.type = 'button'; b.setAttribute('aria-pressed', String(wFilter === k)); b.append(n, h('b', null, String(counts[k] + (k === 'ok' ? counts.soon : 0))));
+    b.addEventListener('click', () => { wFilter = k; renderWarranties(); }); C.appendChild(b);
+  });
+  let list = withOrder.filter(({ w }) => wFilter === 'all' || (wFilter === 'ok' ? wState(w) !== 'exp' : wState(w) === wFilter));
+  if (q) list = list.filter(({ w, o }) => [w.id, w.title, o && o.nickname, o && o.memberNo].some(v => (v || '').toLowerCase().includes(q)));
+  list.sort((a, b) => { const sa = wState(a.w) === 'exp', sb = wState(b.w) === 'exp'; if (sa !== sb) return sa ? 1 : -1; return (toDate(a.w.expiresAt) || 0) - (toDate(b.w.expiresAt) || 0); });
+  const L = $('wList'); L.textContent = '';
+  if (!list.length) { L.appendChild(h('p', 'empty', warranties.length ? 'ไม่พบประกันตามที่กรอง' : 'ยังไม่มีประกัน ออเดอร์ที่ตั้งระยะประกันจะขึ้นที่นี่')); return; }
+  list.forEach(({ w, o }) => {
+    const exp = toDate(w.expiresAt), left = daysLeft(exp, now), st = wState(w), tot = w.days || 30;
+    const it = h('button', 'wit'); it.type = 'button'; it.addEventListener('click', () => openWarranty(w.id));
+    const hd = h('div', 'wit__h'); hd.append(h('b', null, w.title || 'งานพิมพ์'), h('span', 'pill ' + (st === 'exp' ? 'pill--stop' : st === 'soon' ? 'pill--accent' : 'pill--ok'), st === 'exp' ? 'หมดแล้ว' : 'เหลือ ' + left + ' วัน'));
+    const bar = h('div', 'bar bar--thin'), f = h('span'); f.style.width = (st === 'exp' ? 100 : Math.max(3, Math.min(100, left / tot * 100))) + '%'; f.style.setProperty('--c', st === 'exp' ? 'var(--rule-strong)' : st === 'soon' ? 'var(--accent)' : 'var(--ok)'); bar.appendChild(f);
+    const who = o && o.uid ? (o.nickname || '') + ' ' + (o.memberNo || '') : 'ลูกค้าทั่วไป';
+    it.append(hd, bar, h('span', 'wit__m', w.id + ' · ' + who), h('span', 'wit__m', 'ส่งมอบ ' + (toDate(w.deliveredAt) ? fDate.format(toDate(w.deliveredAt)) : '-') + ' · หมด ' + (exp ? fDate.format(exp) : '-') + ((w.claims || []).length ? ' · เคลม ' + w.claims.length + ' ครั้ง' : '')));
+    L.appendChild(it);
+  });
+}
+$('wSearch').addEventListener('input', renderWarranties);
+function openWarranty(code) {
+  if (!$('wDlg').open) $('wDlg').showModal(); lookupWarranty(code);
+}
 async function lookupWarranty(code) {
   code = (code || '').trim().toUpperCase(); const out = $('wOut'); out.textContent = '';
   if (!code) return;
   let snap; try { snap = await getDoc(doc(db, 'warranties', code)); } catch (x) { return toast(authMsg(x.code)); }
   if (!snap.exists()) { out.appendChild(h('p', 'empty', 'ไม่พบรหัสประกัน ' + code)); return; }
   const w = snap.data(), exp = toDate(w.expiresAt), left = daysLeft(exp), ok = left > 0;
-  const card = h('div', 'card wcard');
+  const card = h('div', 'wcard');
   const hd = h('div', 'sec__h'); hd.append(h('h2', null, w.title || 'งานพิมพ์'), h('span', 'pill ' + (ok ? 'pill--ok' : 'pill--stop'), ok ? 'คุ้มครองอยู่ · เหลือ ' + left + ' วัน' : 'หมดประกันแล้ว'));
   const o = orders.find(x => x.warrantyCode === code);
   const info = h('dl', 'cd__info');
@@ -186,9 +340,9 @@ async function lookupWarranty(code) {
   f.addEventListener('submit', async (e) => {
     e.preventDefault(); const note = inp.value.trim(); if (!note) return;
     const claims = (w.claims || []).concat([{ note: note.slice(0, 160), at: new Date().toISOString() }]);
-    try { await updateDoc(doc(db, 'warranties', code), { claims }); toast('บันทึกการเคลมแล้ว'); lookupWarranty(code); } catch (x) { toast(authMsg(x.code)); }
+    try { await updateDoc(doc(db, 'warranties', code), { claims }); toast('บันทึกการเคลมแล้ว'); await reloadWarranties(); renderWarranties(); lookupWarranty(code); } catch (x) { toast(authMsg(x.code)); }
   });
-  const pub = h('a', 'small', 'เปิดหน้าเช็กประกันที่ลูกค้าเห็น'); pub.href = 'warranty.html?c=' + encodeURIComponent(code); pub.target = '_blank'; pub.rel = 'noopener';
+  const pub = h('a', 'small', 'เปิดหน้าเช็กประกันที่ลูกค้าเห็น ↗'); pub.href = 'warranty.html?c=' + encodeURIComponent(code); pub.target = '_blank'; pub.rel = 'noopener';
   card.append(hd, info, cl, f, pub); out.appendChild(card);
 }
 
