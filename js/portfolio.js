@@ -1,7 +1,7 @@
-import { db, doc, getDoc, collection, getDocs, query, where } from './fb.js?v=20261003s';
-import { $, h, reveal, LOGO_SVG } from './core.js?v=20261003s';
-import { loadHero } from './heromedia.js?v=20261003s';
-import { PFCATS } from './pfcats.js?v=20261003s';
+import { db, doc, getDoc, collection, getDocs, query, where } from './fb.js?v=20261003t';
+import { $, h, reveal, LOGO_SVG } from './core.js?v=20261003t';
+import { loadHero } from './heromedia.js?v=20261003t';
+import { PFCATS } from './pfcats.js?v=20261003t';
 document.querySelectorAll('[data-logo]').forEach(e => { e.innerHTML = LOGO_SVG; });
 const nv = document.querySelector('[data-nav="works"]'); if (nv) nv.setAttribute('aria-current', 'page');
 reveal();
@@ -66,13 +66,6 @@ function para() {
 }
 addEventListener('scroll', para, { passive: true });
 let rsT = 0; addEventListener('resize', () => { clearTimeout(rsT); rsT = setTimeout(() => { if (cols.length !== nCols()) grid(false); else para(); }, 200); });
-/* cursor: the × turns into a + over a picture */
-if (fine && !reduce) {
-  const cur = $('pCur'); let cx = 0, cy = 0, craf = 0;
-  addEventListener('pointermove', (e) => { cx = e.clientX; cy = e.clientY; const on = !!e.target.closest('.pw');
-    cur.classList.toggle('on', on && !$('lb').open);
-    if (!craf) craf = requestAnimationFrame(() => { craf = 0; cur.style.setProperty('--cx', cx + 'px'); cur.style.setProperty('--cy', cy + 'px'); }); }, { passive: true });
-}
 /* hero background: the image or clip chosen in the admin; nothing when none is set */
 async function showcase() {
   const S = $('pfShow'); S.textContent = '';

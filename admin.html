@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/site.css?v=20261003s">
+<link rel="stylesheet" href="css/site.css?v=20261003t">
 <title>หลังร้าน · UNITAC</title>
 <meta name="description" content="UNITAC 3D PRINT ยินดีให้บริการ">
 <meta property="og:type" content="website">
@@ -246,6 +246,10 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
 .hero-set__btns{display:flex;gap:8px;flex-wrap:wrap}
 .hero-set__btns label{cursor:pointer}
 .hero-set__btns label:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.hero-set__spec{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;margin:2px 0 4px;font-size:12.5px;color:var(--ink-2)}
+.hero-set__spec dt{color:var(--muted)}
+.hero-set__spec dd{margin:0}
+.hero-set__spec b{color:var(--ink);font-family:var(--font-num);font-weight:500}
 </style>
 </head>
 <body>
@@ -346,7 +350,11 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
         <div class="hero-set__pv" id="hsPv"><span class="muted small">ยังไม่มีพื้นหลัง</span></div>
         <div class="hero-set__t">
           <h2>พื้นหลังส่วนหัวหน้าผลงาน</h2>
-          <p class="hint">เลือกรูปหรือคลิปที่คมชัด แสดงด้านหลังหัวข้อ "ผลงานของเรา" ถ้าไม่เลือก ส่วนหัวจะเป็นพื้นเรียบ คลิปควรยาว 5–15 วินาที ขนาดไม่เกิน 8 MB (MP4)</p>
+          <p class="hint">แสดงด้านหลังหัวข้อ "ผลงานของเรา" ถ้าไม่เลือก ส่วนหัวจะเป็นพื้นเรียบ ชิ้นงานควรอยู่ฝั่งขวาของภาพ เพราะฝั่งซ้ายมีหัวข้อทับ</p>
+          <dl class="hero-set__spec">
+            <dt>รูป</dt><dd>แนวนอน <b>2400 × 1000 px</b> (อย่างน้อย 1920 × 800) · JPG / PNG / HEIC</dd>
+            <dt>คลิป</dt><dd>แนวนอน <b>1920 × 1080 (1080p)</b> · MP4 (H.264) · ยาว 5–15 วินาที · ไม่เกิน 8 MB (แนะนำ 3–5 MB) · ไม่ต้องมีเสียง</dd>
+          </dl>
           <div class="hero-set__btns">
             <label class="btn btn--ghost btn--sm">เลือกรูป<input type="file" id="hsImg" accept="image/*,.heic,.heif" class="sr"></label>
             <label class="btn btn--ghost btn--sm">เลือกคลิป<input type="file" id="hsVid" accept="video/mp4,video/webm,video/quicktime" class="sr"></label>
@@ -563,12 +571,12 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
 </div></dialog>
 
 <footer class="foot">UNITAC · <a href="./">ตารางคิว</a> · <a href="warranty.html">เช็กประกัน</a> · <a href="portfolio.html">ผลงาน</a> · <a href="partners.html">พาร์ทเนอร์</a> · <a href="privacy.html">นโยบายความเป็นส่วนตัว</a></footer>
-<script type="module" src="js/admin.js?v=20261003s"></script>
-<script type="module" src="js/admin-partners.js?v=20261003s"></script>
-<script type="module" src="js/admin-stock.js?v=20261003s"></script>
-<script type="module" src="js/admin-portfolio.js?v=20261003s"></script>
-<script type="module" src="js/admin-tools.js?v=20261003s"></script>
-<script type="module" src="js/admin-ship.js?v=20261003s"></script>
-<script type="module" src="js/admin-hero.js?v=20261003s"></script>
+<script type="module" src="js/admin.js?v=20261003t"></script>
+<script type="module" src="js/admin-partners.js?v=20261003t"></script>
+<script type="module" src="js/admin-stock.js?v=20261003t"></script>
+<script type="module" src="js/admin-portfolio.js?v=20261003t"></script>
+<script type="module" src="js/admin-tools.js?v=20261003t"></script>
+<script type="module" src="js/admin-ship.js?v=20261003t"></script>
+<script type="module" src="js/admin-hero.js?v=20261003t"></script>
 </body>
 </html>
