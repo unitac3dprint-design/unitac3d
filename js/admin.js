@@ -1,10 +1,10 @@
 import {
   auth, db, OWNER, authMsg, onAuthStateChanged, signInWithEmailAndPassword, signOut,
   doc, collection, getDoc, getDocs, setDoc, updateDoc, deleteDoc, query, where, writeBatch, serverTimestamp, increment
-} from './fb.js?v=20261003j';
-import { RANKS, rankOf, couponInfo, memberNo, toDate, fDate, fDM, money, intf, daysLeft, warrantyCode, $, h, toast, avatarEl, LOGO_SVG } from './core.js?v=20261003j';
-import { CARRIERS, trackPage, cleanTrack } from './carriers.js?v=20261003j';
-import { scanQR, parseMemberQR } from './scan.js?v=20261003j';
+} from './fb.js?v=20261003k';
+import { RANKS, rankOf, couponInfo, memberNo, toDate, fDate, fDM, money, intf, daysLeft, warrantyCode, $, h, toast, avatarEl, LOGO_SVG } from './core.js?v=20261003k';
+import { CARRIERS, trackPage, cleanTrack } from './carriers.js?v=20261003k';
+import { scanQR, parseMemberQR } from './scan.js?v=20261003k';
 
 document.querySelectorAll('[data-logo]').forEach(e => { e.innerHTML = LOGO_SVG; });
 
@@ -272,7 +272,7 @@ $('oForm').addEventListener('submit', async (e) => {
   b.update(oref, upd);
   $('oSave').disabled = true;
   try { await b.commit(); Object.assign(o, upd); if (mem) mem.points = (mem.points || 0) + ptsDiff;
-    if (upd.shipTrack) { try { const ss = await getDoc(doc(db, 'shipments', upd.shipTrack)); if (!ss.exists()) await setDoc(doc(db, 'shipments', upd.shipTrack), { number: upd.shipTrack, carrier: upd.shipCarrier, title: upd.title, events: [{ s: 'sent', text: 'แพ็กและส่งจาก UNITAC', place: '', at: new Date(Date.now() - 120000).toISOString() }], eta: new Date(Date.now() + 3 * 864e5).toISOString(), source: 'manual', updatedAt: new Date().toISOString() }); } catch (_) {} } $('oDlg').close(); toast('บันทึกการแก้ไขแล้ว' + (ptsDiff && mem ? ' · แต้ม ' + (ptsDiff > 0 ? '+' : '') + ptsDiff : '')); await reloadWarranties(); refreshAll(); }
+    if (upd.shipTrack) { try { const ss = await getDoc(doc(db, 'shipments', upd.shipTrack)); if (!ss.exists()) await setDoc(doc(db, 'shipments', upd.shipTrack), { number: upd.shipTrack, carrier: upd.shipCarrier, title: upd.title, events: [{ s: 'sent', title: 'แพ็กและส่งจาก UNITAC', detail: '', at: new Date(Date.now() - 120000).toISOString() }], eta: new Date(Date.now() + 3 * 864e5).toISOString(), source: 'manual', updatedAt: new Date().toISOString() }); } catch (_) {} } $('oDlg').close(); toast('บันทึกการแก้ไขแล้ว' + (ptsDiff && mem ? ' · แต้ม ' + (ptsDiff > 0 ? '+' : '') + ptsDiff : '')); await reloadWarranties(); refreshAll(); }
   catch (x) { err(authMsg(x.code)); }
   $('oSave').disabled = false;
 });

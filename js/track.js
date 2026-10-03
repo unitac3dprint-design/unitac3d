@@ -1,7 +1,7 @@
-import { db, doc, onSnapshot } from './fb.js?v=20261003j';
-import { $, h, reveal, toast, LOGO_SVG } from './core.js?v=20261003j';
-import { CARRIERS, cleanTrack } from './carriers.js?v=20261003j';
-import { SHIP, latest, fmtWhen } from './shipstatus.js?v=20261003j';
+import { db, doc, onSnapshot } from './fb.js?v=20261003k';
+import { $, h, reveal, toast, LOGO_SVG } from './core.js?v=20261003k';
+import { CARRIERS, cleanTrack } from './carriers.js?v=20261003k';
+import { latest, fmtWhen, titleOf, detailOf, toneOf } from './shipstatus.js?v=20261003k';
 document.querySelectorAll('[data-logo]').forEach(e => { e.innerHTML = LOGO_SVG; });
 reveal();
 const I = {
@@ -19,27 +19,27 @@ function render(s) {
   $('tCard').hidden = false; $('tNum').textContent = n; $('tCarrier').textContent = car.name + ' · เลขพัสดุ';
   $('tJob').textContent = (s && s.title) || '';
   const ev = ((s && s.events) || []).slice().sort((a, b) => String(b.at).localeCompare(String(a.at)));
-  const last = latest(ev), st = last ? last.s : null;
+  const last = latest(ev), st = last ? toneOf(last) : null;
   $('tTitle').textContent = st === 'delivered' ? 'พัสดุส่งถึงแล้ว' : st === 'out' ? 'พัสดุของคุณใกล้ถึงแล้ว' : st === 'issue' ? 'การจัดส่งมีปัญหา' : 'พัสดุของคุณกำลังเดินทาง';
-  /* status box */
-  const now = $('tNow'); now.textContent = ''; now.className = 'trk__now' + (st === 'delivered' ? ' is-ok' : st === 'issue' ? ' is-bad' : !last ? ' is-wait' : '');
-  const ic = h('span', 'trk__nowic'); ic.innerHTML = st === 'delivered' ? I.check : st === 'issue' ? I.alert : !last ? I.box : I.truck;
+  const now = $('tNow'); now.textContent = ''; now.className = 'trk__now' + (st === 'delivered' ? ' is-ok' : st === 'issue' ? ' is-bad' : (!last || st === 'sent') ? ' is-wait' : '');
+  const ic = h('span', 'trk__nowic'); ic.innerHTML = st === 'delivered' ? I.check : st === 'issue' ? I.alert : (!last || st === 'sent') ? I.box : I.truck;
   const t = h('div');
-  if (last) {
-    t.append(h('b', null, last.s === 'note' ? last.text : SHIP[last.s].name));
-    t.append(h('span', null, 'อัปเดตล่าสุด ' + fmtWhen(last.at) + (last.place ? ' · ' + last.place : '') + (last.s !== 'note' && last.text && last.text !== SHIP[last.s].name ? ' · ' + last.text : '')));
+  if (last && st !== 'sent') {
+    t.append(h('b', null, titleOf(last)));
+    const det = detailOf(last);
+    t.append(h('span', null, 'อัปเดตล่าสุด ' + fmtWhen(last.at) + (det ? ' · ' + det : '')));
   } else {
-    t.append(h('b', null, 'ร้านส่งของแล้ว รอขนส่งอัปเดตสถานะ'), h('span', null, 'กดปุ่มด้านล่างเพื่อดูตำแหน่งล่าสุดที่ ' + car.name));
+    t.append(h('b', null, 'ร้านส่งของแล้ว รอขนส่งอัปเดตสถานะ'), h('span', null, 'กดปุ่มด้านล่างเพื่อดูสถานะล่าสุดที่ ' + car.name));
   }
   if (s && s.eta && st !== 'delivered') t.append(h('span', null, ' · คาดว่าถึง ' + new Date(s.eta).toLocaleDateString('th-TH', { weekday: 'short', day: 'numeric', month: 'short' })));
   now.append(ic, t);
-  /* timeline: newest first */
   const L = $('tList'); L.textContent = '';
   ev.forEach((e, i) => {
-    const tone = i === 0 ? (e.s === 'delivered' ? 'ok' : e.s === 'issue' ? 'bad' : 'now') : 'done';
+    const et = toneOf(e), tone = i === 0 ? (et === 'delivered' ? 'ok' : et === 'issue' ? 'bad' : et === 'sent' ? 'done' : 'now') : 'done';
     const li = h('li', 'tli' + (tone === 'now' ? ' tli--now' : tone === 'bad' ? ' tli--bad' : ''));
-    const d = h('span', 'tli__dot'); d.innerHTML = tone === 'now' ? I.truck.replace('stroke-width="2"', 'stroke-width="2.2"') : tone === 'bad' ? I.alert : I.check;
-    const tt = h('div', 'tli__t'); tt.append(h('b', null, e.s === 'note' ? e.text : SHIP[e.s].name), h('span', null, [fmtWhen(e.at), e.place, e.s !== 'note' && e.text !== SHIP[e.s].name ? e.text : ''].filter(Boolean).join(' · ')));
+    const d = h('span', 'tli__dot'); d.innerHTML = tone === 'now' ? I.truck : tone === 'bad' ? I.alert : I.check;
+    const tt = h('div', 'tli__t'); tt.append(h('b', null, titleOf(e)), h('span', null, fmtWhen(e.at)));
+    const det = detailOf(e); if (det) tt.append(h('em', null, det));
     li.append(d, tt); L.appendChild(li);
   });
   if (st !== 'delivered') {

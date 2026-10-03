@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/site.css?v=20261003j">
+<link rel="stylesheet" href="css/site.css?v=20261003k">
 <title>หลังร้าน · UNITAC</title>
 <meta name="description" content="UNITAC 3D PRINT ยินดีให้บริการ">
 <meta property="og:type" content="website">
@@ -226,6 +226,16 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
 .sh__list button:hover{color:var(--stop)}
 .sh__list button svg{width:14px;height:14px}
 .sh__list .is-new{box-shadow:inset 0 0 0 1px var(--ok)}
+
+.sh__how{list-style:none;counter-reset:s;margin:0;padding:0;display:grid;gap:10px}
+.sh__how li{counter-increment:s;display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13.5px;color:var(--ink-2)}
+.sh__how li::before{content:counter(s);width:24px;height:24px;border-radius:50%;background:var(--sunk);color:var(--ink);display:grid;place-items:center;font-family:var(--font-num);font-size:12px;flex:none}
+.sh__how li span{flex:1 1 200px}
+#shPaste{font-family:var(--font-num);font-size:12.5px;min-height:200px}
+.sh__list li{grid-template-columns:minmax(0,1fr)}
+.sh__list em{font-style:normal;display:block;font-size:12.5px;color:var(--ink-2);line-height:1.5;margin-top:2px}
+.sh__list .is-ok{box-shadow:inset 0 0 0 1px var(--ok)!important}
+.sh__list .is-bad{box-shadow:inset 0 0 0 1px var(--stop)!important}
 </style>
 </head>
 <body>
@@ -505,19 +515,17 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
 </form></dialog>
 
 <dialog id="shDlg" class="wide" aria-labelledby="shT"><div class="dlg">
-  <div class="dlg__head"><div><h2 id="shT">สถานะพัสดุ</h2><p class="muted small num" id="shNum"></p></div><button type="button" class="iconbtn" data-close aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="dlg__head"><div><h2 id="shT">อัปเดตสถานะจาก Flash</h2><p class="muted small num" id="shNum"></p></div><button type="button" class="iconbtn" data-close aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
   <div class="dlg__body">
     <div class="sh__grid">
       <div class="sec">
-        <div class="sec__h"><h2>เพิ่มสถานะ</h2></div>
-        <div class="sh__chips" id="shChips" role="group" aria-label="เลือกสถานะ"></div>
-        <div class="frow">
-          <div class="field"><label for="shPlace">สถานที่ (ไม่บังคับ)</label><input type="text" id="shPlace" maxlength="60" placeholder="เช่น สาขาลพบุรี, ศูนย์คัดแยก บางนา"></div>
-          <div class="field"><label for="shAt">เวลา</label><input type="datetime-local" id="shAt" class="input"></div>
-        </div>
-        <button type="button" class="btn btn--ghost" id="shAdd">เพิ่มสถานะนี้</button>
-        <div class="field"><label for="shPaste">หรือวางข้อความจากหน้า Flash</label><textarea id="shPaste" rows="4" placeholder="คัดลอกรายการสถานะจากเว็บหรือแอป Flash มาวาง หลายบรรทัดได้ ระบบแยกวันเวลาและสถานะให้"></textarea></div>
-        <button type="button" class="btn btn--ghost" id="shParse">แยกเป็นสถานะ</button>
+        <ol class="sh__how">
+          <li><a class="btn btn--primary btn--sm" id="shGo" target="_blank" rel="noopener">เปิดหน้า Flash ↗</a><span>เลขพัสดุถูกคัดลอกไว้ให้แล้ว ถ้าหน้า Flash ไม่เติมเอง กดวาง</span></li>
+          <li><span>ลากคลุมรายการสถานะทั้งหมด ตั้งแต่วันที่บนสุดจนถึงรายการล่างสุด แล้วคัดลอก</span></li>
+          <li><span>วางในช่องนี้ ระบบแปลงให้ทันที</span></li>
+        </ol>
+        <div class="field"><label for="shPaste" class="sr">ข้อความจากหน้า Flash</label><textarea id="shPaste" rows="9" placeholder="วางข้อความจากหน้าติดตามของ Flash ที่นี่&#10;&#10;2026-10-03&#10;18:00:02&#10;ระหว่างการขนส่ง&#10;ส่งต่อพัสดุจากสาขา…"></textarea></div>
+        <p class="hint" id="shParsed"></p>
         <div class="field"><label for="shEta">คาดว่าถึงลูกค้า</label><input type="date" id="shEta" class="input"></div>
       </div>
       <div class="sec">
@@ -527,15 +535,15 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
     </div>
     <p class="err" id="shErr" hidden></p>
   </div>
-  <div class="dlg__foot"><span class="hint" id="shHint">เปลี่ยนแล้วกดบันทึก ลูกค้าที่เปิดหน้าติดตามอยู่จะเห็นทันที</span><span class="sp"></span><button type="button" class="btn btn--ghost" data-close>ปิด</button><button type="button" class="btn btn--primary" id="shSave">บันทึกสถานะ</button></div>
+  <div class="dlg__foot"><span class="hint">วางข้อความชุดใหม่ ระบบแทนที่สถานะเดิมทั้งหมดให้ตรงกับ Flash</span><span class="sp"></span><button type="button" class="btn btn--ghost" data-close>ปิด</button><button type="button" class="btn btn--primary" id="shSave">บันทึกสถานะ</button></div>
 </div></dialog>
 
 <footer class="foot">UNITAC · <a href="./">ตารางคิว</a> · <a href="warranty.html">เช็กประกัน</a> · <a href="portfolio.html">ผลงาน</a> · <a href="partners.html">พาร์ทเนอร์</a> · <a href="privacy.html">นโยบายความเป็นส่วนตัว</a></footer>
-<script type="module" src="js/admin.js?v=20261003j"></script>
-<script type="module" src="js/admin-partners.js?v=20261003j"></script>
-<script type="module" src="js/admin-stock.js?v=20261003j"></script>
-<script type="module" src="js/admin-portfolio.js?v=20261003j"></script>
-<script type="module" src="js/admin-tools.js?v=20261003j"></script>
-<script type="module" src="js/admin-ship.js?v=20261003j"></script>
+<script type="module" src="js/admin.js?v=20261003k"></script>
+<script type="module" src="js/admin-partners.js?v=20261003k"></script>
+<script type="module" src="js/admin-stock.js?v=20261003k"></script>
+<script type="module" src="js/admin-portfolio.js?v=20261003k"></script>
+<script type="module" src="js/admin-tools.js?v=20261003k"></script>
+<script type="module" src="js/admin-ship.js?v=20261003k"></script>
 </body>
 </html>
