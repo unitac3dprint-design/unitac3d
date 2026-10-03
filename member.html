@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/site.css?v=20261003a">
+<link rel="stylesheet" href="css/site.css?v=20261003b">
 <title>สมาชิก · UNITAC 3D PRINT</title>
 <meta name="description" content="บัตรสมาชิก สะสมแต้ม รับส่วนลดตามแรงค์ และเช็กประกันงานพิมพ์">
 <meta property="og:type" content="website">
@@ -137,6 +137,16 @@ dialog[open] .rankup__name{display:inline-block;animation:forgeName .6s var(--ea
 .sk--box2{height:200px;border-radius:16px}
 @keyframes skel{to{background-position:-200% 0}}
 @media (max-width:860px){.skel{grid-template-columns:minmax(0,1fr)}.skel__col--r{display:none}}
+
+/* my jobs in the queue */
+.qsec{border-color:rgba(255,122,60,.35);background:linear-gradient(180deg,rgba(255,122,60,.07),var(--surface) 70%)}
+.qi{display:grid;gap:8px;padding:14px;border-radius:var(--r-md);background:var(--sunk)}
+.qi__h{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.qi__h b{font-weight:500;min-width:0;overflow-wrap:anywhere}
+.qi__m{font-family:var(--font-num);font-size:12px;color:var(--muted)}
+.qi__p{display:flex;align-items:center;gap:10px}
+.qi__p .bar{flex:1;height:10px}
+.qi__p span{font-family:var(--font-num);font-size:12.5px;min-width:3.4em;text-align:right}
 </style>
 </head>
 <body>
@@ -147,6 +157,7 @@ dialog[open] .rankup__name{display:inline-block;animation:forgeName .6s var(--ea
       <a href="./" data-nav="queue">ตารางคิว</a>
       <a href="member.html" data-nav="member">สมาชิก</a>
       <a href="warranty.html" data-nav="warranty">เช็กประกัน</a>
+      <a href="portfolio.html" data-nav="works">ผลงาน</a>
       <a href="partners.html" data-nav="partners">พาร์ทเนอร์</a>
     </nav>
     <div class="top__end" id="topEnd"></div>
@@ -234,6 +245,11 @@ dialog[open] .rankup__name{display:inline-block;animation:forgeName .6s var(--ea
         จองคิวใหม่ทาง Messenger</a>
     </div>
     <div class="home__col">
+      <section class="card sec rv qsec" style="--d:80ms" id="qSec" hidden aria-labelledby="qTitle">
+        <div class="sec__h"><h2 id="qTitle">งานที่กำลังทำ</h2><span id="qCount"></span></div>
+        <div id="qList" class="wlist"></div>
+        <a class="linkbtn" href="./">ดูในตารางคิว →</a>
+      </section>
       <section class="card sec rv" style="--d:120ms" aria-labelledby="wTitle">
         <div class="sec__h"><h2 id="wTitle">ประกันที่คุ้มครองอยู่</h2><span id="wCount"></span></div>
         <div id="wList" class="wlist"></div>
@@ -320,8 +336,8 @@ dialog[open] .rankup__name{display:inline-block;animation:forgeName .6s var(--ea
   <p class="showcase__hint">แตะที่ใดก็ได้เพื่อปิด</p>
 </div></dialog>
 
-<footer class="foot">UNITAC · <a href="./">ตารางคิว</a> · <a href="warranty.html">เช็กประกัน</a> · <a href="partners.html">พาร์ทเนอร์</a> · <a href="privacy.html">นโยบายความเป็นส่วนตัว</a></footer>
-<script src="vendor/qrcode.js?v=20261003a"></script>
-<script type="module" src="js/member.js?v=20261003a"></script>
+<footer class="foot">UNITAC · <a href="./">ตารางคิว</a> · <a href="warranty.html">เช็กประกัน</a> · <a href="portfolio.html">ผลงาน</a> · <a href="partners.html">พาร์ทเนอร์</a> · <a href="privacy.html">นโยบายความเป็นส่วนตัว</a></footer>
+<script src="vendor/qrcode.js?v=20261003b"></script>
+<script type="module" src="js/member.js?v=20261003b"></script>
 </body>
 </html>

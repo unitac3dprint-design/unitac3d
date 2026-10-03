@@ -1,0 +1,53 @@
+{
+ "name": "UNITAC หลังร้าน",
+ "short_name": "UNITAC",
+ "description": "หลังร้าน เครื่องคิดเลข และตารางคิว UNITAC 3D PRINT",
+ "start_url": "./admin.html",
+ "scope": "./",
+ "display": "standalone",
+ "orientation": "any",
+ "background_color": "#141311",
+ "theme_color": "#141311",
+ "lang": "th",
+ "icons": [
+  {
+   "src": "icons/icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "icons/icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  },
+  {
+   "src": "icons/maskable-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ],
+ "shortcuts": [
+  {
+   "name": "เครื่องคิดเลข",
+   "short_name": "คิดราคา",
+   "url": "./calc.html",
+   "icons": [
+    {
+     "src": "icons/calc-96.png",
+     "sizes": "96x96"
+    }
+   ]
+  },
+  {
+   "name": "ตารางคิว",
+   "url": "./index.html",
+   "icons": [
+    {
+     "src": "icons/calc-96.png",
+     "sizes": "96x96"
+    }
+   ]
+  }
+ ]
+}

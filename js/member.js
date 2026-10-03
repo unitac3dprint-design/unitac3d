@@ -2,11 +2,11 @@ import {
   auth, db, OWNER, authMsg, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword,
   sendEmailVerification, sendPasswordResetEmail, signOut, reload,
   doc, collection, getDoc, getDocs, setDoc, updateDoc, onSnapshot, query, where, serverTimestamp
-} from './fb.js?v=20261003a';
+} from './fb.js?v=20261003b';
 import {
   RANKS, rankOf, nextRank, couponInfo, memberNo, toDate, fDate, fDM, fMonthYear, money, intf, daysLeft,
   COUPON_CAP, $, h, toast, reveal, toAvatar, avatarEl, rankCard, attachTilt, requestGyro, deviceId, qrSvg, LOGO_SVG
-} from './core.js?v=20261003a';
+} from './core.js?v=20261003b';
 
 document.querySelectorAll('[data-logo]').forEach(e => { e.innerHTML = LOGO_SVG; });
 document.querySelector('[data-nav="member"]').setAttribute('aria-current', 'page');
@@ -146,9 +146,44 @@ function saveCache() {
   if (!user || !member) return;
   try { localStorage.setItem('unitac-member-cache:' + user.uid, JSON.stringify({ m: member, o: orders.slice(0, 20) })); } catch (_) {}
 }
-async function loadShop() {
-  try { const s = await getDoc(doc(db, 'public', 'queue')); queueShop = s.exists() ? s.data().shop : null; } catch (_) {}
-  if (member && !V.home.hidden) renderBook();
+/* live queue: shop contacts for booking + this member's jobs */
+let queueDoc = null, unsubQ = null, qTimer = 0;
+function loadShop() {
+  if (unsubQ) return;
+  unsubQ = onSnapshot(doc(db, 'public', 'queue'), (s) => {
+    queueDoc = s.exists() ? s.data() : null; queueShop = queueDoc ? queueDoc.shop : null;
+    if (member && !V.home.hidden) { renderBook(); renderMyJobs(); }
+  }, () => {});
+  clearInterval(qTimer); qTimer = setInterval(() => { if (member && !V.home.hidden) renderMyJobs(); }, 30000);
+}
+const pD = (s) => { const p = s.split('-').map(Number); return new Date(p[0], p[1] - 1, p[2]); };
+const iD = (d) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+function qClosed(q, ds) { return (q.closedDays || []).includes(pD(ds).getDay()) || (q.items || []).some(it => it.kind === 'off' && it.start <= ds && it.end >= ds); }
+function qProgress(q, it) {
+  if (it.status === 'done') return 1; if (it.status !== 'printing') return 0;
+  const days = []; let d = pD(it.start); for (let n = 0; n < 400 && iD(d) <= it.end; n++, d = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1)) if (!qClosed(q, iD(d))) days.push(iD(d));
+  if (!days.length) return 0; const now = Date.now();
+  return days.reduce((s, ds) => s + Math.max(0, Math.min(1, (now - pD(ds).getTime()) / 864e5)), 0) / days.length;
+}
+const fWD = new Intl.DateTimeFormat('th-TH', { weekday: 'short', day: 'numeric', month: 'short' });
+function renderMyJobs() {
+  const sec = $('qSec'), L = $('qList'); if (!sec) return;
+  const q = queueDoc; const mine = q && user ? (q.items || []).filter(it => it.kind === 'job' && it.uid === user.uid && it.status !== 'done') : [];
+  sec.hidden = !mine.length; L.textContent = ''; $('qCount').textContent = mine.length ? mine.length + ' งาน' : '';
+  mine.sort((a, b) => (a.status === 'printing' ? -1 : 1) - (b.status === 'printing' ? -1 : 1) || a.start.localeCompare(b.start)).forEach(it => {
+    const mach = (q.machines || []).find(m => m.id === it.machine), design = mach && mach.type === 'design', p = qProgress(q, it);
+    const card = h('div', 'qi'), hd = h('div', 'qi__h');
+    const st = it.status === 'printing' ? (design ? 'กำลังเขียนแบบ' : 'กำลังพิมพ์') : 'รอคิว';
+    hd.append(h('b', null, it.title || 'งานพิมพ์'), h('span', 'pill ' + (it.status === 'printing' ? 'pill--accent' : ''), st));
+    card.appendChild(hd);
+    if (it.status === 'printing') {
+      const pr = h('div', 'qi__p'), bar = h('div', 'bar'), f = h('span', 'liq'); f.style.width = Math.max(2, p * 100).toFixed(1) + '%'; f.style.background = 'var(--accent)'; bar.appendChild(f);
+      pr.append(bar, h('span', null, (p * 100).toFixed(0) + '%')); card.appendChild(pr);
+    }
+    const when = it.status === 'printing' ? 'คาดว่าเสร็จ ' + fWD.format(pD(it.end)) : 'เริ่มประมาณ ' + fWD.format(pD(it.start)) + ' · เสร็จราว ' + fWD.format(pD(it.end));
+    card.appendChild(h('span', 'qi__m', when + (mach ? ' · ' + mach.name : '')));
+    L.appendChild(card);
+  });
 }
 function renderTopEnd() {
   const t = $('topEnd'); t.textContent = '';
@@ -199,6 +234,7 @@ function renderHome() {
   renderWarranties();
   renderOrders();
   renderBook();
+  renderMyJobs();
 }
 let glinted = false, pressT = 0, pressXY = null, pressFired = false;
 $('cardBtn').addEventListener('cardflip', (e) => {

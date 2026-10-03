@@ -1,6 +1,12 @@
 <!doctype html>
 <html lang="th">
 <head>
+<link rel="manifest" href="admin.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="UNITAC">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="robots" content="noindex">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -9,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/site.css?v=20261003a">
+<link rel="stylesheet" href="css/site.css?v=20261003b">
 <title>หลังร้าน · UNITAC</title>
 <meta name="description" content="UNITAC 3D PRINT ยินดีให้บริการ">
 <meta property="og:type" content="website">
@@ -163,6 +169,34 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
 .cnt button:hover{color:var(--ink);border-color:var(--ink-2)}
 .spool__acts{display:flex;gap:8px;flex-wrap:wrap}
 .spool__acts .btn{flex:1}
+
+/* things to look at */
+.todo{display:flex;gap:8px;flex-wrap:wrap}
+.todo button{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;border-radius:999px;background:var(--surface);border:1px solid var(--rule-strong);color:var(--ink-2);font-size:13.5px}
+.todo button:hover{color:var(--ink);border-color:var(--ink-2)}
+.todo i{width:8px;height:8px;border-radius:50%;background:var(--c,var(--accent));flex:none}
+.todo b{font-family:var(--font-num);font-weight:500;color:var(--ink)}
+.tbadge{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;margin-left:6px;border-radius:999px;background:var(--accent);color:var(--on-accent);font-family:var(--font-num);font-size:11.5px;font-weight:600;line-height:1;vertical-align:1px}
+#rsLbl{cursor:pointer}
+#rsLbl:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+
+/* portfolio admin */
+.pf__bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+#pfAddL{cursor:pointer}
+#pfAddL:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.pf__grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.pfc{display:flex;flex-direction:column;border-radius:var(--r-md);overflow:hidden;background:var(--surface);border:1px solid var(--rule)}
+.pfc.is-off{opacity:.55}
+.pfc__img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;background:#0E0D0B;cursor:pointer}
+.pfc__b{display:grid;gap:4px;padding:10px 12px}
+.pfc__b b{font-weight:500;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pfc__b span{font-size:12px;color:var(--muted)}
+.pfc__a{display:flex;gap:6px;padding:0 12px 12px}
+.pfc__a button{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;color:var(--muted);border:1px solid var(--rule)}
+.pfc__a button:hover:not(:disabled){color:var(--ink);border-color:var(--rule-strong)}
+.pfc__a button:disabled{opacity:.3}
+.pfc__a .grow{flex:1;width:auto;font-size:13px;color:var(--ink-2)}
+.pfc__a svg{width:15px;height:15px}
 </style>
 </head>
 <body>
@@ -173,6 +207,7 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
       <a href="./" data-nav="queue">ตารางคิว</a>
       <a href="member.html" data-nav="member">สมาชิก</a>
       <a href="warranty.html" data-nav="warranty">เช็กประกัน</a>
+      <a href="portfolio.html" data-nav="works">ผลงาน</a>
       <a href="partners.html" data-nav="partners">พาร์ทเนอร์</a>
     </nav>
     <div class="top__end" id="topEnd"></div>
@@ -203,15 +238,20 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
     <div class="adm__head">
       <h1>หลังร้าน</h1>
       <div class="adm__acts">
+        <button type="button" class="btn btn--ghost btn--sm" id="installBtn" hidden>ติดตั้งเป็นแอป</button>
+        <button type="button" class="btn btn--ghost btn--sm" id="bkBtn">สำรองข้อมูล</button>
+        <label class="btn btn--ghost btn--sm" id="rsLbl">กู้คืน<input type="file" id="rsFile" accept="application/json,.json" class="sr"></label>
         <a class="btn btn--primary btn--sm" href="calc.html">เครื่องคิดเลข</a>
         <button type="button" class="btn btn--ghost btn--sm" data-signout>ออกจากระบบ</button>
       </div>
     </div>
-    <div class="tabs adm__tabs" style="max-width:680px" role="tablist" aria-label="ส่วนของหลังร้าน">
+    <div class="todo" id="todo" hidden></div>
+    <div class="tabs adm__tabs" style="max-width:800px" role="tablist" aria-label="ส่วนของหลังร้าน">
       <button type="button" role="tab" aria-selected="true" data-tab="cust" id="tCust">ลูกค้า</button>
       <button type="button" role="tab" aria-selected="false" data-tab="ord" id="tOrd">ออเดอร์</button>
       <button type="button" role="tab" aria-selected="false" data-tab="war" id="tWar">ประกัน</button>
       <button type="button" role="tab" aria-selected="false" data-tab="stk" id="tStk">สต็อกเส้น</button>
+      <button type="button" role="tab" aria-selected="false" data-tab="pf" id="tPf">ผลงาน</button>
       <button type="button" role="tab" aria-selected="false" data-tab="prt" id="tPrt">พาร์ทเนอร์</button>
     </div>
 
@@ -250,6 +290,17 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
         </div>
       </div>
       <div id="stkList" class="stk__grid"></div>
+    </div>
+
+    <div data-panel="pf" class="sec" hidden>
+      <div class="pf__bar">
+        <label class="btn btn--primary" id="pfAddL">+ เพิ่มรูปผลงาน<input type="file" id="pfFiles" accept="image/*" multiple class="sr"></label>
+        <span class="hint">เลือกได้ทีละหลายรูป ระบบย่อรูปให้เอง แล้วค่อยใส่ชื่องานและหมวดทีหลัง</span>
+        <span class="sp" style="flex:1"></span>
+        <a class="linkbtn" href="portfolio.html" target="_blank" rel="noopener">เปิดหน้าผลงาน ↗</a>
+      </div>
+      <p class="muted small" id="pfProg" aria-live="polite"></p>
+      <div id="pfList" class="pf__grid"></div>
     </div>
 
     <div data-panel="prt" class="sec" hidden>
@@ -392,9 +443,24 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
   <div class="dlg__foot"><button type="button" class="btn btn--danger btn--sm" id="mDel" hidden>ลบ</button><span class="sp"></span><button type="button" class="btn btn--ghost" data-close>ยกเลิก</button><button type="submit" class="btn btn--primary" id="mSave">บันทึก</button></div>
 </form></dialog>
 
-<footer class="foot">UNITAC · <a href="./">ตารางคิว</a> · <a href="warranty.html">เช็กประกัน</a> · <a href="partners.html">พาร์ทเนอร์</a> · <a href="privacy.html">นโยบายความเป็นส่วนตัว</a></footer>
-<script type="module" src="js/admin.js?v=20261003a"></script>
-<script type="module" src="js/admin-partners.js?v=20261003a"></script>
-<script type="module" src="js/admin-stock.js?v=20261003a"></script>
+<dialog id="pfDlg" aria-labelledby="pfDlgT"><form class="dlg" id="pfForm" novalidate>
+  <div class="dlg__head"><h2 id="pfDlgT">แก้ไขผลงาน</h2><button type="button" class="iconbtn" data-close aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="dlg__body">
+    <img id="pfPrev" alt="" style="width:100%;max-height:260px;object-fit:contain;border-radius:12px;background:#0E0D0B">
+    <div class="field"><label for="pfTitle">ชื่องาน</label><input type="text" id="pfTitle" maxlength="80"></div>
+    <div class="field"><label for="pfCat">หมวด</label><select id="pfCat"></select></div>
+    <div class="field"><label for="pfDesc">รายละเอียด (ไม่บังคับ)</label><textarea id="pfDesc" maxlength="300" rows="3" placeholder="เช่น วัสดุ PETG-CF พิมพ์ 14 ชม. สำหรับปืน…"></textarea></div>
+    <label class="check"><input type="checkbox" id="pfVis"><span>แสดงบนหน้าผลงาน</span></label>
+    <p class="err" id="pfErr" hidden></p>
+  </div>
+  <div class="dlg__foot"><button type="button" class="btn btn--danger btn--sm" id="pfDel">ลบ</button><span class="sp"></span><button type="button" class="btn btn--ghost" data-close>ยกเลิก</button><button type="submit" class="btn btn--primary" id="pfSave">บันทึก</button></div>
+</form></dialog>
+
+<footer class="foot">UNITAC · <a href="./">ตารางคิว</a> · <a href="warranty.html">เช็กประกัน</a> · <a href="portfolio.html">ผลงาน</a> · <a href="partners.html">พาร์ทเนอร์</a> · <a href="privacy.html">นโยบายความเป็นส่วนตัว</a></footer>
+<script type="module" src="js/admin.js?v=20261003b"></script>
+<script type="module" src="js/admin-partners.js?v=20261003b"></script>
+<script type="module" src="js/admin-stock.js?v=20261003b"></script>
+<script type="module" src="js/admin-portfolio.js?v=20261003b"></script>
+<script type="module" src="js/admin-tools.js?v=20261003b"></script>
 </body>
 </html>

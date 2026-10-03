@@ -347,7 +347,7 @@ dialog[open] .dlg{animation:pop .3s var(--ease)}
 .toast{position:fixed;left:50%;bottom:84px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:60;transform:translate(-50%,16px);opacity:0;background:var(--ink);color:var(--ground);padding:11px 20px;border-radius:var(--r-pill);box-shadow:var(--shadow-float);font-size:14px;line-height:1.5;max-width:calc(100vw - 32px);text-align:center;pointer-events:none;transition:opacity .3s var(--ease),transform .4s var(--ease)}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 .mastlink{text-decoration:none}
-@media (max-width:620px){.mastlink[href="warranty.html"],.mastlink[href="partners.html"]{display:none}}
+@media (max-width:720px){.mastlink[href="warranty.html"],.mastlink[href="partners.html"],.mastlink[href="portfolio.html"]{display:none}}
 .chip--mine{background:var(--accent)!important;color:var(--on-accent)!important;font-weight:600;border-left-color:var(--accent-hi)!important;box-shadow:0 0 0 1px rgba(255,138,80,.6),0 4px 12px -4px rgba(255,122,60,.7)}
 .chip--mine .liq{background:rgba(26,14,7,.25)}
 .day.has-mine{border-color:var(--accent)!important;box-shadow:0 0 0 1px var(--accent),0 0 22px -8px var(--accent)}
@@ -358,6 +358,8 @@ dialog[open] .dlg{animation:pop .3s var(--ease)}
 .calcfab svg{width:22px;height:22px}
 .is-editing .calcfab{bottom:calc(90px + env(safe-area-inset-bottom,0px))}
 @media (max-width:600px){.calcfab span{display:none}.calcfab{padding:0;width:56px;justify-content:center}.is-editing .calcfab{bottom:calc(150px + env(safe-area-inset-bottom,0px))}}
+.foot a{color:var(--muted)}
+.foot a:hover{color:var(--ink)}
 .footlink{background:none;border:0;color:var(--muted);text-decoration:underline;text-underline-offset:3px;font-size:12.5px;padding:6px 4px;min-height:32px;cursor:pointer}
 .footlink:hover{color:var(--ink)}
 .foot{color:var(--muted);font-size:12.5px;padding:24px;text-align:center;border-top:1px solid var(--rule)}
@@ -595,6 +597,7 @@ document.getElementById('root').outerHTML=
   '<div class="mast__right">'+
    '<a class="btn btn--ghost mastlink" href="warranty.html">เช็กประกัน</a>'+
    '<a class="btn btn--ghost mastlink" href="member.html">สมาชิก</a>'+
+   '<a class="btn btn--ghost mastlink" href="portfolio.html">ผลงาน</a>'+
    '<a class="btn btn--ghost mastlink" href="partners.html">พาร์ทเนอร์</a>'+
    '<button type="button" class="btn btn--ghost" id="editBtn" aria-label="แก้ไขคิว" hidden>'+ICON.edit+'<span class="editBtn__t">แก้ไขคิว</span></button>'+
   '</div>'+
@@ -651,7 +654,7 @@ document.getElementById('root').outerHTML=
  '</div>'+
  '</div>'+
 '</main>'+
-'<footer class="foot">UNITAC<span aria-hidden="true"> · </span>ตารางคิวงานพิมพ์<span aria-hidden="true"> · </span><button type="button" class="footlink" id="ownerBtn">สำหรับเจ้าของร้าน</button></footer>'+
+'<footer class="foot">UNITAC<span aria-hidden="true"> · </span><a href="portfolio.html">ผลงาน</a><span aria-hidden="true"> · </span><a href="partners.html">พาร์ทเนอร์</a><span aria-hidden="true"> · </span><a href="warranty.html">เช็กประกัน</a><span aria-hidden="true"> · </span><button type="button" class="footlink" id="ownerBtn">สำหรับเจ้าของร้าน</button></footer>'+
 '<div class="editbar" id="editBar" hidden role="region" aria-label="โหมดแก้ไข">'+
  '<p class="editbar__t" id="editMsg"></p>'+
  '<button type="button" class="btn btn--ghost" id="setBtn">ตั้งค่าร้าน</button>'+
