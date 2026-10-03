@@ -1,7 +1,8 @@
-import { db, doc, onSnapshot } from './fb.js?v=20261003k';
-import { $, h, reveal, toast, LOGO_SVG } from './core.js?v=20261003k';
-import { CARRIERS, cleanTrack } from './carriers.js?v=20261003k';
-import { latest, fmtWhen, titleOf, detailOf, toneOf } from './shipstatus.js?v=20261003k';
+import { db, doc, onSnapshot } from './fb.js?v=20261003o';
+import { $, h, reveal, toast, LOGO_SVG } from './core.js?v=20261003o';
+import { CARRIERS, cleanTrack } from './carriers.js?v=20261003o';
+import { FLASH_FN_URL } from './config.js?v=20261003o';
+import { latest, fmtWhen, titleOf, detailOf, toneOf } from './shipstatus.js?v=20261003o';
 document.querySelectorAll('[data-logo]').forEach(e => { e.innerHTML = LOGO_SVG; });
 reveal();
 const I = {
@@ -29,7 +30,7 @@ function render(s) {
     const det = detailOf(last);
     t.append(h('span', null, 'อัปเดตล่าสุด ' + fmtWhen(last.at) + (det ? ' · ' + det : '')));
   } else {
-    t.append(h('b', null, 'ร้านส่งของแล้ว รอขนส่งอัปเดตสถานะ'), h('span', null, 'กดปุ่มด้านล่างเพื่อดูสถานะล่าสุดที่ ' + car.name));
+    t.append(h('b', null, 'ตรวจสอบและจัดส่งโดย UNITAC เรียบร้อย'), h('span', null, 'กดปุ่มด้านล่างเพื่อดูสถานะล่าสุดที่ ' + car.name));
   }
   if (s && s.eta && st !== 'delivered') t.append(h('span', null, ' · คาดว่าถึง ' + new Date(s.eta).toLocaleDateString('th-TH', { weekday: 'short', day: 'numeric', month: 'short' })));
   now.append(ic, t);
@@ -56,6 +57,11 @@ if (n) {
   document.title = 'ติดตามพัสดุ ' + n + ' · UNITAC'; $('tIn').value = n;
   render(null);
   onSnapshot(doc(db, 'shipments', n), (s) => render(s.exists() ? s.data() : null), () => {});
+  /* live: ask the Flash connection to refresh this parcel; the new status arrives through the snapshot above */
+  if (FLASH_FN_URL && c0 === 'flash') {
+    const live = () => fetch(FLASH_FN_URL + '?n=' + encodeURIComponent(n)).catch(() => {});
+    live(); setInterval(() => { if (!document.hidden) live(); }, 5 * 60 * 1000);
+  }
   $('tCopy').addEventListener('click', () => copy(false));
   $('tOfficial').addEventListener('click', () => copy(true));
 }

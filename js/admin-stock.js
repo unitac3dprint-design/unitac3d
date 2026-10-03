@@ -1,5 +1,5 @@
-import { auth, db, OWNER, authMsg, onAuthStateChanged, doc, collection, getDocs, setDoc, updateDoc, deleteDoc, writeBatch, serverTimestamp } from './fb.js?v=20261003k';
-import { $, h, toast, money, intf } from './core.js?v=20261003k';
+import { auth, db, OWNER, authMsg, onAuthStateChanged, doc, collection, getDocs, setDoc, updateDoc, deleteDoc, writeBatch, serverTimestamp } from './fb.js?v=20261003o';
+import { $, h, toast, money, intf, sellPerSpoolOf, sellPerGramOf } from './core.js?v=20261003o';
 
 /* filament stock: counted in spools (no automatic deduction), with cost and selling price per material */
 let mats = [], cur = null, loaded = false, typeFilter = 'all';
@@ -11,7 +11,7 @@ async function load() {
   render();
 }
 const cpg = (m) => (m.spoolWeight > 0 ? (+m.spoolCost || 0) / m.spoolWeight : 0);
-const margin = (m) => { const c = cpg(m), s = +m.sellPerGram || 0; return s > 0 ? (s - c) / s * 100 : 0; };
+const margin = (m) => { const c = cpg(m), s = sellPerGramOf(m); return s > 0 ? (s - c) / s * 100 : 0; };
 const spools = (m) => (+m.sealed || 0) + (+m.open || 0);
 const isLow = (m) => m.active !== false && spools(m) <= (+m.low || 0);
 const label = (m) => [m.brand, m.type].filter(Boolean).join(' ') + (m.color ? ' · ' + m.color : '');
@@ -55,7 +55,7 @@ function card(m) {
   else if (m.active === false) badges.appendChild(h('span', 'pill', 'ซ่อนจากเครื่องคิดเลข'));
   hd.append(sw, t, badges);
   const p = h('div', 'spool__p');
-  [['ทุน/g', cpg(m).toFixed(2)], ['ขาย/g', (+m.sellPerGram || 0).toFixed(2)], ['กำไรวัสดุ', margin(m).toFixed(0) + '%']].forEach(([k, v]) => { const d = h('div'); d.append(h('b', null, v), k); p.appendChild(d); });
+  [['ทุน/ม้วน', intf(m.spoolCost || 0)], ['ขาย/ม้วน', intf(sellPerSpoolOf(m))], ['กำไรวัสดุ', margin(m).toFixed(0) + '%']].forEach(([k, v]) => { const d = h('div'); d.append(h('b', null, v), k); p.appendChild(d); });
   const s = h('div', 'spool__s'); s.append(counter(m, 'sealed', 'ม้วนใหม่'), counter(m, 'open', 'เปิดใช้'));
   const a = h('div', 'spool__acts');
   const op = h('button', 'btn btn--ghost btn--sm', 'เปิดม้วนใหม่'); op.type = 'button'; op.disabled = !(+m.sealed > 0);
@@ -75,9 +75,9 @@ async function bump(m, data, msg) {
 
 /* add / edit */
 function sellHint() {
-  const w = +$('mWeight').value || 0, c = +$('mCost').value || 0, s = +$('mSell').value || 0;
+  const w = +$('mWeight').value || 0, c = +$('mCost').value || 0, s = (+$('mSell').value || 0) / (w || 1);
   const cg = w > 0 ? c / w : 0;
-  $('mSellHint').textContent = cg ? 'ทุน ' + cg.toFixed(2) + ' ฿/g' + (s ? ' · กำไรวัสดุ ' + ((s - cg) / s * 100).toFixed(0) + '%' : ' · เช่น ขาย 2 เท่าของทุน = ' + (cg * 2).toFixed(2) + ' ฿/g') : '';
+  $('mSellHint').textContent = !w ? '' : (s ? 'คิดลูกค้า ' + s.toFixed(2) + ' ฿/g' + (cg ? ' · ทุน ' + cg.toFixed(2) + ' ฿/g · กำไรวัสดุ ' + ((s - cg) / s * 100).toFixed(0) + '%' : '') : (cg ? 'ทุน ' + cg.toFixed(2) + ' ฿/g · เช่น ขาย 2 เท่าของทุน = ' + intf(c * 2) + ' บาท/ม้วน' : ''));
 }
 ['mWeight', 'mCost', 'mSell'].forEach(id => $(id).addEventListener('input', sellHint));
 function openForm(m) {
@@ -85,7 +85,7 @@ function openForm(m) {
   $('mDlgT').textContent = m ? 'แก้ไขเส้น' : 'เพิ่มเส้น';
   $('mBrand').value = m ? m.brand || '' : ''; $('mType').value = m ? m.type || '' : ''; $('mColor').value = m ? m.color || '' : '';
   $('mHex').value = m && /^#[0-9a-f]{6}$/i.test(m.hex || '') ? m.hex : '#2b2b2b';
-  $('mWeight').value = m ? m.spoolWeight || 1000 : 1000; $('mCost').value = m ? m.spoolCost || '' : ''; $('mSell').value = m ? m.sellPerGram || '' : '';
+  $('mWeight').value = m ? m.spoolWeight || 1000 : 1000; $('mCost').value = m ? m.spoolCost || '' : ''; $('mSell').value = m ? (sellPerSpoolOf(m) ? +sellPerSpoolOf(m).toFixed(2) : '') : '';
   $('mLow').value = m ? (m.low != null ? m.low : 1) : 1; $('mSealed').value = m ? m.sealed || 0 : 0; $('mOpen').value = m ? m.open || 0 : 0;
   $('mNote').value = m ? m.note || '' : ''; $('mActive').checked = m ? m.active !== false : true;
   $('mDel').hidden = !m; $('mErr').hidden = true; sellHint();
@@ -98,12 +98,13 @@ $('mForm').addEventListener('submit', async (e) => {
   const err = (t) => { $('mErr').textContent = t; $('mErr').hidden = false; };
   const data = {
     brand: $('mBrand').value.trim().slice(0, 40), type: $('mType').value.trim().slice(0, 30), color: $('mColor').value.trim().slice(0, 30), hex: $('mHex').value,
-    spoolWeight: Math.max(1, Math.round(+$('mWeight').value || 0)), spoolCost: Math.max(0, +$('mCost').value || 0), sellPerGram: Math.max(0, +$('mSell').value || 0),
+    spoolWeight: Math.max(1, Math.round(+$('mWeight').value || 0)), spoolCost: Math.max(0, +$('mCost').value || 0), sellPerSpool: Math.max(0, +$('mSell').value || 0),
     low: Math.max(0, Math.round(+$('mLow').value || 0)), sealed: Math.max(0, Math.round(+$('mSealed').value || 0)), open: Math.max(0, Math.round(+$('mOpen').value || 0)),
     note: $('mNote').value.trim().slice(0, 100), active: $('mActive').checked
   };
   if (!data.brand && !data.type) return err('ใส่ยี่ห้อหรือชนิดวัสดุอย่างน้อยหนึ่งอย่าง');
-  if (!data.sellPerGram) return err('ใส่ราคาขายต่อกรัม เครื่องคิดเลขใช้ตัวเลขนี้คิดค่าวัสดุ');
+  if (!data.sellPerSpool) return err('ใส่ราคาขายต่อม้วน เครื่องคิดเลขใช้ตัวเลขนี้คิดค่าวัสดุ');
+  data.sellPerGram = +(data.sellPerSpool / data.spoolWeight).toFixed(4);
   $('mSave').disabled = true;
   try {
     if (cur) { await updateDoc(doc(db, 'materials', cur.id), data); Object.assign(cur, data); }
@@ -141,7 +142,7 @@ $('stkImport').addEventListener('click', async () => {
     todo.forEach(m => {
       const g = guess(m.code), ref = doc(collection(db, 'materials'));
       const ac = +m.actualCostPerGram > 0 ? +m.actualCostPerGram : (+m.pricePerKg || 0) / 1000;
-      const data = { brand: g.brand, type: g.type, color: '', hex: '#2b2b2b', spoolWeight: 1000, spoolCost: +(ac * 1000).toFixed(2), sellPerGram: +((+m.pricePerKg || 0) / 1000).toFixed(4),
+      const data = { brand: g.brand, type: g.type, color: '', hex: '#2b2b2b', spoolWeight: 1000, spoolCost: +(ac * 1000).toFixed(2), sellPerSpool: +(+m.pricePerKg || 0).toFixed(2), sellPerGram: +((+m.pricePerKg || 0) / 1000).toFixed(4),
         low: 0, sealed: 0, open: 0, note: 'นำเข้าจากรหัส ' + m.code, active: true, importCode: m.code };
       b.set(ref, data); add.push({ id: ref.id, ...data });
     });
@@ -157,7 +158,7 @@ export function downloadCsv(name, rows) {
   document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
 }
 $('stkCsv').addEventListener('click', () => {
-  const rows = [['ยี่ห้อ', 'ชนิด', 'สี', 'น้ำหนักต่อม้วน (g)', 'ราคาทุนต่อม้วน', 'ทุน/g', 'ขาย/g', 'กำไรวัสดุ %', 'ม้วนใหม่', 'เปิดใช้', 'เตือนเมื่อเหลือ', 'หมายเหตุ']];
-  mats.forEach(m => rows.push([m.brand, m.type, m.color, m.spoolWeight, m.spoolCost, cpg(m).toFixed(3), m.sellPerGram, margin(m).toFixed(1), m.sealed || 0, m.open || 0, m.low || 0, m.note]));
+  const rows = [['ยี่ห้อ', 'ชนิด', 'สี', 'น้ำหนักต่อม้วน (g)', 'ราคาทุนต่อม้วน', 'ราคาขายต่อม้วน', 'ทุน/g', 'ขาย/g', 'กำไรวัสดุ %', 'ม้วนใหม่', 'เปิดใช้', 'เตือนเมื่อเหลือ', 'หมายเหตุ']];
+  mats.forEach(m => rows.push([m.brand, m.type, m.color, m.spoolWeight, m.spoolCost, sellPerSpoolOf(m), cpg(m).toFixed(3), sellPerGramOf(m).toFixed(3), margin(m).toFixed(1), m.sealed || 0, m.open || 0, m.low || 0, m.note]));
   downloadCsv('unitac-stock.csv', rows);
 });

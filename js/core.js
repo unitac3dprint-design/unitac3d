@@ -294,3 +294,12 @@ export function mouseGlow() {
 if (typeof document !== 'undefined') {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mouseGlow); else mouseGlow();
 }
+
+/* filament selling price: entered per spool. Older records stored "per gram"; a value above 20 ฿/g can only be a spool price */
+export function sellPerSpoolOf(m) {
+  if (!m) return 0;
+  if (+m.sellPerSpool > 0) return +m.sellPerSpool;
+  const g = +m.sellPerGram || 0, w = +m.spoolWeight || 1000;
+  return g > 20 ? g : g * w;
+}
+export function sellPerGramOf(m) { const w = +(m && m.spoolWeight) || 1000; return sellPerSpoolOf(m) / w; }

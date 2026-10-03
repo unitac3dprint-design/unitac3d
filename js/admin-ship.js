@@ -1,7 +1,8 @@
-import { db, doc, getDoc, setDoc } from './fb.js?v=20261003k';
-import { $, h, toast } from './core.js?v=20261003k';
-import { CARRIERS, cleanTrack, trackPage } from './carriers.js?v=20261003k';
-import { SENT_TITLE, parsePaste, titleOf, detailOf, toneOf, fmtWhen } from './shipstatus.js?v=20261003k';
+import { db, doc, getDoc, setDoc } from './fb.js?v=20261003o';
+import { $, h, toast } from './core.js?v=20261003o';
+import { CARRIERS, cleanTrack, trackPage } from './carriers.js?v=20261003o';
+import { FLASH_FN_URL } from './config.js?v=20261003o';
+import { SENT_TITLE, parsePaste, titleOf, detailOf, toneOf, fmtWhen } from './shipstatus.js?v=20261003o';
 
 /* parcel status mirrors Flash: paste the history from the Flash tracking page, it replaces the old list */
 let num = '', carrier = 'flash', data = null, base = null;
@@ -21,7 +22,7 @@ async function open() {
   let s = null; try { s = await getDoc(doc(db, 'shipments', num)); } catch (_) {}
   data = s && s.exists() ? s.data() : { events: [{ s: 'sent', title: SENT_TITLE, detail: '', at: new Date(Date.now() - 120000).toISOString() }], eta: new Date(Date.now() + 3 * 864e5).toISOString() };
   data.carrier = carrier; data.number = num; data.title = $('oTitle').value.trim() || data.title || '';
-  base = (data.events || []).find(e => (e.title || '') === SENT_TITLE || e.s === 'sent') || { s: 'sent', title: SENT_TITLE, detail: '', at: new Date(Date.now() - 120000).toISOString() };
+  base = (data.events || []).find(e => e.s === 'sent' || (e.title || '') === SENT_TITLE) || { s: 'sent', title: SENT_TITLE, detail: '', at: new Date(Date.now() - 120000).toISOString() };
   $('shNum').textContent = CARRIERS[carrier].name + ' · ' + num;
   const car = CARRIERS[carrier]; const go = $('shGo');
   go.hidden = !car.url; if (car.url) { go.href = car.url(num); go.textContent = 'เปิดหน้า ' + car.name + ' ↗'; }
@@ -29,7 +30,17 @@ async function open() {
   $('shPaste').value = ''; $('shParsed').textContent = ''; $('shErr').hidden = true;
   $('shEta').value = data.eta ? String(data.eta).slice(0, 10) : '';
   render(); $('shDlg').showModal();
+  $('shAuto').hidden = !(FLASH_FN_URL && carrier === 'flash');
 }
+$('shAuto').addEventListener('click', async () => {
+  const b = $('shAuto'); b.disabled = true; b.textContent = 'กำลังดึงจาก Flash…';
+  try {
+    const r = await fetch(FLASH_FN_URL + '?n=' + encodeURIComponent(num)).then(x => x.json());
+    if (r.ok) { const s = await getDoc(doc(db, 'shipments', num)); if (s.exists()) { data = s.data(); render(); } toast(r.cached ? 'สถานะล่าสุดแล้ว (ดึงไปเมื่อไม่ถึง 5 นาทีก่อน)' : 'ดึงสถานะจาก Flash แล้ว ' + (r.count || 0) + ' รายการ', 4000); }
+    else toast('ดึงไม่สำเร็จ: ' + (r.reason || 'ไม่ทราบสาเหตุ') + (r.reason === 'unknown parcel' ? ' (กดบันทึกเลขพัสดุในออเดอร์ก่อน)' : ''), 6000);
+  } catch (_) { toast('เชื่อมต่อระบบดึงสถานะไม่ได้', 5000); }
+  b.disabled = false; b.textContent = 'ดึงสถานะจาก Flash อัตโนมัติ';
+});
 $('oShipEdit').addEventListener('click', open);
 $('shGo').addEventListener('click', () => { if (navigator.clipboard) navigator.clipboard.writeText(num).catch(() => {}); });
 function parse() {

@@ -1,14 +1,15 @@
 /* parcel status that mirrors Flash Express wording.
    The shop pastes the history copied from the Flash tracking page; later a Flash connection can write the same shape:
    { title: 'ระหว่างการขนส่ง', detail: 'รับพัสดุเข้าสาขา 2BNM_BDC-บ้านหมี่ · บ้านหมี่ · ลพบุรี', at: ISO, s: tone } */
-export const SENT_TITLE = 'แพ็กและส่งจาก UNITAC';
+export const SENT_TITLE = 'ตรวจสอบและจัดส่งโดย UNITAC เรียบร้อย';
+const OLD_SENT = 'แพ็กและส่งจาก UNITAC';
 const pad = (n) => String(n).padStart(2, '0');
 export function tone(title) {
   const t = title || '';
   if (/เซ็นรับ|ลงชื่อรับ|นำส่งสำเร็จ|ส่งสำเร็จ|จัดส่งสำเร็จ|delivered|signed/i.test(t)) return 'delivered';
   if (/ตีกลับ|ส่งคืน|ไม่สำเร็จ|ล้มเหลว|มีปัญหา|ติดต่อไม่ได้|ระงับ|failed|return/i.test(t)) return 'issue';
   if (/กำลังนำส่ง|นำจ่าย|ออกนำส่ง|out for delivery|delivering/i.test(t)) return 'out';
-  if (t === SENT_TITLE) return 'sent';
+  if (t === SENT_TITLE || t === OLD_SENT) return 'sent';
   return 'transit';
 }
 /* 【บ้านหมี่】 → บ้านหมี่, tidy commas */
@@ -36,7 +37,7 @@ export function parsePaste(text) {
   if (cur && cur.title) out.push(cur);
   return out.map(e => ({ s: tone(e.title), title: e.title, detail: tidy(e.detail.join(' ')).slice(0, 220), at: e.at.toISOString() }));
 }
-export const titleOf = (e) => e.title || ({ sent: SENT_TITLE, picked: 'รับพัสดุแล้ว', hub: 'ระหว่างการขนส่ง', transit: 'ระหว่างการขนส่ง', dest: 'ระหว่างการขนส่ง', out: 'กำลังนำส่ง', delivered: 'เซ็นรับแล้ว', issue: 'การจัดส่งมีปัญหา' }[e.s] || e.text || 'อัปเดตสถานะ');
+export const titleOf = (e) => (e.title === OLD_SENT ? SENT_TITLE : e.title) || ({ sent: SENT_TITLE, picked: 'รับพัสดุแล้ว', hub: 'ระหว่างการขนส่ง', transit: 'ระหว่างการขนส่ง', dest: 'ระหว่างการขนส่ง', out: 'กำลังนำส่ง', delivered: 'เซ็นรับแล้ว', issue: 'การจัดส่งมีปัญหา' }[e.s] || e.text || 'อัปเดตสถานะ');
 export const detailOf = (e) => e.detail != null ? e.detail : [e.place, e.text && e.text !== titleOf(e) ? e.text : ''].filter(Boolean).join(' · ');
 export const toneOf = (e) => e.title ? tone(e.title) : (e.s === 'delivered' ? 'delivered' : e.s === 'issue' ? 'issue' : e.s === 'out' ? 'out' : e.s === 'sent' ? 'sent' : 'transit');
 export function latest(ev) { return (ev || []).slice().sort((a, b) => String(b.at).localeCompare(String(a.at)))[0] || null; }

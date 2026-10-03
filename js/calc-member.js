@@ -1,9 +1,9 @@
 import {
   auth, db, OWNER, authMsg, onAuthStateChanged, signInWithEmailAndPassword,
   doc, collection, getDoc, getDocs, setDoc, writeBatch, serverTimestamp, increment
-} from './fb.js?v=20261003k';
-import { rankOf, couponInfo, memberNo, pointsFor, warrantyCode, qrSvg, fDate, money, intf, $, h, toast, WARRANTY_DEFAULT } from './core.js?v=20261003k';
-import { scanQR, parseMemberQR } from './scan.js?v=20261003k';
+} from './fb.js?v=20261003o';
+import { rankOf, couponInfo, memberNo, pointsFor, warrantyCode, qrSvg, fDate, money, intf, $, h, toast, WARRANTY_DEFAULT, sellPerGramOf } from './core.js?v=20261003o';
+import { scanQR, parseMemberQR } from './scan.js?v=20261003o';
 
 const U = window.UMEM;
 let members = [], sel = null, isOwner = false, lastSaved = null;
@@ -39,7 +39,7 @@ async function loadMaterials() {
         let code = [m.brand, m.type].filter(Boolean).join(' ') + (m.color ? ' · ' + m.color : '');
         if (seen[code]) code += ' (' + (++seen[code]) + ')'; else seen[code] = 1;
         const cpg = m.spoolWeight > 0 ? (+m.spoolCost || 0) / m.spoolWeight : 0;
-        return { code, brand: m.brand || '', pricePerKg: (+m.sellPerGram || 0) * 1000, actualCostPerGram: cpg > 0 ? cpg : undefined, matId: m.id };
+        return { code, brand: m.brand || '', pricePerKg: +(sellPerGramOf(m) * 1000).toFixed(2), actualCostPerGram: cpg > 0 ? cpg : undefined, matId: m.id };
       });
     if (webMats.length && window.__unitacSetMaterials) window.__unitacSetMaterials(webMats, 'ราคาจากสต็อกเส้นในหลังร้าน ✓ (' + webMats.length + ' รายการ)');
   } catch (x) { toast(authMsg(x.code)); }
