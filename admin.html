@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/site.css?v=20261003r">
+<link rel="stylesheet" href="css/site.css?v=20261003s">
 <title>หลังร้าน · UNITAC</title>
 <meta name="description" content="UNITAC 3D PRINT ยินดีให้บริการ">
 <meta property="og:type" content="website">
@@ -236,12 +236,22 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
 .sh__list em{font-style:normal;display:block;font-size:12.5px;color:var(--ink-2);line-height:1.5;margin-top:2px}
 .sh__list .is-ok{box-shadow:inset 0 0 0 1px var(--ok)!important}
 .sh__list .is-bad{box-shadow:inset 0 0 0 1px var(--stop)!important}
+
+.hero-set{display:grid;grid-template-columns:260px minmax(0,1fr);gap:18px;align-items:center}
+@media (max-width:640px){.hero-set{grid-template-columns:minmax(0,1fr)}}
+.hero-set__pv{aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#0E0D0B;display:grid;place-items:center;border:1px dashed var(--rule-strong)}
+.hero-set__pv img,.hero-set__pv video{width:100%;height:100%;object-fit:cover;display:block}
+.hero-set__t{display:grid;gap:8px}
+.hero-set__t h2{font-size:17px}
+.hero-set__btns{display:flex;gap:8px;flex-wrap:wrap}
+.hero-set__btns label{cursor:pointer}
+.hero-set__btns label:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
 </style>
 </head>
 <body>
 <header class="top">
   <div class="wrap top__row">
-    <a class="top__logo" href="./" aria-label="UNITAC กลับหน้าตารางคิว" data-logo></a>
+    <a class="top__brand" href="./" aria-label="UNITAC กลับหน้าตารางคิว"><span class="top__logo" data-logo></span><span class="top__tag">UNITAC 3D PRINT</span></a>
     <nav class="nav" aria-label="เมนูหลัก">
       <a href="./" data-nav="queue">ตารางคิว</a>
       <a href="member.html" data-nav="member">สมาชิก</a>
@@ -332,6 +342,19 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
     </div>
 
     <div data-panel="pf" class="sec" hidden>
+      <section class="card hero-set">
+        <div class="hero-set__pv" id="hsPv"><span class="muted small">ยังไม่มีพื้นหลัง</span></div>
+        <div class="hero-set__t">
+          <h2>พื้นหลังส่วนหัวหน้าผลงาน</h2>
+          <p class="hint">เลือกรูปหรือคลิปที่คมชัด แสดงด้านหลังหัวข้อ "ผลงานของเรา" ถ้าไม่เลือก ส่วนหัวจะเป็นพื้นเรียบ คลิปควรยาว 5–15 วินาที ขนาดไม่เกิน 8 MB (MP4)</p>
+          <div class="hero-set__btns">
+            <label class="btn btn--ghost btn--sm">เลือกรูป<input type="file" id="hsImg" accept="image/*,.heic,.heif" class="sr"></label>
+            <label class="btn btn--ghost btn--sm">เลือกคลิป<input type="file" id="hsVid" accept="video/mp4,video/webm,video/quicktime" class="sr"></label>
+            <button type="button" class="btn btn--danger btn--sm" id="hsDel" hidden>เอาพื้นหลังออก</button>
+          </div>
+          <p class="small muted" id="hsMsg" aria-live="polite"></p>
+        </div>
+      </section>
       <div class="pf__bar">
         <label class="btn btn--primary" id="pfAddL">+ เพิ่มรูปผลงาน<input type="file" id="pfFiles" accept="image/*,.heic,.heif" multiple class="sr"></label>
         <span class="hint">เลือกได้ทีละหลายรูป ระบบย่อรูปให้เอง รูปขึ้นหน้าผลงานทันที แล้วค่อยเลือกหมวดทีหลังได้</span>
@@ -540,11 +563,12 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
 </div></dialog>
 
 <footer class="foot">UNITAC · <a href="./">ตารางคิว</a> · <a href="warranty.html">เช็กประกัน</a> · <a href="portfolio.html">ผลงาน</a> · <a href="partners.html">พาร์ทเนอร์</a> · <a href="privacy.html">นโยบายความเป็นส่วนตัว</a></footer>
-<script type="module" src="js/admin.js?v=20261003r"></script>
-<script type="module" src="js/admin-partners.js?v=20261003r"></script>
-<script type="module" src="js/admin-stock.js?v=20261003r"></script>
-<script type="module" src="js/admin-portfolio.js?v=20261003r"></script>
-<script type="module" src="js/admin-tools.js?v=20261003r"></script>
-<script type="module" src="js/admin-ship.js?v=20261003r"></script>
+<script type="module" src="js/admin.js?v=20261003s"></script>
+<script type="module" src="js/admin-partners.js?v=20261003s"></script>
+<script type="module" src="js/admin-stock.js?v=20261003s"></script>
+<script type="module" src="js/admin-portfolio.js?v=20261003s"></script>
+<script type="module" src="js/admin-tools.js?v=20261003s"></script>
+<script type="module" src="js/admin-ship.js?v=20261003s"></script>
+<script type="module" src="js/admin-hero.js?v=20261003s"></script>
 </body>
 </html>

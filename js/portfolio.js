@@ -1,6 +1,7 @@
-import { db, doc, getDoc, collection, getDocs, query, where } from './fb.js?v=20261003r';
-import { $, h, reveal, LOGO_SVG } from './core.js?v=20261003r';
-import { PFCATS } from './pfcats.js?v=20261003r';
+import { db, doc, getDoc, collection, getDocs, query, where } from './fb.js?v=20261003s';
+import { $, h, reveal, LOGO_SVG } from './core.js?v=20261003s';
+import { loadHero } from './heromedia.js?v=20261003s';
+import { PFCATS } from './pfcats.js?v=20261003s';
 document.querySelectorAll('[data-logo]').forEach(e => { e.innerHTML = LOGO_SVG; });
 const nv = document.querySelector('[data-nav="works"]'); if (nv) nv.setAttribute('aria-current', 'page');
 reveal();
@@ -72,12 +73,14 @@ if (fine && !reduce) {
     cur.classList.toggle('on', on && !$('lb').open);
     if (!craf) craf = requestAnimationFrame(() => { craf = 0; cur.style.setProperty('--cx', cx + 'px'); cur.style.setProperty('--cy', cy + 'px'); }); }, { passive: true });
 }
-/* hero: cross-fading showcase */
-function showcase() {
-  const S = $('pfShow'); S.textContent = ''; if (!all.length) return;
-  const pics = all.slice(0, 6).map(p => { const im = h('img'); im.src = p.thumb; im.alt = ''; S.appendChild(im); return im; });
-  let k = 0; pics[0].classList.add('on');
-  if (pics.length > 1 && !reduce) setInterval(() => { if (document.hidden) return; pics[k].classList.remove('on'); k = (k + 1) % pics.length; pics[k].classList.add('on'); }, 5200);
+/* hero background: the image or clip chosen in the admin; nothing when none is set */
+async function showcase() {
+  const S = $('pfShow'); S.textContent = '';
+  let m = null; try { m = await loadHero(); } catch (_) {}
+  if (!m) { S.hidden = true; return; }
+  S.hidden = false;
+  if (m.type === 'image') { const im = h('img'); im.src = m.src; im.alt = ''; im.decoding = 'async'; S.appendChild(im); requestAnimationFrame(() => im.classList.add('on')); }
+  else { const v = h('video'); v.src = m.src; v.muted = true; v.loop = true; v.autoplay = true; v.playsInline = true; v.setAttribute('playsinline', ''); v.preload = 'auto'; S.appendChild(v); v.addEventListener('canplay', () => v.classList.add('on'), { once: true }); v.play().catch(() => {}); }
 }
 function countUp(el, to) {
   if (reduce) { el.textContent = String(to); return; }

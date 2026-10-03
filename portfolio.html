@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/site.css?v=20261003r">
+<link rel="stylesheet" href="css/site.css?v=20261003s">
 <title>ผลงาน · UNITAC 3D PRINT</title>
 <meta name="description" content="ผลงานพิมพ์ 3 มิติ ของแต่ง Airsoft อะไหล่ โมเดล และงานเขียนแบบ จาก UNITAC 3D PRINT">
 <meta property="og:type" content="website">
@@ -71,11 +71,13 @@
 dialog[open].lb .lb__fig img{animation:pop .35s var(--ease)}
 
 /* hero: slow cross-fading showcase of the works behind the title */
-.pfo__show{position:absolute;right:0;top:0;bottom:0;width:62%;pointer-events:none;-webkit-mask-image:linear-gradient(90deg,transparent,#000 45%);mask-image:linear-gradient(90deg,transparent,#000 45%)}
-.pfo__show img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.12);filter:saturate(.9) brightness(.55);transition:opacity 1.8s ease,transform 7s linear}
-.pfo__show img.on{opacity:.75;transform:scale(1)}
-.pfo__show::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,var(--ground))}
-@media (max-width:760px){.pfo__show{width:100%;-webkit-mask-image:linear-gradient(180deg,#000,transparent 95%);mask-image:linear-gradient(180deg,#000,transparent 95%)}.pfo__show img.on{opacity:.4}}
+.pfo__show{position:absolute;inset:0;pointer-events:none}
+.pfo__show[hidden]{display:none}
+.pfo__show img,.pfo__show video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.04);transition:opacity 1.4s ease,transform 8s cubic-bezier(.16,1,.3,1)}
+.pfo__show .on{opacity:1;transform:scale(1)}
+.pfo__show::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(20,19,17,.92) 0%,rgba(20,19,17,.55) 45%,rgba(20,19,17,.15) 75%),linear-gradient(180deg,transparent 60%,var(--ground))}
+.pfo__hero:has(.pfo__show:not([hidden])) .pfo__heroin{padding-top:150px;padding-bottom:70px}
+@media (max-width:760px){.pfo__show::after{background:linear-gradient(180deg,rgba(20,19,17,.35),rgba(20,19,17,.85) 85%,var(--ground))}.pfo__hero:has(.pfo__show:not([hidden])) .pfo__heroin{padding-top:110px;padding-bottom:40px}}
 .pfo__heroin h1{text-shadow:0 2px 30px rgba(0,0,0,.6)}
 .pfo__stats b{display:inline-block;min-width:1ch}
 /* cursor bubble */
@@ -97,13 +99,13 @@ dialog[open].lb .lb__fig img{animation:pop .35s var(--ease)}
 .lb__strip button img{width:100%;height:100%;object-fit:cover;display:block}
 .lb__strip button:hover{opacity:.8}
 .lb__strip button.on{opacity:1;transform:translateY(-2px);box-shadow:0 0 0 2px var(--accent)}
-@media (prefers-reduced-motion: reduce){.pfo__show img{transition:none}.pw__in{transform:none!important}.pcol{transform:none!important}}
+@media (prefers-reduced-motion: reduce){.pfo__show img,.pfo__show video{transition:none}.pw__in{transform:none!important}.pcol{transform:none!important}}
 </style>
 </head>
 <body>
 <header class="top">
   <div class="wrap top__row">
-    <a class="top__logo" href="./" aria-label="UNITAC กลับหน้าตารางคิว" data-logo></a>
+    <a class="top__brand" href="./" aria-label="UNITAC กลับหน้าตารางคิว"><span class="top__logo" data-logo></span><span class="top__tag">UNITAC 3D PRINT</span></a>
     <nav class="nav" aria-label="เมนูหลัก">
       <a href="./" data-nav="queue">ตารางคิว</a>
       <a href="member.html" data-nav="member">สมาชิก</a>
@@ -117,7 +119,7 @@ dialog[open].lb .lb__fig img{animation:pop .35s var(--ease)}
 
 <main id="main" class="pfo">
   <section class="pfo__hero">
-    <div class="pfo__show" id="pfShow" aria-hidden="true"></div>
+    <div class="pfo__show" id="pfShow" aria-hidden="true" hidden></div>
     <div class="wrap pfo__heroin rv">
       <span class="pfo__kick">UNITAC WORKS</span>
       <h1>ผลงานของเรา</h1>
@@ -140,6 +142,6 @@ dialog[open].lb .lb__fig img{animation:pop .35s var(--ease)}
 <div class="pcur" id="pCur" aria-hidden="true"><i></i></div>
 
 <footer class="foot">UNITAC · <a href="./">ตารางคิว</a> · <a href="warranty.html">เช็กประกัน</a> · <a href="portfolio.html">ผลงาน</a> · <a href="partners.html">พาร์ทเนอร์</a> · <a href="privacy.html">นโยบายความเป็นส่วนตัว</a></footer>
-<script type="module" src="js/portfolio.js?v=20261003r"></script>
+<script type="module" src="js/portfolio.js?v=20261003s"></script>
 </body>
 </html>
