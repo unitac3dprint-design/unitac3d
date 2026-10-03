@@ -6,8 +6,6 @@ import { rankOf, couponInfo, memberNo, toDate, fDate, fDM, money, intf, daysLeft
 import { scanQR, parseMemberQR } from './scan.js';
 
 document.querySelectorAll('[data-logo]').forEach(e => { e.innerHTML = LOGO_SVG; });
-const nav = document.querySelector('.nav');
-const back = h('a', null, 'หลังร้าน'); back.href = 'admin.html'; back.setAttribute('aria-current', 'page'); nav.appendChild(back);
 
 let members = [], orders = [], cur = null;
 const P = { loading: $('aLoading'), login: $('aLogin'), denied: $('aDenied'), app: $('aApp') };

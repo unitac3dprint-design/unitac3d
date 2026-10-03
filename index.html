@@ -1310,6 +1310,7 @@ function fbBoot(){
     if(canEdit&&F.listMembers&&!MEMBERS.length)F.listMembers().then(function(l){MEMBERS=l;render();},function(){});
     if(!canEdit&&editing){editing=false;D=null;}
     $('ownerBtn').textContent=u?'ออกจากระบบ':'สำหรับเจ้าของร้าน';
+    var ml=document.querySelector('.mastlink[href="member.html"],.mastlink[href="admin.html"]');if(ml){ml.textContent=canEdit?'หลังร้าน':'สมาชิก';ml.href=canEdit?'admin.html':'member.html';}
     render();
   });
 }

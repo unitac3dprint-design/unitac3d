@@ -46,3 +46,14 @@ export function authMsg(code) {
     default: return 'ทำรายการไม่สำเร็จ ลองอีกครั้ง';
   }
 }
+
+/* signed in as the shop owner: the "สมาชิก" tab becomes "หลังร้าน" on every page */
+function swapNav(own) {
+  const onAdmin = /admin\.html$/.test(location.pathname);
+  document.querySelectorAll('[data-nav="member"]').forEach(a => {
+    a.textContent = own ? 'หลังร้าน' : 'สมาชิก';
+    a.href = own ? 'admin.html' : 'member.html';
+    if (own) { if (onAdmin) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); }
+  });
+}
+onAuthStateChanged(auth, (u) => swapNav(!!u && u.uid === OWNER));

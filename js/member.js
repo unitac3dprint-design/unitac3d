@@ -25,7 +25,7 @@ function show(name) {
 }
 function route() {
   if (!user) return show('auth');
-  if (user.uid === OWNER) return show('owner');
+  if (user.uid === OWNER) { location.replace('admin.html'); return show('owner'); }
   if (!member) return show('loading');
   if (location.hash === '#profile') { renderProfile(); show('profile'); }
   else { renderHome(); show('home'); reveal(); }
