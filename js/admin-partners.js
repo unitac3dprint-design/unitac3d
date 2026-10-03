@@ -1,6 +1,6 @@
-import { auth, db, OWNER, authMsg, onAuthStateChanged, doc, collection, getDocs, setDoc, updateDoc, deleteDoc, writeBatch, serverTimestamp } from './fb.js?v=20261003e';
-import { $, h, toast } from './core.js?v=20261003e';
-import { PCATS } from './pcats.js?v=20261003e';
+import { auth, db, OWNER, authMsg, onAuthStateChanged, doc, collection, getDocs, setDoc, updateDoc, deleteDoc, writeBatch, serverTimestamp } from './fb.js?v=20261003f';
+import { $, h, toast, normalizeImage, isHeic } from './core.js?v=20261003f';
+import { PCATS } from './pcats.js?v=20261003f';
 
 let list = [], cur = null, logo = '', loaded = false;
 const UP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg>';
@@ -90,7 +90,7 @@ function readLogo(file) {
 }
 $('paFile').addEventListener('change', async () => {
   const f = $('paFile').files && $('paFile').files[0]; $('paFile').value = ''; if (!f) return;
-  try { logo = await readLogo(f); preview(); } catch (e) { toast(e.message || 'อ่านรูปนี้ไม่ได้', 4000); }
+  try { if (isHeic(f)) toast('กำลังแปลงรูป iPhone (HEIC)…'); logo = await readLogo(await normalizeImage(f)); preview(); } catch (e) { toast(e.message || 'อ่านรูปนี้ไม่ได้', 4000); }
 });
 function cleanUrl(u) {
   u = (u || '').trim(); if (!u) return ''; if (!/^https?:\/\//i.test(u)) u = 'https://' + u;

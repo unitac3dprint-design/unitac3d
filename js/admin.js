@@ -1,9 +1,9 @@
 import {
   auth, db, OWNER, authMsg, onAuthStateChanged, signInWithEmailAndPassword, signOut,
   doc, collection, getDoc, getDocs, updateDoc, deleteDoc, query, where, writeBatch, serverTimestamp, increment
-} from './fb.js?v=20261003e';
-import { RANKS, rankOf, couponInfo, memberNo, toDate, fDate, fDM, money, intf, daysLeft, warrantyCode, $, h, toast, avatarEl, LOGO_SVG } from './core.js?v=20261003e';
-import { scanQR, parseMemberQR } from './scan.js?v=20261003e';
+} from './fb.js?v=20261003f';
+import { RANKS, rankOf, couponInfo, memberNo, toDate, fDate, fDM, money, intf, daysLeft, warrantyCode, $, h, toast, avatarEl, LOGO_SVG } from './core.js?v=20261003f';
+import { scanQR, parseMemberQR } from './scan.js?v=20261003f';
 
 document.querySelectorAll('[data-logo]').forEach(e => { e.innerHTML = LOGO_SVG; });
 

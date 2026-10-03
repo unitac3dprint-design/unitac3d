@@ -1,6 +1,6 @@
-import { auth, db, OWNER, authMsg, onAuthStateChanged, doc, collection, getDocs, setDoc, updateDoc, deleteDoc, writeBatch, serverTimestamp } from './fb.js?v=20261003e';
-import { $, h, toast } from './core.js?v=20261003e';
-import { PFCATS } from './pfcats.js?v=20261003e';
+import { auth, db, OWNER, authMsg, onAuthStateChanged, doc, collection, getDocs, setDoc, updateDoc, deleteDoc, writeBatch, serverTimestamp } from './fb.js?v=20261003f';
+import { $, h, toast, normalizeImage, isHeic } from './core.js?v=20261003f';
+import { PFCATS } from './pfcats.js?v=20261003f';
 
 /* portfolio: small thumbnail doc for the grid + full image doc loaded only when opened */
 let items = [], cur = null, loaded = false;
@@ -55,7 +55,8 @@ $('pfFiles').addEventListener('change', async () => {
   for (const f of files) {
     $('pfProg').textContent = 'กำลังเพิ่มรูป ' + (n + 1) + ' จาก ' + files.length + '…';
     try {
-      const im = await loadImg(f), th = draw(im, 640, 0.8, 140000), full = draw(im, 1800, 0.86, 900000);
+      if (isHeic(f)) $('pfProg').textContent = 'กำลังแปลงรูป iPhone (HEIC) ' + (n + 1) + ' จาก ' + files.length + '…';
+      const im = await loadImg(await normalizeImage(f)), th = draw(im, 640, 0.8, 140000), full = draw(im, 1800, 0.86, 900000);
       const ref = doc(collection(db, 'portfolio'));
       const data = { title: '', cat: 'other', desc: '', thumb: th.d, w: th.w, h: th.h, order: base + n, visible: true, createdAt: serverTimestamp() };
       await setDoc(doc(db, 'portfolioFull', ref.id), { img: full.d });

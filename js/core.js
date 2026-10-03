@@ -98,8 +98,27 @@ export function qrSvg(text) {
   return `<svg viewBox="-1 -1 ${n + 2} ${n + 2}" role="img" aria-label="QR"><path d="${d}" fill="#141311"/></svg>`;
 }
 
+/* iPhone photos (.heic / .heif): Safari draws them natively; other browsers get them converted to JPEG first */
+let heicLoading = null;
+export function isHeic(f) { return /image\/hei[cf]/i.test((f && f.type) || '') || /\.(heic|heif)$/i.test((f && f.name) || ''); }
+function canDraw(file) {
+  return new Promise((res) => { const u = URL.createObjectURL(file), i = new Image(); i.onload = () => { URL.revokeObjectURL(u); res(i.naturalWidth > 0); }; i.onerror = () => { URL.revokeObjectURL(u); res(false); }; i.src = u; });
+}
+export async function normalizeImage(file) {
+  if (!isHeic(file)) return file;
+  if (await canDraw(file)) return file;
+  if (!window.heic2any) {
+    if (!heicLoading) heicLoading = new Promise((res, rej) => { const s = document.createElement('script'); s.src = new URL('../vendor/heic2any.min.js', import.meta.url).href; s.onload = res; s.onerror = rej; document.head.appendChild(s); });
+    await heicLoading;
+  }
+  const out = await window.heic2any({ blob: file, toType: 'image/jpeg', quality: 0.9 });
+  const blob = Array.isArray(out) ? out[0] : out;
+  return new File([blob], (file.name || 'photo').replace(/\.(heic|heif)$/i, '') + '.jpg', { type: 'image/jpeg' });
+}
+
 /* avatar: square crop + resize to a small JPEG data URL */
-export function toAvatar(file, size = 256) {
+export async function toAvatar(file, size = 256) {
+  file = await normalizeImage(file);
   return new Promise((res, rej) => {
     const r = new FileReader(); r.onerror = rej;
     r.onload = () => { const im = new Image(); im.onerror = rej; im.onload = () => {

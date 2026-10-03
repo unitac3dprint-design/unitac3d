@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/site.css?v=20261003e">
+<link rel="stylesheet" href="css/site.css?v=20261003f">
 <title>หลังร้าน · UNITAC</title>
 <meta name="description" content="UNITAC 3D PRINT ยินดีให้บริการ">
 <meta property="og:type" content="website">
@@ -302,7 +302,7 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
 
     <div data-panel="pf" class="sec" hidden>
       <div class="pf__bar">
-        <label class="btn btn--primary" id="pfAddL">+ เพิ่มรูปผลงาน<input type="file" id="pfFiles" accept="image/*" multiple class="sr"></label>
+        <label class="btn btn--primary" id="pfAddL">+ เพิ่มรูปผลงาน<input type="file" id="pfFiles" accept="image/*,.heic,.heif" multiple class="sr"></label>
         <span class="hint">เลือกได้ทีละหลายรูป ระบบย่อรูปให้เอง รูปขึ้นหน้าผลงานทันที แล้วค่อยเลือกหมวดทีหลังได้</span>
         <span class="sp" style="flex:1"></span>
         <a class="linkbtn" href="portfolio.html" target="_blank" rel="noopener">เปิดหน้าผลงาน ↗</a>
@@ -323,7 +323,7 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
           <div class="pa__top">
             <div class="field">
               <span class="lab">โลโก้</span>
-              <label class="pa__drop"><input type="file" id="paFile" accept="image/png,image/svg+xml,image/webp,image/jpeg" class="sr"><span class="ptile" id="paPrev"><span class="pa__ph">อัปโหลดโลโก้</span></span></label>
+              <label class="pa__drop"><input type="file" id="paFile" accept="image/png,image/svg+xml,image/webp,image/jpeg,image/heic,image/heif,.heic,.heif" class="sr"><span class="ptile" id="paPrev"><span class="pa__ph">อัปโหลดโลโก้</span></span></label>
               <p class="hint">PNG พื้นใส หรือ SVG ตัวอย่างนี้หน้าตาเหมือนบนหน้าเว็บจริง ลองชี้ดูได้</p>
               <div class="field pa__size"><label for="paScale">ขนาดโลโก้ <output id="paScaleOut">100%</output></label><input type="range" id="paScale" min="50" max="160" step="5" value="100"><p class="hint">ปรับให้โลโก้ดูใหญ่เท่าร้านอื่น โลโก้ที่มีขอบว่างเยอะให้ขยาย โลโก้เต็มกรอบให้ลด</p></div>
               <label class="check"><input type="checkbox" id="paDark"><span>โลโก้สีเข้ม: กลับสีให้เห็นชัดบนพื้นมืด (ใช้กับโลโก้ดำล้วนบนพื้นใส)</span></label>
@@ -474,10 +474,10 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
 </form></dialog>
 
 <footer class="foot">UNITAC · <a href="./">ตารางคิว</a> · <a href="warranty.html">เช็กประกัน</a> · <a href="portfolio.html">ผลงาน</a> · <a href="partners.html">พาร์ทเนอร์</a> · <a href="privacy.html">นโยบายความเป็นส่วนตัว</a></footer>
-<script type="module" src="js/admin.js?v=20261003e"></script>
-<script type="module" src="js/admin-partners.js?v=20261003e"></script>
-<script type="module" src="js/admin-stock.js?v=20261003e"></script>
-<script type="module" src="js/admin-portfolio.js?v=20261003e"></script>
-<script type="module" src="js/admin-tools.js?v=20261003e"></script>
+<script type="module" src="js/admin.js?v=20261003f"></script>
+<script type="module" src="js/admin-partners.js?v=20261003f"></script>
+<script type="module" src="js/admin-stock.js?v=20261003f"></script>
+<script type="module" src="js/admin-portfolio.js?v=20261003f"></script>
+<script type="module" src="js/admin-tools.js?v=20261003f"></script>
 </body>
 </html>
