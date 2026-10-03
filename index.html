@@ -1,6 +1,12 @@
 <!doctype html>
 <html lang="th">
 <head>
+<link rel="manifest" href="admin.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="UNITAC">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>UNITAC 3D PRINT — ตารางคิวงาน</title>
@@ -1349,6 +1355,7 @@ function fbBoot(){
   });
 }
 window.addEventListener('ufb-ready',fbBoot);
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(function(){});
 /* site cursor */
 (function(){
   if(window.__unitacCursor||!matchMedia('(hover:hover) and (pointer:fine)').matches)return;

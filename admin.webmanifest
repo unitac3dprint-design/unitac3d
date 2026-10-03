@@ -1,8 +1,8 @@
 {
- "name": "UNITAC หลังร้าน",
+ "name": "UNITAC 3D PRINT",
  "short_name": "UNITAC",
- "description": "หลังร้าน เครื่องคิดเลข และตารางคิว UNITAC 3D PRINT",
- "start_url": "./admin.html",
+ "description": "ตารางคิว หลังร้าน และเครื่องคิดเลข UNITAC 3D PRINT",
+ "start_url": "./index.html",
  "scope": "./",
  "display": "standalone",
  "orientation": "any",
@@ -31,19 +31,19 @@
  ],
  "shortcuts": [
   {
-   "name": "เครื่องคิดเลข",
-   "short_name": "คิดราคา",
-   "url": "./calc.html",
+   "name": "หลังร้าน",
+   "url": "./admin.html",
    "icons": [
     {
-     "src": "icons/calc-96.png",
-     "sizes": "96x96"
+     "src": "icons/icon-192.png",
+     "sizes": "192x192"
     }
    ]
   },
   {
-   "name": "ตารางคิว",
-   "url": "./index.html",
+   "name": "เครื่องคิดเลข",
+   "short_name": "คิดราคา",
+   "url": "./calc.html",
    "icons": [
     {
      "src": "icons/calc-96.png",
