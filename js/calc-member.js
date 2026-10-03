@@ -1,9 +1,9 @@
 import {
   auth, db, OWNER, authMsg, onAuthStateChanged, signInWithEmailAndPassword,
   doc, collection, getDoc, getDocs, setDoc, writeBatch, serverTimestamp, increment
-} from './fb.js?v=20261003w';
-import { rankOf, couponInfo, memberNo, pointsFor, warrantyCode, qrSvg, fDate, money, intf, $, h, toast, WARRANTY_DEFAULT, sellPerGramOf } from './core.js?v=20261003w';
-import { scanQR, parseMemberQR } from './scan.js?v=20261003w';
+} from './fb.js?v=20261003x';
+import { rankOf, couponInfo, memberNo, pointsFor, warrantyCode, qrSvg, fDate, money, intf, $, h, toast, WARRANTY_DEFAULT, sellPerGramOf } from './core.js?v=20261003x';
+import { scanQR, parseMemberQR } from './scan.js?v=20261003x';
 
 const U = window.UMEM;
 let members = [], sel = null, isOwner = false, lastSaved = null;
