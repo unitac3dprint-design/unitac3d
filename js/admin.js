@@ -1,10 +1,10 @@
 import {
   auth, db, OWNER, authMsg, onAuthStateChanged, signInWithEmailAndPassword, signOut,
   doc, collection, getDoc, getDocs, setDoc, updateDoc, deleteDoc, query, where, writeBatch, serverTimestamp, increment
-} from './fb.js?v=20261004i';
-import { RANKS, rankOf, couponInfo, memberNo, toDate, fDate, fDM, money, intf, daysLeft, warrantyCode, $, h, toast, avatarEl, LOGO_SVG } from './core.js?v=20261004i';
-import { CARRIERS, trackPage, cleanTrack } from './carriers.js?v=20261004i';
-import { scanQR, parseMemberQR } from './scan.js?v=20261004i';
+} from './fb.js?v=20261004j';
+import { RANKS, rankOf, couponInfo, memberNo, toDate, fDate, fDM, money, intf, daysLeft, warrantyCode, $, h, toast, avatarEl, LOGO_SVG } from './core.js?v=20261004j';
+import { CARRIERS, trackPage, cleanTrack } from './carriers.js?v=20261004j';
+import { scanQR, parseMemberQR } from './scan.js?v=20261004j';
 
 document.querySelectorAll('[data-logo]').forEach(e => { e.innerHTML = LOGO_SVG; });
 
@@ -52,24 +52,61 @@ function matches(m, q) {
   if (!q) return true; q = q.toLowerCase().replace(/\s+/g, '');
   return [m.nickname, m.fullName, m.email, m.phone, m.no].some(v => (v || '').toLowerCase().replace(/[\s-]/g, '').includes(q.replace(/-/g, '')));
 }
+const NEW_DAYS = 14;
+let cFilter = 'all';
+const isNew = (m) => { const d = toDate(m.createdAt); return d && (Date.now() - d) < NEW_DAYS * 864e5; };
+const ago = (d) => { const n = Math.floor((Date.now() - d) / 864e5); return n <= 0 ? 'วันนี้' : n === 1 ? 'เมื่อวาน' : n + ' วันก่อน'; };
+const FILTERS = [
+  ['all', 'ทั้งหมด', () => true],
+  ['new', 'สมัครใหม่', isNew],
+  ['unverified', 'ยังไม่ยืนยันอีเมล', m => !m.verified],
+  ['coupon', 'มีคูปองรอใช้', m => couponInfo(m, m.uid).open],
+  ['partner', 'Rhodium', m => !!m.rhodium],
+  ['delete', 'ขอลบบัญชี', m => !!m.deleteRequested]
+];
+function rankPill(m) {
+  const r = rankOf(m), s = h('span', 'pill'); s.style.cssText = 'background:color-mix(in srgb,' + r.c + ' 18%,transparent);color:' + (r.key === 'Rhodium' ? 'var(--ink)' : r.c) + ';font-weight:600';
+  s.textContent = r.key + ' · ' + r.disc + '%'; return s;
+}
 function renderMembers() {
   const q = $('cSearch').value.trim(), L = $('cList'); L.textContent = '';
-  const list = members.filter(m => matches(m, q)).sort((a, b) => (b.deleteRequested - a.deleteRequested) || ((toDate(b.createdAt) || 0) - (toDate(a.createdAt) || 0)));
-  $('cCount').textContent = 'สมาชิก ' + members.length + ' คน' + (q ? ' · พบ ' + list.length : '');
-  if (!list.length) L.appendChild(h('p', 'empty', members.length ? 'ไม่พบสมาชิกที่ค้นหา' : 'ยังไม่มีสมาชิก'));
-  list.slice(0, 200).forEach(m => {
+  /* new sign-ups strip */
+  const fresh = members.filter(isNew).sort((a, b) => (toDate(b.createdAt) || 0) - (toDate(a.createdAt) || 0));
+  $('cNew').hidden = !fresh.length || !!q; $('cNewN').textContent = fresh.length + ' คน';
+  const NR = $('cNewRow'); NR.textContent = '';
+  fresh.slice(0, 20).forEach(m => {
+    const c = h('button', 'ncard'); c.type = 'button'; c.addEventListener('click', () => openMember(m.uid));
+    const top = h('div', 'ncard__top'), t = h('div'); t.style.minWidth = '0';
+    t.append(h('b', null, m.nickname || 'สมาชิก'), h('span', null, m.no + ' · ' + ago(toDate(m.createdAt))));
+    top.append(avatarEl(m, 38), t);
+    const mt = h('div', 'ncard__m'); mt.appendChild(rankPill(m));
+    mt.appendChild(h('span', 'pill ' + (m.verified ? 'pill--ok' : 'pill--warn'), m.verified ? 'ยืนยันอีเมลแล้ว' : 'ยังไม่ยืนยันอีเมล'));
+    c.append(top, mt); NR.appendChild(c);
+  });
+  /* filters */
+  const F = $('cFil'); F.textContent = '';
+  FILTERS.forEach(([k, n, fn]) => {
+    const cnt = members.filter(fn).length; if (!cnt && k !== 'all' && k !== cFilter) return;
+    const b = h('button'); b.type = 'button'; b.setAttribute('aria-pressed', String(cFilter === k)); b.append(n, h('b', null, String(cnt)));
+    b.addEventListener('click', () => { cFilter = k; renderMembers(); }); F.appendChild(b);
+  });
+  const fn = (FILTERS.find(f => f[0] === cFilter) || FILTERS[0])[2];
+  const list = members.filter(m => fn(m) && matches(m, q)).sort((a, b) => (b.deleteRequested - a.deleteRequested) || ((toDate(b.createdAt) || 0) - (toDate(a.createdAt) || 0)));
+  $('cCount').textContent = 'สมาชิก ' + members.length + ' คน' + (q || cFilter !== 'all' ? ' · แสดง ' + list.length : '');
+  if (!list.length) L.appendChild(h('p', 'empty', members.length ? 'ไม่พบสมาชิก' : 'ยังไม่มีสมาชิก'));
+  list.slice(0, 300).forEach(m => {
     const b = h('button', 'crow'); b.type = 'button'; b.addEventListener('click', () => openMember(m.uid));
-    const t = h('span', 'crow__t');
-    t.append(h('b', null, (m.nickname || 'สมาชิก') + (m.fullName ? ' · ' + m.fullName : '')), h('span', null, [m.no, m.phone, m.email].filter(Boolean).join(' · ')));
-    const r = h('span', 'crow__r'); r.appendChild(rankBadge(m));
-    const fl = h('span', 'crow__flags');
-    fl.appendChild(h('span', 'pill', intf(m.points || 0) + ' แต้ม'));
-    if (m.deleteRequested) fl.appendChild(h('span', 'pill pill--stop', 'ขอลบบัญชี'));
-    if (!m.verified) fl.appendChild(h('span', 'pill pill--warn', 'ยังไม่ยืนยันอีเมล'));
-    if (m.deviceDup) fl.appendChild(h('span', 'pill pill--warn', 'เครื่องซ้ำ'));
-    const c = couponInfo(m, m.uid); if (c.open) fl.appendChild(h('span', 'pill pill--accent', 'คูปอง +' + c.pct + '%'));
-    r.appendChild(fl);
-    b.append(avatarEl(m, 42), t, r); L.appendChild(b);
+    const t = h('span', 'crow__t'), nm = h('b', null, (m.nickname || 'สมาชิก') + (m.fullName ? ' · ' + m.fullName : ''));
+    if (isNew(m)) nm.appendChild(h('span', 'crow__new', 'ใหม่'));
+    t.append(nm, h('span', null, [m.no, m.phone].filter(Boolean).join(' · ')));
+    const meta = h('span', 'crow__meta');
+    if (m.deleteRequested) meta.appendChild(h('span', 'pill pill--stop', 'ขอลบบัญชี'));
+    if (!m.verified) meta.appendChild(h('span', 'pill pill--warn', 'ยังไม่ยืนยันอีเมล'));
+    if (m.deviceDup) meta.appendChild(h('span', 'pill pill--warn', 'เครื่องซ้ำ'));
+    const c = couponInfo(m, m.uid); if (c.open) meta.appendChild(h('span', 'pill pill--accent', 'คูปอง +' + c.pct + '%'));
+    if (meta.childElementCount) t.appendChild(meta);
+    const r = h('span', 'crow__r'); r.append(rankPill(m), h('span', 'crow__pts', intf(m.points || 0) + ' แต้ม'));
+    b.append(avatarEl(m, 44), t, r); L.appendChild(b);
   });
 }
 $('cSearch').addEventListener('input', renderMembers);

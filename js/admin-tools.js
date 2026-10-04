@@ -1,5 +1,5 @@
-import { auth, db, OWNER, authMsg, onAuthStateChanged, doc, collection, getDoc, getDocs, setDoc, writeBatch, serverTimestamp } from './fb.js?v=20261004i';
-import { $, h, toast, toDate, daysLeft, intf } from './core.js?v=20261004i';
+import { auth, db, OWNER, authMsg, onAuthStateChanged, doc, collection, getDoc, getDocs, setDoc, writeBatch, serverTimestamp } from './fb.js?v=20261004j';
+import { $, h, toast, toDate, daysLeft, intf } from './core.js?v=20261004j';
 
 /* ---------- what needs attention: strip + tab badges ---------- */
 const COLS = ['members', 'orders', 'warranties', 'partners', 'materials', 'portfolio', 'portfolioFull', 'admin'];
@@ -22,7 +22,7 @@ export async function refresh() {
   const fresh = members.filter(m => (toDate(m.createdAt) || 0) > seen).length;
   const del = members.filter(m => m.deleteRequested).length;
   const soon = war.filter(w => { const l = daysLeft(toDate(w.expiresAt)); return l > 0 && l <= 7; }).length;
-  const low = mats.filter(m => m.active !== false && ((+m.sealed || 0) + (+m.open || 0)) <= (+m.low || 0) && (+m.low || 0) > 0).length;
+  const low = mats.filter(m => m.active !== false && (m.spools != null ? +m.spools || 0 : (+m.sealed || 0) + (+m.open || 0)) <= (+m.low || 0) && (+m.low || 0) > 0).length;
   const last = meta && toDate(meta.lastBackupAt), age = last ? Math.floor((Date.now() - last) / 864e5) : null;
   badge('tCust', fresh + del); badge('tWar', soon); badge('tStk', low);
   const T = $('todo'); T.textContent = '';

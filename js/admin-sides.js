@@ -1,5 +1,5 @@
-import { auth, db, OWNER, authMsg, onAuthStateChanged, doc, getDoc, setDoc, updateDoc, writeBatch, deleteDoc } from './fb.js?v=20261004i';
-import { $, h, toast, normalizeImage } from './core.js?v=20261004i';
+import { auth, db, OWNER, authMsg, onAuthStateChanged, doc, getDoc, setDoc, updateDoc, writeBatch, deleteDoc } from './fb.js?v=20261004j';
+import { $, h, toast, normalizeImage } from './core.js?v=20261004j';
 /* back office: picture or clip for the left / right side of the customer pages */
 const CHUNK = 900000, MAX_VIDEO = 6 * 1024 * 1024, KEY = { L: 'left', R: 'right' };
 let cfg = {}, started = false;

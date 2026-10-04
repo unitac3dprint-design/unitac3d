@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/site.css?v=20261004i">
+<link rel="stylesheet" href="css/site.css?v=20261004j">
 <title>หลังร้าน · UNITAC</title>
 <meta name="description" content="UNITAC 3D PRINT ยินดีให้บริการ">
 <meta property="og:type" content="website">
@@ -34,7 +34,7 @@
 .adm__head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .adm__head h1{font-size:26px}
 .adm__acts{display:flex;gap:8px;flex-wrap:wrap}
-.adm__tabs{max-width:420px;margin:12px 0 18px}
+
 .adm__search{display:flex;gap:10px;align-items:flex-end}
 .adm__search .field{flex:1}
 .clist{display:grid;gap:8px}
@@ -266,6 +266,71 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
 .sd__pv{position:relative}
 .sd__pv .z{position:absolute;inset:0;transform-origin:50% var(--py,35%)}
 .sd__pv .z img,.sd__pv .z video{position:absolute;inset:0}
+
+/* ===== layout: sidebar on desktop, sticky scrolling chips on mobile ===== */
+.adm{max-width:1320px}
+.adm__head{padding-bottom:4px}
+.adm__layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:28px;align-items:start;margin-top:16px}
+.adm__side{position:sticky;top:16px;z-index:5}
+.adm__tabs{display:flex;flex-direction:column;gap:4px;padding:8px;border-radius:18px;background:var(--surface);border:1px solid var(--rule)}
+.adm__tabs button{display:flex;align-items:center;gap:12px;width:100%;min-height:46px;padding:0 14px;border-radius:12px;color:var(--ink-2);font-size:15px;font-weight:500;text-align:left;white-space:nowrap;transition:background .2s,color .2s}
+.adm__tabs button svg{width:20px;height:20px;flex:none;color:var(--muted);transition:color .2s}
+.adm__tabs button span{flex:1}
+.adm__tabs button:hover{background:var(--sunk);color:var(--ink)}
+.adm__tabs button[aria-selected="true"]{background:var(--accent-soft);color:var(--ink)}
+.adm__tabs button[aria-selected="true"] svg{color:var(--accent)}
+.adm__tabs .tbadge{margin-left:auto}
+.adm__main{min-width:0;display:flex;flex-direction:column;gap:16px}
+.adm__main > [data-panel]{margin:0}
+@media (max-width:980px){
+  .adm__layout{display:block;margin-top:10px}
+  .adm__side{position:sticky;top:0;margin:0 -16px 14px;padding:8px 16px;background:linear-gradient(var(--ground) 80%,transparent)}
+  .adm__tabs{flex-direction:row;overflow-x:auto;scrollbar-width:none;padding:0;background:none;border:0;border-radius:0;gap:8px}
+  .adm__tabs::-webkit-scrollbar{display:none}
+  .adm__tabs button{flex:none;width:auto;min-height:42px;padding:0 14px;border-radius:999px;border:1px solid var(--rule-strong);font-size:14px;gap:8px}
+  .adm__tabs button svg{width:17px;height:17px}
+  .adm__tabs button[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:var(--ground)}
+  .adm__tabs button[aria-selected="true"] svg{color:var(--ground)}
+  .adm__head{flex-wrap:nowrap}
+  .adm__head h1{font-size:22px;flex:none}
+  .adm__acts{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-right:-16px;padding-right:16px}
+  .adm__acts::-webkit-scrollbar{display:none}
+  .adm__acts > *{flex:none}
+}
+/* ===== customers ===== */
+.cnew{display:flex;flex-direction:column;gap:10px}
+.cnew__h{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.cnew__h h2{font-size:17px;display:flex;align-items:center;gap:8px}
+.cnew__h h2 i{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 4px rgba(116,196,155,.15)}
+.cnew__row{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(200px,240px);gap:10px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
+.ncard{display:flex;flex-direction:column;gap:10px;padding:14px;border-radius:var(--r-md);background:linear-gradient(180deg,rgba(116,196,155,.08),var(--surface) 60%);border:1px solid rgba(116,196,155,.3);text-align:left;color:var(--ink);transition:border-color .2s,transform .2s var(--ease)}
+.ncard:hover{border-color:var(--ok);transform:translateY(-2px)}
+.ncard__top{display:flex;align-items:center;gap:10px;min-width:0}
+.ncard__top > div b{display:block;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ncard__top > div > span{display:block;font-size:12px;color:var(--muted);font-family:var(--font-num)}
+.ncard__m{display:flex;flex-wrap:wrap;gap:6px}
+.cfil{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.cfil::-webkit-scrollbar{display:none}
+.cfil button{flex:none;min-height:38px;padding:0 14px;border-radius:999px;border:1px solid var(--rule-strong);color:var(--ink-2);font-size:13.5px;font-weight:500}
+.cfil button[aria-pressed="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+.cfil b{font-family:var(--font-num);font-weight:500;margin-left:6px;opacity:.65}
+.crow{grid-template-columns:auto minmax(0,1fr) auto;align-items:center;padding:12px 16px;gap:14px}
+.crow__t{gap:4px}
+.crow__t b{font-size:15.5px;font-weight:600}
+.crow__meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+.crow__r{flex-direction:column;align-items:flex-end;gap:2px;text-align:right}
+.crow__pts{font-family:var(--font-num);font-size:12.5px;color:var(--muted)}
+.crow .pill{font-size:11.5px;padding:2px 9px}
+.crow__new{font-size:11px;font-weight:600;color:var(--ok);margin-left:6px}
+@media (max-width:600px){
+  .crow{grid-template-columns:auto minmax(0,1fr);padding:12px}
+  .crow__r{grid-column:2;flex-direction:row;align-items:center;justify-content:flex-start;gap:10px}
+}
+/* ===== stock: one spool count ===== */
+.spool__s{grid-template-columns:1fr}
+.cnt.one{grid-template-columns:44px minmax(0,1fr) 44px;padding:8px}
+.cnt.one button{width:44px;height:44px;font-size:20px}
+.cnt.one span b{font-size:24px}
 </style>
 </head>
 <body>
@@ -310,26 +375,32 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
         <button type="button" class="btn btn--ghost btn--sm" id="installBtn" hidden>ติดตั้งเป็นแอป</button>
         <button type="button" class="btn btn--ghost btn--sm" id="bkBtn">สำรองข้อมูล</button>
         <label class="btn btn--ghost btn--sm" id="rsLbl">กู้คืน<input type="file" id="rsFile" accept="application/json,.json" class="sr"></label>
-        <a class="btn btn--primary btn--sm" href="calc.html">เครื่องคิดเลข</a>
         <button type="button" class="btn btn--ghost btn--sm" data-signout>ออกจากระบบ</button>
       </div>
     </div>
+    <div class="adm__layout">
+    <nav class="adm__side" aria-label="เมนูหลังร้าน"><div class="adm__tabs" role="tablist" aria-label="ส่วนของหลังร้าน">
+      <button type="button" role="tab" aria-selected="true" data-tab="cust" id="tCust"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 19v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1"/><circle cx="9.5" cy="7.5" r="3.5"/><path d="M21 19v-1a4 4 0 0 0-3-3.87M16 4.13a3.5 3.5 0 0 1 0 6.75"/></svg><span>ลูกค้า</span></button>
+      <button type="button" role="tab" aria-selected="false" data-tab="ord" id="tOrd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg><span>ออเดอร์</span></button>
+      <button type="button" role="tab" aria-selected="false" data-tab="war" id="tWar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg><span>ประกัน</span></button>
+      <button type="button" role="tab" aria-selected="false" data-tab="stk" id="tStk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg><span>สต็อกเส้น</span></button>
+      <button type="button" role="tab" aria-selected="false" data-tab="pf" id="tPf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/></svg><span>ผลงาน</span></button>
+      <button type="button" role="tab" aria-selected="false" data-tab="prt" id="tPrt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 12h8M12 8v8"/><rect x="3" y="3" width="18" height="18" rx="5"/></svg><span>พาร์ทเนอร์</span></button>
+      <button type="button" role="tab" aria-selected="false" data-tab="sd" id="tSd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="16" y="4" width="5" height="16" rx="1.5"/><path d="M11 9h2M11 15h2"/></svg><span>สองข้าง</span></button>
+    </div></nav>
+    <div class="adm__main">
     <div class="todo" id="todo" hidden></div>
-    <div class="tabs adm__tabs" style="max-width:900px" role="tablist" aria-label="ส่วนของหลังร้าน">
-      <button type="button" role="tab" aria-selected="true" data-tab="cust" id="tCust">ลูกค้า</button>
-      <button type="button" role="tab" aria-selected="false" data-tab="ord" id="tOrd">ออเดอร์</button>
-      <button type="button" role="tab" aria-selected="false" data-tab="war" id="tWar">ประกัน</button>
-      <button type="button" role="tab" aria-selected="false" data-tab="stk" id="tStk">สต็อกเส้น</button>
-      <button type="button" role="tab" aria-selected="false" data-tab="pf" id="tPf">ผลงาน</button>
-      <button type="button" role="tab" aria-selected="false" data-tab="prt" id="tPrt">พาร์ทเนอร์</button>
-      <button type="button" role="tab" aria-selected="false" data-tab="sd" id="tSd">สองข้าง</button>
-    </div>
 
     <div data-panel="cust" class="sec">
       <div class="adm__search">
         <div class="field"><label for="cSearch" class="sr">ค้นหาลูกค้า</label><input type="search" id="cSearch" placeholder="ค้นหา ชื่อเล่น ชื่อ เบอร์ อีเมล หรือเลขสมาชิก" autocomplete="off"></div>
         <button type="button" class="btn btn--ghost" id="cScan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M7 12h10"/></svg>สแกน QR</button>
       </div>
+      <section class="cnew" id="cNew" hidden>
+        <div class="cnew__h"><h2><i aria-hidden="true"></i>สมัครใหม่ใน 14 วัน</h2><span class="muted small" id="cNewN"></span></div>
+        <div class="cnew__row" id="cNewRow"></div>
+      </section>
+      <div class="cfil" id="cFil" role="group" aria-label="กรองลูกค้า"></div>
       <p class="muted small" id="cCount"></p>
       <div id="cList" class="clist"></div>
     </div>
@@ -476,6 +547,8 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
       </div>
       <div id="wList" class="wlist2"></div>
     </div>
+    </div>
+    </div>
   </section>
 </main>
 
@@ -587,8 +660,7 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
       <div class="field"><label for="mLow">เตือนเมื่อเหลือ (ม้วน)</label><input type="number" id="mLow" min="0" step="1" value="1" inputmode="numeric"></div>
     </div>
     <div class="frow">
-      <div class="field"><label for="mSealed">ม้วนใหม่ (ยังไม่เปิด)</label><input type="number" id="mSealed" min="0" step="1" value="0" inputmode="numeric"></div>
-      <div class="field"><label for="mOpen">ม้วนที่เปิดใช้อยู่</label><input type="number" id="mOpen" min="0" step="1" value="0" inputmode="numeric"></div>
+      <div class="field"><label for="mSpools">จำนวนม้วน</label><input type="number" id="mSpools" min="0" step="1" value="0" inputmode="numeric"></div>
     </div>
     <div class="field"><label for="mNote">หมายเหตุ</label><input type="text" id="mNote" maxlength="100" placeholder="เช่น ร้านที่ซื้อ อุณหภูมิที่ใช้"></div>
     <label class="check"><input type="checkbox" id="mActive" checked><span>แสดงในเครื่องคิดเลข</span></label>
@@ -636,13 +708,13 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
 </div></dialog>
 
 <footer class="foot">UNITAC · <a href="./">ตารางคิว</a> · <a href="warranty.html">เช็กประกัน</a> · <a href="portfolio.html">ผลงาน</a> · <a href="partners.html">พาร์ทเนอร์</a> · <a href="privacy.html">นโยบายความเป็นส่วนตัว</a></footer>
-<script type="module" src="js/admin.js?v=20261004i"></script>
-<script type="module" src="js/admin-partners.js?v=20261004i"></script>
-<script type="module" src="js/admin-stock.js?v=20261004i"></script>
-<script type="module" src="js/admin-portfolio.js?v=20261004i"></script>
-<script type="module" src="js/admin-tools.js?v=20261004i"></script>
-<script type="module" src="js/admin-ship.js?v=20261004i"></script>
-<script type="module" src="js/admin-hero.js?v=20261004i"></script>
-<script type="module" src="js/admin-sides.js?v=20261004i"></script>
+<script type="module" src="js/admin.js?v=20261004j"></script>
+<script type="module" src="js/admin-partners.js?v=20261004j"></script>
+<script type="module" src="js/admin-stock.js?v=20261004j"></script>
+<script type="module" src="js/admin-portfolio.js?v=20261004j"></script>
+<script type="module" src="js/admin-tools.js?v=20261004j"></script>
+<script type="module" src="js/admin-ship.js?v=20261004j"></script>
+<script type="module" src="js/admin-hero.js?v=20261004j"></script>
+<script type="module" src="js/admin-sides.js?v=20261004j"></script>
 </body>
 </html>
