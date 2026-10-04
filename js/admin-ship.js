@@ -1,8 +1,8 @@
-import { db, doc, getDoc, setDoc } from './fb.js?v=20261004f';
-import { $, h, toast } from './core.js?v=20261004f';
-import { CARRIERS, cleanTrack, trackPage } from './carriers.js?v=20261004f';
-import { FLASH_FN_URL } from './config.js?v=20261004f';
-import { SENT_TITLE, parsePaste, titleOf, detailOf, toneOf, fmtWhen } from './shipstatus.js?v=20261004f';
+import { db, doc, getDoc, setDoc } from './fb.js?v=20261004g';
+import { $, h, toast } from './core.js?v=20261004g';
+import { CARRIERS, cleanTrack, trackPage } from './carriers.js?v=20261004g';
+import { FLASH_FN_URL } from './config.js?v=20261004g';
+import { SENT_TITLE, parsePaste, titleOf, detailOf, toneOf, fmtWhen } from './shipstatus.js?v=20261004g';
 
 /* parcel status mirrors Flash: paste the history from the Flash tracking page, it replaces the old list */
 let num = '', carrier = 'flash', data = null, base = null;

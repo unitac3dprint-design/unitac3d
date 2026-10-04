@@ -1,5 +1,5 @@
-import { auth, db, OWNER, authMsg, onAuthStateChanged, doc, getDoc, setDoc, updateDoc, writeBatch, deleteDoc } from './fb.js?v=20261004f';
-import { $, h, toast, normalizeImage } from './core.js?v=20261004f';
+import { auth, db, OWNER, authMsg, onAuthStateChanged, doc, getDoc, setDoc, updateDoc, writeBatch, deleteDoc } from './fb.js?v=20261004g';
+import { $, h, toast, normalizeImage } from './core.js?v=20261004g';
 /* back office: picture or clip for the left / right side of the customer pages */
 const CHUNK = 900000, MAX_VIDEO = 6 * 1024 * 1024, KEY = { L: 'left', R: 'right' };
 let cfg = {}, started = false;
@@ -15,14 +15,14 @@ async function blob(side, m) {
 }
 async function render(S) {
   const side = KEY[S], m = cfg[side], pv = $('sdPv' + S); pv.textContent = '';
-  $('sdDel' + S).hidden = !m; $('sdBlend' + S).checked = m ? !!m.blend : true; $('sdMotion' + S).checked = m ? !!m.motion : false; $('sdFade' + S).checked = m ? m.fade !== false : true; $('sdPos' + S).value = (m && m.pos) || 'upper'; pv.style.setProperty('--py', { top: '0%', center: '50%', bottom: '100%' }[(m && m.pos)] || '35%');
+  $('sdDel' + S).hidden = !m; $('sdBlend' + S).checked = m ? !!m.blend : true; $('sdMotion' + S).checked = m ? !!m.motion : false; $('sdFade' + S).checked = m ? m.fade !== false : true; $('sdPos' + S).value = (m && m.pos) || 'upper'; $('sdSize' + S).value = String(Math.round(((m && m.scale) || 1) * 100)); $('sdSizeOut' + S).textContent = $('sdSize' + S).value + '%'; pv.style.setProperty('--py', { top: '0%', center: '50%', bottom: '100%' }[(m && m.pos)] || '35%');
   if (!m || m.src) { pv.appendChild(h('span', 'muted small', m && m.src ? 'ไฟล์เดิมจาก GitHub ยกเลิกแล้ว อัปคลิปใหม่' : 'ยังไม่มี')); return; }
   try {
     const url = URL.createObjectURL(await blob(side, m));
     let el; if (m.type === 'video') { el = h('video'); el.muted = true; el.loop = true; el.autoplay = true; el.playsInline = true; el.src = url; el.play().catch(() => {}); }
     else { el = h('img'); el.alt = ''; el.src = url; }
-    if (m.blend) el.style.mixBlendMode = 'screen'; pv.style.background = m.blend ? '#141311' : '#000';
-    pv.appendChild(el);
+    if (m.blend) el.style.mixBlendMode = 'lighten'; pv.style.background = m.blend ? '#141311' : '#000';
+    const z = h('div', 'z'); z.style.transform = 'scale(' + (m.scale || 1) + ')'; z.appendChild(el); pv.appendChild(z);
   } catch (_) { pv.appendChild(h('span', 'muted small', 'โหลดตัวอย่างไม่สำเร็จ')); }
 }
 const msg = (S, t) => { $('sdMsg' + S).textContent = t; };
@@ -31,7 +31,7 @@ async function save(S, type, mime, b64, size) {
   for (let i = 0; i < b64.length; i += CHUNK) parts.push(b64.slice(i, i + CHUNK));
   for (let i = 0; i < parts.length; i++) { msg(S, 'กำลังอัปโหลด ' + Math.round((i + 1) / parts.length * 100) + '%'); await setDoc(doc(db, 'sideChunks', side + '-' + ver + '-' + i), { d: parts[i] }); }
   const old = cfg[side];
-  const m = { type, mime, chunks: parts.length, ver, size, blend: $('sdBlend' + S).checked, motion: $('sdMotion' + S).checked, fade: $('sdFade' + S).checked, pos: $('sdPos' + S).value, updatedAt: new Date().toISOString() };
+  const m = { type, mime, chunks: parts.length, ver, size, blend: $('sdBlend' + S).checked, motion: $('sdMotion' + S).checked, fade: $('sdFade' + S).checked, pos: $('sdPos' + S).value, scale: +$('sdSize' + S).value / 100, updatedAt: new Date().toISOString() };
   await setDoc(doc(db, 'site', 'sides'), { ...cfg, [side]: m });
   cfg[side] = m;
   if (old && old.chunks) { const b = writeBatch(db); for (let i = 0; i < old.chunks; i++) b.delete(doc(db, 'sideChunks', side + '-' + old.ver + '-' + i)); try { await b.commit(); } catch (_) {} }
@@ -64,9 +64,10 @@ async function save(S, type, mime, b64, size) {
       await save(S, 'video', mime, b64, f.size);
     } catch (x) { msg(S, 'อัปโหลดไม่สำเร็จ ' + (x && x.code ? authMsg(x.code) : '')); }
   });
-  ['sdBlend', 'sdMotion', 'sdFade', 'sdPos'].forEach(id => $(id + S).addEventListener('change', async () => {
+  $('sdSize' + S).addEventListener('input', () => { $('sdSizeOut' + S).textContent = $('sdSize' + S).value + '%'; const z = $('sdPv' + S).querySelector('.z'); if (z) z.style.transform = 'scale(' + ($('sdSize' + S).value / 100) + ')'; });
+  ['sdBlend', 'sdMotion', 'sdFade', 'sdPos', 'sdSize'].forEach(id => $(id + S).addEventListener('change', async () => {
     const side = KEY[S]; if (!cfg[side]) return;
-    cfg[side] = { ...cfg[side], blend: $('sdBlend' + S).checked, motion: $('sdMotion' + S).checked, fade: $('sdFade' + S).checked, pos: $('sdPos' + S).value };
+    cfg[side] = { ...cfg[side], blend: $('sdBlend' + S).checked, motion: $('sdMotion' + S).checked, fade: $('sdFade' + S).checked, pos: $('sdPos' + S).value, scale: +$('sdSize' + S).value / 100 };
     try { await setDoc(doc(db, 'site', 'sides'), cfg); render(S); toast('บันทึกแล้ว'); } catch (x) { toast(authMsg(x.code)); }
   }));
   $('sdDel' + S).addEventListener('click', async () => {

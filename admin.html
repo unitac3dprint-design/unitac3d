@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/site.css?v=20261004f">
+<link rel="stylesheet" href="css/site.css?v=20261004g">
 <title>หลังร้าน · UNITAC</title>
 <meta name="description" content="UNITAC 3D PRINT ยินดีให้บริการ">
 <meta property="og:type" content="website">
@@ -260,6 +260,12 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
 .sd__t{display:grid;gap:10px}
 .sd__t h2{font-size:17px}
 
+.sd__size label{display:flex;justify-content:space-between}
+.sd__size output{font-family:var(--font-num);color:var(--ink)}
+.sd__size input{width:100%;accent-color:var(--accent);min-height:30px}
+.sd__pv{position:relative}
+.sd__pv .z{position:absolute;inset:0;transform-origin:50% var(--py,35%)}
+.sd__pv .z img,.sd__pv .z video{position:absolute;inset:0}
 </style>
 </head>
 <body>
@@ -407,6 +413,7 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
             <label class="check"><input type="checkbox" id="sdBlendL" checked><span>พื้นหลังดำ ให้กลืนกับเว็บ</span></label>
             <label class="check"><input type="checkbox" id="sdFadeL" checked><span>ขอบจางหาย</span></label>
             <label class="check"><input type="checkbox" id="sdMotionL"><span>ขยับเบาๆ (กล้องดันเข้า + หายใจ เหมาะกับรูปนิ่ง)</span></label>
+            <div class="field sd__size"><label for="sdSizeL">ขนาด <output id="sdSizeOutL">100%</output></label><input type="range" id="sdSizeL" min="50" max="200" step="5" value="100"></div>
             <div class="field sd__pos"><label for="sdPosL">จัดตำแหน่งเมื่อถูกครอป</label><select id="sdPosL"><option value="upper">ค่อนบน (เห็นหัวและลำตัว)</option><option value="top">ชิดบน</option><option value="center">กึ่งกลาง</option><option value="bottom">ชิดล่าง</option></select></div>
             <p class="small muted" id="sdMsgL" aria-live="polite"></p>
           </div>
@@ -423,6 +430,7 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
             <label class="check"><input type="checkbox" id="sdBlendR" checked><span>พื้นหลังดำ ให้กลืนกับเว็บ</span></label>
             <label class="check"><input type="checkbox" id="sdFadeR" checked><span>ขอบจางหาย</span></label>
             <label class="check"><input type="checkbox" id="sdMotionR"><span>ขยับเบาๆ (กล้องดันเข้า + หายใจ เหมาะกับรูปนิ่ง)</span></label>
+            <div class="field sd__size"><label for="sdSizeR">ขนาด <output id="sdSizeOutR">100%</output></label><input type="range" id="sdSizeR" min="50" max="200" step="5" value="100"></div>
             <div class="field sd__pos"><label for="sdPosR">จัดตำแหน่งเมื่อถูกครอป</label><select id="sdPosR"><option value="upper">ค่อนบน (เห็นหัวและลำตัว)</option><option value="top">ชิดบน</option><option value="center">กึ่งกลาง</option><option value="bottom">ชิดล่าง</option></select></div>
             <p class="small muted" id="sdMsgR" aria-live="polite"></p>
           </div>
@@ -628,13 +636,13 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
 </div></dialog>
 
 <footer class="foot">UNITAC · <a href="./">ตารางคิว</a> · <a href="warranty.html">เช็กประกัน</a> · <a href="portfolio.html">ผลงาน</a> · <a href="partners.html">พาร์ทเนอร์</a> · <a href="privacy.html">นโยบายความเป็นส่วนตัว</a></footer>
-<script type="module" src="js/admin.js?v=20261004f"></script>
-<script type="module" src="js/admin-partners.js?v=20261004f"></script>
-<script type="module" src="js/admin-stock.js?v=20261004f"></script>
-<script type="module" src="js/admin-portfolio.js?v=20261004f"></script>
-<script type="module" src="js/admin-tools.js?v=20261004f"></script>
-<script type="module" src="js/admin-ship.js?v=20261004f"></script>
-<script type="module" src="js/admin-hero.js?v=20261004f"></script>
-<script type="module" src="js/admin-sides.js?v=20261004f"></script>
+<script type="module" src="js/admin.js?v=20261004g"></script>
+<script type="module" src="js/admin-partners.js?v=20261004g"></script>
+<script type="module" src="js/admin-stock.js?v=20261004g"></script>
+<script type="module" src="js/admin-portfolio.js?v=20261004g"></script>
+<script type="module" src="js/admin-tools.js?v=20261004g"></script>
+<script type="module" src="js/admin-ship.js?v=20261004g"></script>
+<script type="module" src="js/admin-hero.js?v=20261004g"></script>
+<script type="module" src="js/admin-sides.js?v=20261004g"></script>
 </body>
 </html>

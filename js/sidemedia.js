@@ -1,7 +1,7 @@
 /* UNITAC — picture or clip in the empty space left and right of the page (wide screens only).
    site/sides = { left: { type, mime, chunks, ver, blend, motion }, right: {…} }, data in sideChunks/{side}-{ver}-{i}.
    The file is kept in the browser cache after the first visit, so later pages do not download it again. */
-import { db, doc, getDoc } from './fb.js?v=20261004f';
+import { db, doc, getDoc } from './fb.js?v=20261004g';
 
 const CONTENT = 1180, MIN_SIDE = 150, CACHE = 'unitac-sides-v1';
 let started = false;
@@ -10,16 +10,17 @@ function css() {
   if (document.getElementById('sideCss')) return;
   const s = document.createElement('style'); s.id = 'sideCss';
   s.textContent = `
-.uside{position:fixed;top:0;bottom:0;z-index:-1;pointer-events:none;display:flex;align-items:flex-end;justify-content:center;overflow:hidden;opacity:0;transition:opacity 1.2s ease}
+.uside{position:fixed;top:0;bottom:0;z-index:-2;pointer-events:none;display:flex;align-items:flex-end;justify-content:center;overflow:hidden;opacity:0;transition:opacity 1.2s ease}
 .uside.on{opacity:1}
 .uside.l{left:0}.uside.r{right:0}
 .uside__cam{position:relative;width:100%;height:100%}
 .uside.motion .uside__cam{animation:usidePush 10s ease-in-out infinite alternate}
 .uside.motion .uside__m{animation:usideBreath 4.2s ease-in-out infinite}
 .uside.r.motion .uside__m{animation-delay:-2.1s}
+.uside__z{position:absolute;inset:0;transform:scale(var(--sc,1));transform-origin:50% var(--py,35%)}
 .uside__m{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;object-position:50% var(--py,50%);transform-origin:50% 100%}
-.uside.blend{mix-blend-mode:screen}
-.uside.fade .uside__m{-webkit-mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent),linear-gradient(180deg,transparent,#000 10%,#000 92%,transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent),linear-gradient(180deg,transparent,#000 10%,#000 92%,transparent);mask-composite:intersect}
+.uside.blend{mix-blend-mode:lighten}
+.uside.fade .uside__m{-webkit-mask-image:linear-gradient(90deg,transparent,#000 22%,#000 78%,transparent),linear-gradient(180deg,transparent,#000 12%,#000 85%,transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent,#000 22%,#000 78%,transparent),linear-gradient(180deg,transparent,#000 12%,#000 85%,transparent);mask-composite:intersect}
 @keyframes usidePush{from{transform:scale(1)}to{transform:scale(1.05)}}
 @keyframes usideBreath{0%,100%{transform:translateY(0) scaleY(1)}50%{transform:translateY(-5px) scaleY(1.008)}}
 @media (prefers-reduced-motion: reduce){.uside .uside__cam,.uside .uside__m{animation:none!important}}`;
@@ -60,7 +61,10 @@ export async function mountSides(opts = {}) {
       let el;
       if (m.type === 'video') { el = document.createElement('video'); el.preload = 'auto'; el.muted = true; el.loop = true; el.autoplay = true; el.playsInline = true; el.setAttribute('playsinline', ''); el.src = url; el.play().catch(() => {}); }
       else { el = document.createElement('img'); el.alt = ''; el.decoding = 'async'; el.src = url; }
-      el.className = 'uside__m'; el.style.setProperty('--py', { top: '0%', center: '50%', bottom: '100%' }[m.pos] || '35%'); cam.appendChild(el); box.appendChild(cam); document.body.prepend(box);
+      el.className = 'uside__m';
+      const z = document.createElement('div'); z.className = 'uside__z';
+      z.style.setProperty('--py', { top: '0%', center: '50%', bottom: '100%' }[m.pos] || '35%'); el.style.setProperty('--py', { top: '0%', center: '50%', bottom: '100%' }[m.pos] || '35%');
+      z.style.setProperty('--sc', String(m.scale || 1)); z.appendChild(el); cam.appendChild(z); box.appendChild(cam); document.body.prepend(box);
       place(box); addEventListener('resize', () => place(box), { passive: true });
       const show = () => box.classList.add('on');
       if (m.type === 'video') el.addEventListener('loadeddata', show, { once: true }); else el.addEventListener('load', show, { once: true });
