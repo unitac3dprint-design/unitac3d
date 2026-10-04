@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/site.css?v=20261004c">
+<link rel="stylesheet" href="css/site.css?v=20261004d">
 <title>หลังร้าน · UNITAC</title>
 <meta name="description" content="UNITAC 3D PRINT ยินดีให้บริการ">
 <meta property="og:type" content="website">
@@ -254,9 +254,9 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
 .sd__info{display:grid;gap:8px}
 .sd__info h2{font-size:17px}
 .sd__grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:14px}
-.sd{display:grid;grid-template-columns:150px minmax(0,1fr);gap:16px;align-items:start}
-.sd__pv{aspect-ratio:9/16;border-radius:12px;overflow:hidden;background:#000;display:grid;place-items:center;border:1px dashed var(--rule-strong)}
-.sd__pv img,.sd__pv video{width:100%;height:100%;object-fit:contain;display:block}
+.sd{display:grid;grid-template-columns:120px minmax(0,1fr);gap:16px;align-items:start}
+.sd__pv{aspect-ratio:350/950;border-radius:12px;overflow:hidden;background:#000;display:grid;place-items:center;border:1px dashed var(--rule-strong)}
+.sd__pv img,.sd__pv video{width:100%;height:100%;object-fit:cover;object-position:50% var(--py,35%);display:block}
 .sd__t{display:grid;gap:10px}
 .sd__t h2{font-size:17px}
 
@@ -393,8 +393,9 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
         <h2>รูปหรือคลิปสองข้างของหน้าเว็บ</h2>
         <p class="hint">แสดงในพื้นที่ว่างซ้ายขวาของทุกหน้าฝั่งลูกค้า (ตารางคิว สมาชิก ผลงาน พาร์ทเนอร์ เช็กประกัน ติดตามพัสดุ) เฉพาะจอที่กว้างพอ บนมือถือจะไม่โหลด ลูกค้าโหลดไฟล์ครั้งเดียว หน้าถัดไปใช้จากเครื่องลูกค้าเอง</p>
         <dl class="hero-set__spec">
-          <dt>คลิป</dt><dd>แนวตั้ง <b>1080 × 1920</b> (9:16) · MP4 (H.264) หรือ .mov ที่เป็น H.264 · ยาว 6–10 วินาที วนเนียน · ไม่เกิน <b>6 MB</b> · ฉาก<b>ดำสนิท</b> แล้วติ๊ก "พื้นหลังดำ ให้กลืนกับเว็บ"</dd>
-          <dt>รูป</dt><dd>แนวตั้ง <b>1200 × 1800</b> · PNG พื้นใส หรือภาพฉากดำ · JPG / PNG / HEIC</dd>
+          <dt>จอ 16:9</dt><dd>บนจอ 1920 × 1080 พื้นที่แต่ละข้างเป็นแถบแนวตั้งแคบ ราว <b>1 : 2.6</b> (กว้าง ~350 สูง ~950 px) ภาพจะเต็มแถบและถูกครอปซ้ายขวา ให้<b>คนหรือของอยู่กลางภาพ ภายใน 60% ตรงกลาง</b></dd>
+          <dt>คลิป</dt><dd>แนวตั้ง <b>1080 × 2340</b> (พอดีที่สุด) หรือ <b>1080 × 1920</b> (9:16) · MP4 (H.264) · ยาว 6–10 วินาที วนเนียน · ฉาก<b>ดำสนิท</b> แล้วติ๊ก "พื้นหลังดำ ให้กลืนกับเว็บ" · ไม่เกิน 6 MB (ใหญ่กว่านั้นใช้ GitHub)</dd>
+          <dt>รูป</dt><dd>แนวตั้ง <b>1080 × 2340</b> หรือ 1200 × 1800 · PNG พื้นใส หรือภาพฉากดำ · JPG / PNG / HEIC</dd>
         </dl>
       </div>
       <div class="sd__grid">
@@ -410,6 +411,7 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
             <label class="check"><input type="checkbox" id="sdBlendL" checked><span>พื้นหลังดำ ให้กลืนกับเว็บ</span></label>
             <label class="check"><input type="checkbox" id="sdFadeL" checked><span>ขอบจางหาย</span></label>
             <label class="check"><input type="checkbox" id="sdMotionL"><span>ขยับเบาๆ (กล้องดันเข้า + หายใจ เหมาะกับรูปนิ่ง)</span></label>
+            <div class="field sd__pos"><label for="sdPosL">จัดตำแหน่งเมื่อถูกครอป</label><select id="sdPosL"><option value="upper">ค่อนบน (เห็นหัวและลำตัว)</option><option value="top">ชิดบน</option><option value="center">กึ่งกลาง</option><option value="bottom">ชิดล่าง</option></select></div>
             <details class="sd__gh"><summary>ไฟล์ใหญ่กว่า 6 MB: ใช้ไฟล์ที่อัปไว้ใน GitHub</summary>
               <div class="sd__ghrow"><label class="sr" for="sdSrcL">ชื่อไฟล์ใน GitHub</label><input type="text" id="sdSrcL" placeholder="media/side-left.mp4" spellcheck="false" autocomplete="off"><button type="button" class="btn btn--ghost btn--sm" id="sdUseL">ใช้ไฟล์นี้</button></div>
               <p class="hint">อัปไฟล์เข้าโฟลเดอร์ <b>media</b> ใน GitHub ก่อน (สูงสุด 100 MB ต่อไฟล์) แล้วพิมพ์ชื่อไฟล์ตรงนี้</p>
@@ -429,6 +431,7 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
             <label class="check"><input type="checkbox" id="sdBlendR" checked><span>พื้นหลังดำ ให้กลืนกับเว็บ</span></label>
             <label class="check"><input type="checkbox" id="sdFadeR" checked><span>ขอบจางหาย</span></label>
             <label class="check"><input type="checkbox" id="sdMotionR"><span>ขยับเบาๆ (กล้องดันเข้า + หายใจ เหมาะกับรูปนิ่ง)</span></label>
+            <div class="field sd__pos"><label for="sdPosR">จัดตำแหน่งเมื่อถูกครอป</label><select id="sdPosR"><option value="upper">ค่อนบน (เห็นหัวและลำตัว)</option><option value="top">ชิดบน</option><option value="center">กึ่งกลาง</option><option value="bottom">ชิดล่าง</option></select></div>
             <details class="sd__gh"><summary>ไฟล์ใหญ่กว่า 6 MB: ใช้ไฟล์ที่อัปไว้ใน GitHub</summary>
               <div class="sd__ghrow"><label class="sr" for="sdSrcR">ชื่อไฟล์ใน GitHub</label><input type="text" id="sdSrcR" placeholder="media/side-right.mp4" spellcheck="false" autocomplete="off"><button type="button" class="btn btn--ghost btn--sm" id="sdUseR">ใช้ไฟล์นี้</button></div>
               <p class="hint">อัปไฟล์เข้าโฟลเดอร์ <b>media</b> ใน GitHub ก่อน (สูงสุด 100 MB ต่อไฟล์) แล้วพิมพ์ชื่อไฟล์ตรงนี้</p>
@@ -637,13 +640,13 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
 </div></dialog>
 
 <footer class="foot">UNITAC · <a href="./">ตารางคิว</a> · <a href="warranty.html">เช็กประกัน</a> · <a href="portfolio.html">ผลงาน</a> · <a href="partners.html">พาร์ทเนอร์</a> · <a href="privacy.html">นโยบายความเป็นส่วนตัว</a></footer>
-<script type="module" src="js/admin.js?v=20261004c"></script>
-<script type="module" src="js/admin-partners.js?v=20261004c"></script>
-<script type="module" src="js/admin-stock.js?v=20261004c"></script>
-<script type="module" src="js/admin-portfolio.js?v=20261004c"></script>
-<script type="module" src="js/admin-tools.js?v=20261004c"></script>
-<script type="module" src="js/admin-ship.js?v=20261004c"></script>
-<script type="module" src="js/admin-hero.js?v=20261004c"></script>
-<script type="module" src="js/admin-sides.js?v=20261004c"></script>
+<script type="module" src="js/admin.js?v=20261004d"></script>
+<script type="module" src="js/admin-partners.js?v=20261004d"></script>
+<script type="module" src="js/admin-stock.js?v=20261004d"></script>
+<script type="module" src="js/admin-portfolio.js?v=20261004d"></script>
+<script type="module" src="js/admin-tools.js?v=20261004d"></script>
+<script type="module" src="js/admin-ship.js?v=20261004d"></script>
+<script type="module" src="js/admin-hero.js?v=20261004d"></script>
+<script type="module" src="js/admin-sides.js?v=20261004d"></script>
 </body>
 </html>
