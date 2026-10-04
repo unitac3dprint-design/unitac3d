@@ -1,5 +1,5 @@
 /* UNITAC — Firebase connection shared by every page */
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js';
+import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js';
 import {
   getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword,
   sendEmailVerification, sendPasswordResetEmail, signOut, reload
@@ -19,7 +19,7 @@ const firebaseConfig = {
 };
 
 export const OWNER = 'NquORa1WjHM6YGNO7a6GkyaY8RU2';
-const app = initializeApp(firebaseConfig);
+const app = getApps().length ? getApp() : initializeApp(firebaseConfig);   /* the queue page may have started Firebase already */
 export const auth = getAuth(app);
 auth.languageCode = 'th';
 export const db = getFirestore(app);

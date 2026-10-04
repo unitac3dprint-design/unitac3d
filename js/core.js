@@ -339,3 +339,8 @@ if (typeof document !== 'undefined') (function(){
   addEventListener('pointerup',function(){c.classList.remove('down');},{passive:true});
   document.documentElement.addEventListener('mouseleave',function(){c.classList.remove('on');});
 })();
+
+/* picture / clip in the empty space left and right (customer pages only, wide screens) */
+if (typeof document !== 'undefined' && !/(admin|calc)\.html$/.test(location.pathname) && !location.pathname.endsWith('framer-kit.html')) {
+  import('./sidemedia.js?v=20261004b').then(m => m.mountSides()).catch(() => {});
+}

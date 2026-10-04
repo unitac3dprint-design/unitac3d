@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/site.css?v=20261003x">
+<link rel="stylesheet" href="css/site.css?v=20261004b">
 <title>หลังร้าน · UNITAC</title>
 <meta name="description" content="UNITAC 3D PRINT ยินดีให้บริการ">
 <meta property="og:type" content="website">
@@ -250,6 +250,15 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
 .hero-set__spec dt{color:var(--muted)}
 .hero-set__spec dd{margin:0}
 .hero-set__spec b{color:var(--ink);font-family:var(--font-num);font-weight:500}
+
+.sd__info{display:grid;gap:8px}
+.sd__info h2{font-size:17px}
+.sd__grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:14px}
+.sd{display:grid;grid-template-columns:150px minmax(0,1fr);gap:16px;align-items:start}
+.sd__pv{aspect-ratio:9/16;border-radius:12px;overflow:hidden;background:#000;display:grid;place-items:center;border:1px dashed var(--rule-strong)}
+.sd__pv img,.sd__pv video{width:100%;height:100%;object-fit:contain;display:block}
+.sd__t{display:grid;gap:10px}
+.sd__t h2{font-size:17px}
 </style>
 </head>
 <body>
@@ -299,13 +308,14 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
       </div>
     </div>
     <div class="todo" id="todo" hidden></div>
-    <div class="tabs adm__tabs" style="max-width:800px" role="tablist" aria-label="ส่วนของหลังร้าน">
+    <div class="tabs adm__tabs" style="max-width:900px" role="tablist" aria-label="ส่วนของหลังร้าน">
       <button type="button" role="tab" aria-selected="true" data-tab="cust" id="tCust">ลูกค้า</button>
       <button type="button" role="tab" aria-selected="false" data-tab="ord" id="tOrd">ออเดอร์</button>
       <button type="button" role="tab" aria-selected="false" data-tab="war" id="tWar">ประกัน</button>
       <button type="button" role="tab" aria-selected="false" data-tab="stk" id="tStk">สต็อกเส้น</button>
       <button type="button" role="tab" aria-selected="false" data-tab="pf" id="tPf">ผลงาน</button>
       <button type="button" role="tab" aria-selected="false" data-tab="prt" id="tPrt">พาร์ทเนอร์</button>
+      <button type="button" role="tab" aria-selected="false" data-tab="sd" id="tSd">สองข้าง</button>
     </div>
 
     <div data-panel="cust" class="sec">
@@ -371,6 +381,49 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
       </div>
       <p class="muted small" id="pfProg" aria-live="polite"></p>
       <div id="pfList" class="pf__grid"></div>
+    </div>
+
+    <div data-panel="sd" class="sec" hidden>
+      <div class="card sd__info">
+        <h2>รูปหรือคลิปสองข้างของหน้าเว็บ</h2>
+        <p class="hint">แสดงในพื้นที่ว่างซ้ายขวาของทุกหน้าฝั่งลูกค้า (ตารางคิว สมาชิก ผลงาน พาร์ทเนอร์ เช็กประกัน ติดตามพัสดุ) เฉพาะจอที่กว้างพอ บนมือถือจะไม่โหลด ลูกค้าโหลดไฟล์ครั้งเดียว หน้าถัดไปใช้จากเครื่องลูกค้าเอง</p>
+        <dl class="hero-set__spec">
+          <dt>คลิป</dt><dd>แนวตั้ง <b>1080 × 1920</b> (9:16) · MP4 (H.264) หรือ .mov ที่เป็น H.264 · ยาว 6–10 วินาที วนเนียน · ไม่เกิน <b>6 MB</b> · ฉาก<b>ดำสนิท</b> แล้วติ๊ก "พื้นหลังดำ ให้กลืนกับเว็บ"</dd>
+          <dt>รูป</dt><dd>แนวตั้ง <b>1200 × 1800</b> · PNG พื้นใส หรือภาพฉากดำ · JPG / PNG / HEIC</dd>
+        </dl>
+      </div>
+      <div class="sd__grid">
+        <section class="card sd">
+          <div class="sd__pv" id="sdPvL"><span class="muted small">ยังไม่มี</span></div>
+          <div class="sd__t">
+            <h2>ฝั่งซ้าย</h2>
+            <div class="hero-set__btns">
+              <label class="btn btn--ghost btn--sm">เลือกรูป<input type="file" id="sdImgL" accept="image/*,.heic,.heif" class="sr"></label>
+              <label class="btn btn--ghost btn--sm">เลือกคลิป<input type="file" id="sdVidL" accept="video/mp4,video/webm,video/quicktime,.mov" class="sr"></label>
+              <button type="button" class="btn btn--danger btn--sm" id="sdDelL" hidden>เอาออก</button>
+            </div>
+            <label class="check"><input type="checkbox" id="sdBlendL" checked><span>พื้นหลังดำ ให้กลืนกับเว็บ</span></label>
+            <label class="check"><input type="checkbox" id="sdFadeL" checked><span>ขอบจางหาย</span></label>
+            <label class="check"><input type="checkbox" id="sdMotionL"><span>ขยับเบาๆ (กล้องดันเข้า + หายใจ เหมาะกับรูปนิ่ง)</span></label>
+            <p class="small muted" id="sdMsgL" aria-live="polite"></p>
+          </div>
+        </section>
+        <section class="card sd">
+          <div class="sd__pv" id="sdPvR"><span class="muted small">ยังไม่มี</span></div>
+          <div class="sd__t">
+            <h2>ฝั่งขวา</h2>
+            <div class="hero-set__btns">
+              <label class="btn btn--ghost btn--sm">เลือกรูป<input type="file" id="sdImgR" accept="image/*,.heic,.heif" class="sr"></label>
+              <label class="btn btn--ghost btn--sm">เลือกคลิป<input type="file" id="sdVidR" accept="video/mp4,video/webm,video/quicktime,.mov" class="sr"></label>
+              <button type="button" class="btn btn--danger btn--sm" id="sdDelR" hidden>เอาออก</button>
+            </div>
+            <label class="check"><input type="checkbox" id="sdBlendR" checked><span>พื้นหลังดำ ให้กลืนกับเว็บ</span></label>
+            <label class="check"><input type="checkbox" id="sdFadeR" checked><span>ขอบจางหาย</span></label>
+            <label class="check"><input type="checkbox" id="sdMotionR"><span>ขยับเบาๆ (กล้องดันเข้า + หายใจ เหมาะกับรูปนิ่ง)</span></label>
+            <p class="small muted" id="sdMsgR" aria-live="polite"></p>
+          </div>
+        </section>
+      </div>
     </div>
 
     <div data-panel="prt" class="sec" hidden>
@@ -571,12 +624,13 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
 </div></dialog>
 
 <footer class="foot">UNITAC · <a href="./">ตารางคิว</a> · <a href="warranty.html">เช็กประกัน</a> · <a href="portfolio.html">ผลงาน</a> · <a href="partners.html">พาร์ทเนอร์</a> · <a href="privacy.html">นโยบายความเป็นส่วนตัว</a></footer>
-<script type="module" src="js/admin.js?v=20261003x"></script>
-<script type="module" src="js/admin-partners.js?v=20261003x"></script>
-<script type="module" src="js/admin-stock.js?v=20261003x"></script>
-<script type="module" src="js/admin-portfolio.js?v=20261003x"></script>
-<script type="module" src="js/admin-tools.js?v=20261003x"></script>
-<script type="module" src="js/admin-ship.js?v=20261003x"></script>
-<script type="module" src="js/admin-hero.js?v=20261003x"></script>
+<script type="module" src="js/admin.js?v=20261004b"></script>
+<script type="module" src="js/admin-partners.js?v=20261004b"></script>
+<script type="module" src="js/admin-stock.js?v=20261004b"></script>
+<script type="module" src="js/admin-portfolio.js?v=20261004b"></script>
+<script type="module" src="js/admin-tools.js?v=20261004b"></script>
+<script type="module" src="js/admin-ship.js?v=20261004b"></script>
+<script type="module" src="js/admin-hero.js?v=20261004b"></script>
+<script type="module" src="js/admin-sides.js?v=20261004b"></script>
 </body>
 </html>

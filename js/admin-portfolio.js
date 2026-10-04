@@ -1,6 +1,6 @@
-import { auth, db, OWNER, authMsg, onAuthStateChanged, doc, collection, getDocs, setDoc, updateDoc, deleteDoc, writeBatch, serverTimestamp } from './fb.js?v=20261003x';
-import { $, h, toast, normalizeImage, isHeic } from './core.js?v=20261003x';
-import { PFCATS } from './pfcats.js?v=20261003x';
+import { auth, db, OWNER, authMsg, onAuthStateChanged, doc, collection, getDocs, setDoc, updateDoc, deleteDoc, writeBatch, serverTimestamp } from './fb.js?v=20261004b';
+import { $, h, toast, normalizeImage, isHeic } from './core.js?v=20261004b';
+import { PFCATS } from './pfcats.js?v=20261004b';
 
 /* portfolio: small thumbnail doc for the grid + full image doc loaded only when opened */
 let items = [], cur = null, loaded = false;

@@ -1,5 +1,5 @@
-import { db, doc, getDoc } from './fb.js?v=20261003x';
-import { toDate, fDate, daysLeft, $, h, reveal, LOGO_SVG } from './core.js?v=20261003x';
+import { db, doc, getDoc } from './fb.js?v=20261004b';
+import { toDate, fDate, daysLeft, $, h, reveal, LOGO_SVG } from './core.js?v=20261004b';
 document.querySelectorAll('[data-logo]').forEach(e => { e.innerHTML = LOGO_SVG; });
 document.querySelector('[data-nav="warranty"]').setAttribute('aria-current', 'page');
 reveal();
