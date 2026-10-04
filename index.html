@@ -481,6 +481,7 @@ html.js .days.slide-r{animation:slideR .38s var(--ease)}
 }
 @media (min-width:1600px){body{font-size:16px}}
 </style>
+<script src="js/i18n.js?v=20261004l" defer></script>
 </head>
 <body>
 <div id="root"></div>
@@ -755,6 +756,7 @@ function renderNext(st){
   if(!nf){el.textContent='ยังไม่มีวันว่าง';}
   else{
     var mt=nf.n===0?'วันนี้':nf.n===1?'พรุ่งนี้':fShort.format(parse(nf.date));
+    if(window.UI18N)mt=UI18N.t(mt);
     el.appendChild(h('span','sr',mt));
     var fl=h('span','flap');fl.setAttribute('aria-hidden','true');
     graphemes(mt).forEach(function(g,i){var c=h('span','flap__c',g);c.style.setProperty('--i',i);fl.appendChild(c);});
@@ -1473,6 +1475,6 @@ window.UFB = {
 };
 window.dispatchEvent(new Event('ufb-ready'));
 </script>
-<script type="module">/* side pictures / clips: queue page only */import("./js/sidemedia.js?v=20261004j").then(function(m){m.mountSides();});</script>
+<script type="module">/* side pictures / clips: queue page only */import("./js/sidemedia.js?v=20261004l").then(function(m){m.mountSides();});</script>
 </body>
 </html>

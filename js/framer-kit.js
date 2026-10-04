@@ -1,6 +1,6 @@
-import { db, collection, getDocs, query, where } from './fb.js?v=20261004j';
-import { PCATS } from './pcats.js?v=20261004j';
-import { PFCATS } from './pfcats.js?v=20261004j';
+import { db, collection, getDocs, query, where } from './fb.js?v=20261004l';
+import { PCATS } from './pcats.js?v=20261004l';
+import { PFCATS } from './pfcats.js?v=20261004l';
 const $ = (id) => document.getElementById(id);
 const BASE = new URL('./', location.href).href;          /* e.g. https://unitac3dprint-design.github.io/unitac3d/ */
 const COLORS = [['Ground', '#141311'], ['Surface', '#1D1B18'], ['Sunk', '#27241F'], ['Ink', '#F2EDE5'], ['Ink 2', '#CBC4B8'], ['Muted', '#948D80'], ['Rule', '#2F2B26'], ['Rule strong', '#3C3731'], ['Accent', '#FF7A3C'], ['Accent soft', '#3A2216'], ['OK', '#74C49B'], ['Warn', '#E3A853'], ['Stop', '#EA7B72'], ['Design lane', '#B3A3E0']];
@@ -53,7 +53,7 @@ $('zipImg').addEventListener('click', async () => {
   $('msg').textContent = 'กำลังเตรียมรูปความละเอียดเต็ม…';
   const z = new JSZip();
   partners.forEach(p => z.file('framer/cms/partners/' + p.id + '.' + ext(p.logo), p.logo.split(',')[1], { base64: true }));
-  const { doc, getDoc } = await import('./fb.js?v=20261004j');
+  const { doc, getDoc } = await import('./fb.js?v=20261004l');
   for (const p of works) {
     let img = p.thumb; try { const s = await getDoc(doc(db, 'portfolioFull', p.id)); if (s.exists()) img = s.data().img; } catch (_) {}
     /* Framer CMS reads JPG reliably: re-encode */
