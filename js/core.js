@@ -342,5 +342,5 @@ if (typeof document !== 'undefined') (function(){
 
 /* picture / clip in the empty space left and right (customer pages only, wide screens) */
 if (typeof document !== 'undefined' && !/(admin|calc)\.html$/.test(location.pathname) && !location.pathname.endsWith('framer-kit.html')) {
-  import('./sidemedia.js?v=20261004c').then(m => m.mountSides()).catch(() => {});
+  import('./sidemedia.js?v=20261004e').then(m => m.mountSides()).catch(() => {});
 }
