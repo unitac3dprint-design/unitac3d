@@ -1,10 +1,10 @@
 import {
   auth, db, OWNER, authMsg, onAuthStateChanged, signInWithEmailAndPassword, signOut,
   doc, collection, getDoc, getDocs, setDoc, updateDoc, deleteDoc, query, where, writeBatch, serverTimestamp, increment
-} from './fb.js?v=20261004e';
-import { RANKS, rankOf, couponInfo, memberNo, toDate, fDate, fDM, money, intf, daysLeft, warrantyCode, $, h, toast, avatarEl, LOGO_SVG } from './core.js?v=20261004e';
-import { CARRIERS, trackPage, cleanTrack } from './carriers.js?v=20261004e';
-import { scanQR, parseMemberQR } from './scan.js?v=20261004e';
+} from './fb.js?v=20261004f';
+import { RANKS, rankOf, couponInfo, memberNo, toDate, fDate, fDM, money, intf, daysLeft, warrantyCode, $, h, toast, avatarEl, LOGO_SVG } from './core.js?v=20261004f';
+import { CARRIERS, trackPage, cleanTrack } from './carriers.js?v=20261004f';
+import { scanQR, parseMemberQR } from './scan.js?v=20261004f';
 
 document.querySelectorAll('[data-logo]').forEach(e => { e.innerHTML = LOGO_SVG; });
 

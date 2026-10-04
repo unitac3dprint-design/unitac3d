@@ -376,6 +376,8 @@ dialog[open] .dlg{animation:pop .3s var(--ease)}
 .mpick__empty{padding:10px;color:var(--muted);font-size:13px}
 .mglow{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:0;transition:opacity .8s cubic-bezier(.23,1,.32,1);background:radial-gradient(560px circle at var(--gx2,50%) var(--gy2,30%),rgba(255,122,60,.11),rgba(255,122,60,.04) 35%,transparent 62%)}
 .mglow.is-on{opacity:1}
+.mast .wrap{max-width:none;padding-left:40px;padding-right:40px}
+@media (max-width:600px){.mast .wrap{padding-left:16px;padding-right:16px}}
 .footlink{background:none;border:0;color:var(--muted);text-decoration:underline;text-underline-offset:3px;font-size:12.5px;padding:6px 4px;min-height:32px;cursor:pointer}
 .footlink:hover{color:var(--ink)}
 .foot{color:var(--muted);font-size:12.5px;padding:24px;text-align:center;border-top:1px solid var(--rule)}
@@ -1471,6 +1473,6 @@ window.UFB = {
 };
 window.dispatchEvent(new Event('ufb-ready'));
 </script>
-<script type="module">import("./js/sidemedia.js?v=20261004e").then(function(m){m.mountSides();});</script>
+<script type="module">/* side pictures / clips: queue page only */import("./js/sidemedia.js?v=20261004f").then(function(m){m.mountSides();});</script>
 </body>
 </html>

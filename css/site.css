@@ -39,6 +39,8 @@ svg{display:block}
 .top{position:relative;background:var(--surface);border-bottom:1px solid var(--rule);overflow:hidden}
 .top::before{content:'';position:absolute;top:-160px;right:4%;width:560px;height:420px;background:radial-gradient(closest-side,var(--accent-glow),transparent 70%);pointer-events:none}
 .top__row{position:relative;display:flex;align-items:center;gap:20px;padding-top:16px;padding-bottom:20px}
+.top .wrap{max-width:none;padding-left:40px;padding-right:40px}
+@media (max-width:600px){.top .wrap{padding-left:16px;padding-right:16px}}
 .top__brand{display:flex;align-items:center;gap:16px;min-width:0;color:var(--ink);text-decoration:none;flex:none}
 .top__logo{display:block;color:var(--ink);flex:none}
 .top__logo svg{height:60px;width:auto;display:block}
