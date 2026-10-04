@@ -145,28 +145,43 @@ export function rankProgress(m) {
   if (r.partner || !nx) return 1;
   return Math.max(0.02, Math.min(1, (((m && +m.points) || 0) - r.min) / (nx.min - r.min)));
 }
+/* member card = stainless dog tag with rubber silencer, embossed letters, laser-etched QR on the back */
+let scratchReady = false;
+function scratchTexture() {
+  if (scratchReady || typeof document === 'undefined') return; scratchReady = true;
+  try {
+    const c = document.createElement('canvas'); c.width = 720; c.height = 405; const g = c.getContext('2d');
+    for (let i = 0; i < 240; i++) { g.strokeStyle = 'rgba(' + (Math.random() < .5 ? '255,255,255' : '0,0,0') + ',' + (Math.random() * .15).toFixed(3) + ')'; g.lineWidth = Math.random() * .9 + .2;
+      const x = Math.random() * 720, y = Math.random() * 405, an = (Math.random() - .5) * .6 + (Math.random() < .3 ? 1.4 : 0), l = Math.random() * 90 + 10; g.beginPath(); g.moveTo(x, y); g.lineTo(x + Math.cos(an) * l, y + Math.sin(an) * l); g.stroke(); }
+    const im = g.getImageData(0, 0, 720, 405); for (let i = 0; i < im.data.length; i += 4) { const n = (Math.random() - .5) * 26; if (im.data[i + 3] === 0) { im.data[i] = im.data[i + 1] = im.data[i + 2] = 128 + n; im.data[i + 3] = 18; } }
+    g.putImageData(im, 0, 0); document.documentElement.style.setProperty('--dt-scratch', 'url(' + c.toDataURL() + ')');
+  } catch (_) {}
+}
 export function rankCard(m, uid, opts = {}) {
+  scratchTexture();
   const r = rankOf(m);
-  const wrap = h('div', 'rcard rcard--' + r.key);
+  const wrap = h('div', 'rcard dt rcard--' + r.key);
   wrap.style.cssText = `--rb:${r.base};--rc:${r.c};--rh:${r.hatch};--rink:${r.ink};--rsub:${r.sub}`;
-  const no = memberNo(uid), p = rankProgress(m);
-  wrap.innerHTML = `<div class="rcard__tilt"><div class="rcard__in">
-    <div class="rcard__face rcard__front">
-      <span class="rcard__mat" aria-hidden="true"></span><span class="rcard__holo" aria-hidden="true"></span>
-      <div class="rcard__top"><svg viewBox="4.3 21.5 85.5 36.5" aria-hidden="true"><path fill="currentColor" d="${MARK_PATH}"/></svg><span class="rcard__tag">${r.partner ? 'PARTNER' : 'MEMBER'}</span></div>
-      <div class="rcard__rank">${r.key.toUpperCase()}</div>
-      <div class="rcard__bot"><div class="rcard__who"><span class="rcard__nick"></span><span class="rcard__no">${no}</span></div>
-        <div class="rcard__disc"><small>ส่วนลด</small><b>${r.disc}%</b></div></div>
-      <span class="rcard__edge" aria-hidden="true"><i style="width:${(p * 100).toFixed(1)}%"></i></span>
+  const no = memberNo(uid), pts = Math.max(0, Math.floor((m && m.points) || 0));
+  const d = toDate(m && m.createdAt), since = d ? String(d.getMonth() + 1).padStart(2, '0') + '/' + String((d.getFullYear() + 543) % 100).padStart(2, '0') : '';
+  const RANK = r.key.toUpperCase();
+  wrap.innerHTML = `<div class="rcard__tilt"><div class="rcard__in"><div class="rcard__thick" aria-hidden="true"></div>
+    <div class="rcard__face rcard__front"><span class="dt__grain" aria-hidden="true"></span>
+      <div class="dt__c">
+        <div class="dt__r1"><span class="dt__lg" aria-hidden="true">${LOGO_SVG}</span><span class="dt__rk em">${RANK}</span></div>
+        <div class="dt__lines"><span class="dt__nm em rcard__nick"></span><span class="dt__no em rcard__no">${no}</span><span class="dt__sub em">PTS ${pts.toLocaleString('en-US')}</span>${since ? `<span class="dt__sub em dt__since">SINCE ${since}</span>` : ''}</div>
+        <div class="dt__foot"><span class="em dt__brand">${r.partner ? 'UNITAC PARTNER' : 'UNITAC 3D PRINT'}</span><span class="dt__disc em">${r.disc}%</span></div>
+      </div>
       <span class="rcard__glare" aria-hidden="true"></span><span class="rcard__glint" aria-hidden="true"></span>
     </div>
-    <div class="rcard__face rcard__back">
-      <span class="rcard__mat" aria-hidden="true"></span>
-      <div class="rcard__qr">${opts.qr === false ? '' : qrSvg('UNITAC:M:' + uid)}</div>
-      <div class="rcard__btxt"><b>แสดง QR นี้ที่ร้าน</b><span>สแกนแล้วระบบใส่ส่วนลด ${r.disc}% ให้ในใบเสนอราคา</span><i>${no}</i></div>
+    <div class="rcard__face rcard__back"><span class="dt__grain" aria-hidden="true"></span>
+      <div class="dt__c dt__cb"><div class="rcard__qr">${opts.qr === false ? '' : qrSvg('UNITAC:M:' + uid)}</div>
+        <div class="dt__bk"><span class="dt__big em">${no}</span><span class="em">MEMBER · ${RANK}</span><span class="em">SHOW THIS QR</span><span class="em">AT UNITAC</span>
+        <span class="dt__mk" aria-hidden="true"><svg viewBox="4.3 21.5 85.5 36.5"><path fill="currentColor" d="${MARK_PATH}"/></svg></span></div></div>
       <span class="rcard__glare" aria-hidden="true"></span>
     </div></div></div>`;
   wrap.querySelector('.rcard__nick').textContent = (m && m.nickname) || 'สมาชิก';
+  wrap.setAttribute('aria-label', 'บัตรสมาชิก ' + r.key + ' ส่วนลด ' + r.disc + '% ' + no);
   return wrap;
 }
 

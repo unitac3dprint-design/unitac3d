@@ -291,3 +291,52 @@ html.js .rv.in{opacity:1;transform:none;transition:opacity .5s var(--ease) var(-
 /* mouse glow: fixed, behind all content */
 .mglow{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:0;transition:opacity .8s cubic-bezier(.23,1,.32,1);background:radial-gradient(560px circle at var(--mx,50%) var(--my,30%),rgba(255,122,60,.11),rgba(255,122,60,.04) 35%,transparent 62%)}
 .mglow.is-on{opacity:1}
+
+/* ===================== member card: dog tag ===================== */
+.rcard.dt{aspect-ratio:1.78/1;max-width:380px;filter:drop-shadow(0 4.5cqw 4.5cqw rgba(0,0,0,.6))}
+.rcard-btn:has(.rcard.dt){max-width:380px;border-radius:12%/22%}
+.rcard.dt .rcard__thick,.rcard.dt .rcard__face{position:absolute;inset:0;border-radius:17% / 30%;border:0;
+  -webkit-mask:radial-gradient(circle at 8.5% 50%,transparent 3.6cqw,#000 3.8cqw);mask:radial-gradient(circle at 8.5% 50%,transparent 3.6cqw,#000 3.8cqw)}
+.rcard.dt .rcard__thick{transform:translateZ(-.9cqw);background:#0c0c0c}
+.rcard.dt .rcard__face{background:var(--metal);color:var(--t2);padding:0;display:block;
+  box-shadow:inset 0 0 0 3.4cqw #121212,inset 0 0 0 4cqw rgba(0,0,0,.45),inset 4cqw 4cqw 3cqw rgba(255,255,255,.1)}
+.rcard.dt .rcard__back{transform:translateZ(-1.8cqw) rotateY(180deg);-webkit-mask:radial-gradient(circle at 91.5% 50%,transparent 3.6cqw,#000 3.8cqw);mask:radial-gradient(circle at 91.5% 50%,transparent 3.6cqw,#000 3.8cqw)}
+.rcard.dt .rcard__face::before{content:'';position:absolute;inset:0;background-image:repeating-linear-gradient(90deg,rgba(255,255,255,.05) 0 1px,rgba(0,0,0,.05) 1px 2px,rgba(255,255,255,.02) 2px 4px);mix-blend-mode:overlay;pointer-events:none}
+.rcard.dt .rcard__face::after{content:'';position:absolute;inset:-20%;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.22) 46%,transparent 62%);transform:translateX(calc((var(--gx,50%) - 50%) * .6));mix-blend-mode:soft-light;pointer-events:none}
+.rcard.dt .dt__grain{position:absolute;inset:0;background-image:var(--dt-scratch,none);background-size:100% 100%;mix-blend-mode:overlay;opacity:.9;pointer-events:none}
+.rcard.dt .rcard__glare{border-radius:inherit;background:radial-gradient(60% 90% at var(--gx) var(--gy),rgba(255,255,255,.5),transparent 60%);mix-blend-mode:soft-light;opacity:.8}
+/* embossed letters */
+.rcard.dt .em{background:linear-gradient(180deg,var(--t1) 8%,var(--t2) 92%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;text-shadow:none;
+  filter:drop-shadow(0 -.22cqw 0 var(--hi)) drop-shadow(0 .3cqw .15cqw var(--lo)) drop-shadow(0 .7cqw .8cqw rgba(0,0,0,.22))}
+.rcard.dt .dt__c{position:absolute;inset:14% 9% 14% 19%;z-index:1;display:flex;flex-direction:column;justify-content:space-between;font-family:var(--font-num);font-weight:600;letter-spacing:.12em;text-transform:uppercase;font-variant-numeric:tabular-nums}
+.rcard.dt .dt__r1{display:flex;align-items:center;justify-content:space-between;gap:6%}
+.rcard.dt .dt__lg{width:21%;color:var(--t2);filter:drop-shadow(0 -.22cqw 0 var(--hi)) drop-shadow(0 .3cqw .15cqw var(--lo)) drop-shadow(0 .7cqw .8cqw rgba(0,0,0,.22))}
+.rcard.dt .dt__lg svg{display:block;width:100%;height:auto}
+.rcard.dt .dt__rk{font-size:5.8cqw;line-height:1;letter-spacing:.22em;font-weight:700}
+.rcard.dt .dt__lines{display:flex;flex-direction:column;gap:1.2cqw;font-size:3.6cqw;line-height:1.15}
+.rcard.dt .dt__nm{font-family:var(--font-head);font-size:5cqw;font-weight:600;letter-spacing:.02em;text-transform:none;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.rcard.dt .dt__no{font-size:4.4cqw;font-weight:700;letter-spacing:.16em;color:transparent}
+.rcard.dt .dt__sub{font-size:3.1cqw;font-weight:600;letter-spacing:.14em}
+.rcard.dt .dt__foot{display:flex;justify-content:space-between;align-items:flex-end;font-size:2.6cqw;letter-spacing:.2em}
+.rcard.dt .dt__disc{font-size:8.5cqw;line-height:.9;font-weight:700;letter-spacing:.02em}
+.rcard.dt .dt__cb{inset:12% 20% 12% 9%;flex-direction:row;align-items:center;gap:7%;justify-content:flex-start}
+.rcard.dt .rcard__qr{width:31cqw;height:31cqw;flex:none;padding:1.2cqw;border-radius:1.2cqw;background:rgba(255,255,255,.28);box-shadow:inset 0 0 2cqw rgba(255,255,255,.25)}
+.rcard.dt .rcard__qr svg{display:block;width:100%;height:100%}
+.rcard.dt .rcard__qr svg path{fill:var(--etch,rgba(18,18,18,.88))}
+.rcard.dt .dt__bk{display:flex;flex-direction:column;gap:1.4cqw;font-size:3.2cqw;line-height:1.25;min-width:0}
+.rcard.dt .dt__big{font-size:4.6cqw;font-weight:700;letter-spacing:.14em}
+.rcard.dt .dt__mk{width:34%;color:var(--t2);filter:drop-shadow(0 -.22cqw 0 var(--hi)) drop-shadow(0 .3cqw .15cqw var(--lo))}
+.rcard.dt .dt__mk svg{display:block;width:100%;height:auto}
+/* metals */
+.rcard.dt.rcard--Bronze{--metal:linear-gradient(140deg,#8e5631 0%,#c88a57 22%,#a76a3f 40%,#d79c68 58%,#8a522e 78%,#b97b4b 100%);--t1:#ffdcb8;--t2:#8b512b;--hi:rgba(255,232,205,.85);--lo:rgba(45,18,2,.75)}
+.rcard.dt.rcard--Silver{--metal:linear-gradient(140deg,#8f969c 0%,#d9dde0 22%,#a8aeb3 40%,#eceef0 58%,#899096 78%,#c4c9cd 100%);--t1:#fafbfc;--t2:#646b72;--hi:rgba(255,255,255,.95);--lo:rgba(20,25,30,.78)}
+.rcard.dt.rcard--Gold{--metal:linear-gradient(140deg,#94711f 0%,#e2c262 22%,#b8952f 40%,#f2d77d 58%,#8c6a1a 78%,#d4b04f 100%);--t1:#fff4c9;--t2:#94711b;--hi:rgba(255,250,220,.95);--lo:rgba(60,38,0,.7)}
+.rcard.dt.rcard--Platinum{--metal:linear-gradient(140deg,#6d7881 0%,#bcc6cd 22%,#8a959e 40%,#d3dbe1 58%,#66717a 78%,#a9b4bc 100%);--t1:#f1f5f8;--t2:#56626c;--hi:rgba(245,250,255,.9);--lo:rgba(10,18,26,.75)}
+.rcard.dt.rcard--Diamond{--metal:linear-gradient(140deg,#6f8fab 0%,#cfe7fb 20%,#a9bde8 38%,#ecdcff 55%,#b0e0ec 72%,#7a9ab8 100%);--t1:#ffffff;--t2:#5f80a3;--hi:rgba(255,255,255,.95);--lo:rgba(10,28,55,.6)}
+.rcard.dt.rcard--Rhodium{--metal:linear-gradient(140deg,#2c2f33 0%,#a9aeb4 20%,#3a3d42 40%,#cfd3d7 58%,#2a2d31 78%,#8d9298 100%);--t1:#f7f8fa;--t2:#4f545b;--hi:rgba(255,255,255,.9);--lo:rgba(0,0,0,.75)}
+.rcard.dt.rcard--Rhodium .rcard__face{box-shadow:inset 0 0 0 3.4cqw #121212,inset 0 0 0 4cqw rgba(0,0,0,.45),inset 4cqw 4cqw 3cqw rgba(255,255,255,.1)}
+@media (prefers-reduced-motion: reduce){.rcard.dt .rcard__face::after{transform:none}}
+.rcard.dt .rcard__face > .dt__c,.rcard.dt .rcard__face > .dt__grain{position:absolute!important}
+.rcard.dt .dt__grain{inset:0;z-index:0}
+.rcard.dt .dt__bk .em{white-space:nowrap}
+.rcard.dt .dt__bk{font-size:2.9cqw}
