@@ -1,7 +1,7 @@
 /* UNITAC — picture or clip in the empty space left and right of the page (wide screens only).
    site/sides = { left: { type, mime, chunks, ver, blend, motion }, right: {…} }, data in sideChunks/{side}-{ver}-{i}.
    The file is kept in the browser cache after the first visit, so later pages do not download it again. */
-import { db, doc, getDoc } from './fb.js?v=20261004b';
+import { db, doc, getDoc } from './fb.js?v=20261004c';
 
 const CONTENT = 1180, MIN_SIDE = 200, CACHE = 'unitac-sides-v1';
 let started = false;
@@ -26,6 +26,7 @@ function css() {
   document.head.appendChild(s);
 }
 async function blobFor(side, m) {
+  if (m.src) return null;   /* file lives in the GitHub repo: the browser streams and caches it itself */
   const key = 'https://unitac.local/side/' + side + '/' + m.ver;
   let cache = null;
   try { cache = await caches.open(CACHE); const hit = await cache.match(key); if (hit) return await hit.blob(); } catch (_) { cache = null; }
@@ -51,14 +52,14 @@ export async function mountSides(opts = {}) {
   if (!cfg) return;
   css();
   for (const side of ['left', 'right']) {
-    const m = cfg[side]; if (!m || !m.chunks) continue;
+    const m = cfg[side]; if (!m || !(m.chunks || m.src)) continue;
     try {
-      const blob = await blobFor(side, m), url = URL.createObjectURL(blob);
+      const blob = await blobFor(side, m), url = blob ? URL.createObjectURL(blob) : new URL(m.src, location.href).href + '?v=' + m.ver;
       const box = document.createElement('div'); box.className = 'uside ' + (side === 'left' ? 'l' : 'r') + (m.blend ? ' blend' : '') + (m.motion ? ' motion' : '') + (m.fade !== false ? ' fade' : '');
       box.setAttribute('aria-hidden', 'true');
       const cam = document.createElement('div'); cam.className = 'uside__cam';
       let el;
-      if (m.type === 'video') { el = document.createElement('video'); el.muted = true; el.loop = true; el.autoplay = true; el.playsInline = true; el.setAttribute('playsinline', ''); el.src = url; el.play().catch(() => {}); }
+      if (m.type === 'video') { el = document.createElement('video'); el.preload = 'auto'; el.muted = true; el.loop = true; el.autoplay = true; el.playsInline = true; el.setAttribute('playsinline', ''); el.src = url; el.play().catch(() => {}); }
       else { el = document.createElement('img'); el.alt = ''; el.decoding = 'async'; el.src = url; }
       el.className = 'uside__m'; cam.appendChild(el); box.appendChild(cam); document.body.prepend(box);
       place(box); addEventListener('resize', () => place(box), { passive: true });
