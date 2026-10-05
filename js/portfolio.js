@@ -1,7 +1,7 @@
-import { db, doc, getDoc, collection, getDocs, query, where } from './fb.js?v=20261004l';
-import { $, h, reveal, LOGO_SVG } from './core.js?v=20261004l';
-import { loadHero } from './heromedia.js?v=20261004l';
-import { PFCATS } from './pfcats.js?v=20261004l';
+import { db, doc, getDoc, collection, getDocs, query, where } from './fb.js?v=20261004m';
+import { $, h, reveal, LOGO_SVG } from './core.js?v=20261004m';
+import { loadHero } from './heromedia.js?v=20261004m';
+import { PFCATS } from './pfcats.js?v=20261004m';
 document.querySelectorAll('[data-logo]').forEach(e => { e.innerHTML = LOGO_SVG; });
 const nv = document.querySelector('[data-nav="works"]'); if (nv) nv.setAttribute('aria-current', 'page');
 reveal();

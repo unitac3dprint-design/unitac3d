@@ -1,9 +1,9 @@
 import {
   auth, db, OWNER, authMsg, onAuthStateChanged, signInWithEmailAndPassword,
   doc, collection, getDoc, getDocs, setDoc, writeBatch, serverTimestamp, increment
-} from './fb.js?v=20261004l';
-import { rankOf, couponInfo, memberNo, pointsFor, warrantyCode, qrSvg, fDate, money, intf, $, h, toast, WARRANTY_DEFAULT, sellPerGramOf } from './core.js?v=20261004l';
-import { scanQR, parseMemberQR } from './scan.js?v=20261004l';
+} from './fb.js?v=20261004m';
+import { rankOf, couponInfo, memberNo, pointsFor, warrantyCode, qrSvg, fDate, money, intf, $, h, toast, WARRANTY_DEFAULT, sellPerGramOf } from './core.js?v=20261004m';
+import { scanQR, parseMemberQR } from './scan.js?v=20261004m';
 
 const U = window.UMEM;
 let members = [], sel = null, isOwner = false, lastSaved = null;
@@ -249,7 +249,6 @@ $('orderForm').addEventListener('submit', async (e) => {
     if (sel) { sel.points = (sel.points || 0) + pts; if (r.couponDisc > 0) { sel.welcomeUsed = true; $('msCoupon').disabled = true; $('msCouponNote').textContent = 'ใช้กับออเดอร์นี้แล้ว'; } }
     lastSaved = { total: r.grandTotal };
     if (code) {
-      $('pwQr').innerHTML = qrSvg(new URL('warranty.html?c=' + code, location.href).href);
       $('pwDays').textContent = days; $('pwUntil').textContent = fDate.format(exp); $('pwCode').textContent = code;
       $('pwUrl').textContent = new URL('warranty.html', location.href).host + new URL('warranty.html', location.href).pathname;
       $('paperWar').hidden = false;
@@ -260,3 +259,51 @@ $('orderForm').addEventListener('submit', async (e) => {
 });
 
 document.querySelectorAll('dialog.cd [data-close]').forEach(b => b.addEventListener('click', () => b.closest('dialog').close()));
+
+
+/* ---------- PromptPay on the quotation: the shop's receive-money QR + the grand total (EMVCo / Thai QR) ---------- */
+const PAY_DEFAULT = { base: '00020101021129390016A000000677010111031500499920859921653037645802TH6304EF0D', name: 'นาย ณัฐเดชา สืบสาย', on: true };
+let pay = { ...PAY_DEFAULT };
+try { const s = JSON.parse(localStorage.getItem('unitac-pay') || 'null'); if (s && s.base) pay = { ...pay, ...s }; } catch (_) {}
+function crc16(s) { let c = 0xFFFF; for (let i = 0; i < s.length; i++) { c ^= s.charCodeAt(i) << 8; for (let k = 0; k < 8; k++) c = (c & 0x8000) ? ((c << 1) ^ 0x1021) & 0xFFFF : (c << 1) & 0xFFFF; } return c.toString(16).toUpperCase().padStart(4, '0'); }
+function tlv(s) { const o = []; let i = 0; while (i + 4 <= s.length) { const t = s.substr(i, 2), l = +s.substr(i + 2, 2); if (isNaN(l)) break; o.push([t, s.substr(i + 4, l)]); i += 4 + l; } return o; }
+export function promptPay(base, amt) {
+  const f = tlv(base).filter(([t]) => t !== '54' && t !== '63').map(([t, v]) => t === '01' ? ['01', amt > 0 ? '12' : '11'] : [t, v]);
+  if (amt > 0) f.push(['54', amt.toFixed(2)]);
+  f.sort((a, b) => +a[0] - +b[0]);
+  const s = f.map(([t, v]) => t + String(v.length).padStart(2, '0') + v).join('') + '6304';
+  return s + crc16(s);
+}
+function validBase(s) { if (!/^000201/.test(s) || s.length < 30) return false; return crc16(s.slice(0, -4)) === s.slice(-4).toUpperCase() && tlv(s).some(([t]) => t === '29' || t === '30'); }
+function savePay() { try { localStorage.setItem('unitac-pay', JSON.stringify(pay)); } catch (_) {} if (isOwner) setDoc(doc(db, 'admin', 'pay'), pay).catch(() => {}); }
+function payNote() { const acc = (tlv(pay.base).find(([t]) => t === '29' || t === '30') || [, ''])[1]; const id = (tlv(acc).find(([t]) => t !== '00') || [, ''])[1]; $('payIdNote').textContent = id ? 'ใช้ QR รับเงินเลขอ้างอิง ' + id.replace(/^(\d{3})\d+(\d{4})$/, '$1•••••$2') : 'ยังไม่ได้ตั้ง QR รับเงิน'; }
+let lastAmt = -1;
+function renderPay() {
+  const amt = Math.round((parseFloat(String($('grandTotal').textContent).replace(/,/g, '')) || 0) * 100) / 100;
+  const show = pay.on && amt > 0 && validBase(pay.base);
+  $('paperPay').hidden = !show; if (!show) { lastAmt = -1; return; }
+  $('payName').textContent = pay.name ? 'ชื่อบัญชี: ' + pay.name : '';
+  if (amt === lastAmt) return; lastAmt = amt;
+  $('payAmt').textContent = amt.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  $('payQr').innerHTML = qrSvg(promptPay(pay.base, amt));
+}
+new MutationObserver(renderPay).observe($('grandTotal'), { childList: true, characterData: true, subtree: true });
+$('payOn').checked = pay.on; $('payNameIn').value = pay.name || ''; payNote(); renderPay();
+$('payOn').addEventListener('change', () => { pay.on = $('payOn').checked; savePay(); lastAmt = -1; renderPay(); });
+$('payNameIn').addEventListener('change', () => { pay.name = $('payNameIn').value.trim().slice(0, 60); savePay(); lastAmt = -1; renderPay(); });
+$('payQrFile').addEventListener('change', async () => {
+  const f = $('payQrFile').files && $('payQrFile').files[0]; $('payQrFile').value = ''; if (!f) return;
+  try {
+    if (!window.jsQR) await new Promise((res, rej) => { const s = document.createElement('script'); s.src = new URL('../vendor/jsQR.js', import.meta.url).href; s.onload = res; s.onerror = rej; document.head.appendChild(s); });
+    const im = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = URL.createObjectURL(f); });
+    const c = document.createElement('canvas'), sc = Math.min(1, 1400 / Math.max(im.naturalWidth, im.naturalHeight)); c.width = im.naturalWidth * sc; c.height = im.naturalHeight * sc;
+    const g = c.getContext('2d'); g.drawImage(im, 0, 0, c.width, c.height);
+    const r = window.jsQR(g.getImageData(0, 0, c.width, c.height).data, c.width, c.height);
+    if (!r || !validBase(r.data)) return toast('อ่าน QR พร้อมเพย์จากรูปนี้ไม่ได้ ลองแคปเฉพาะส่วน QR ให้ชัดขึ้น', 5000);
+    pay.base = r.data; savePay(); payNote(); lastAmt = -1; renderPay(); toast('ตั้ง QR รับเงินใหม่แล้ว');
+  } catch (_) { toast('อ่านรูปนี้ไม่ได้'); }
+});
+onAuthStateChanged(auth, async (u) => {
+  if (!u || u.uid !== OWNER) return;
+  try { const s = await getDoc(doc(db, 'admin', 'pay')); if (s.exists() && s.data().base) { pay = { ...pay, ...s.data() }; try { localStorage.setItem('unitac-pay', JSON.stringify(pay)); } catch (_) {} $('payOn').checked = pay.on; $('payNameIn').value = pay.name || ''; payNote(); lastAmt = -1; renderPay(); } } catch (_) {}
+});
