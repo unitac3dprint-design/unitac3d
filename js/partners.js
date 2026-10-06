@@ -1,6 +1,6 @@
-import { db, collection, getDocs, query, where } from './fb.js?v=20261004q';
-import { $, h, reveal, LOGO_SVG, MARK_PATH } from './core.js?v=20261004q';
-import { PCATS } from './pcats.js?v=20261004q';
+import { db, collection, getDocs, query, where } from './fb.js?v=20261004r';
+import { $, h, reveal, LOGO_SVG, MARK_PATH } from './core.js?v=20261004r';
+import { PCATS } from './pcats.js?v=20261004r';
 document.querySelectorAll('[data-logo]').forEach(e => { e.innerHTML = LOGO_SVG; });
 document.querySelectorAll('[data-mark]').forEach(e => { e.innerHTML = '<svg viewBox="4.3 21.5 85.5 36.5"><path fill="currentColor" d="' + MARK_PATH + '"/></svg>'; });
 document.querySelector('[data-nav="partners"]').setAttribute('aria-current', 'page');

@@ -1,5 +1,5 @@
-import { auth, db, OWNER, authMsg, onAuthStateChanged, doc, collection, getDoc, getDocs, setDoc, writeBatch, serverTimestamp } from './fb.js?v=20261004q';
-import { $, h, toast, toDate, daysLeft, intf } from './core.js?v=20261004q';
+import { auth, db, OWNER, authMsg, onAuthStateChanged, doc, collection, getDoc, getDocs, setDoc, writeBatch, serverTimestamp } from './fb.js?v=20261004r';
+import { $, h, toast, toDate, daysLeft, intf } from './core.js?v=20261004r';
 
 /* ---------- what needs attention: strip + tab badges ---------- */
 const COLS = ['members', 'orders', 'warranties', 'partners', 'materials', 'portfolio', 'portfolioFull', 'admin'];
@@ -22,9 +22,9 @@ export async function refresh() {
   const fresh = members.filter(m => (toDate(m.createdAt) || 0) > seen).length;
   const del = members.filter(m => m.deleteRequested).length;
   const soon = war.filter(w => { const l = daysLeft(toDate(w.expiresAt)); return l > 0 && l <= 7; }).length;
-  const low = mats.filter(m => m.active !== false && (m.spools != null ? +m.spools || 0 : (+m.sealed || 0) + (+m.open || 0)) <= (+m.low || 0) && (+m.low || 0) > 0).length;
+  const low = 0;   /* low-stock alerts removed: the shop manages spool counts by hand */
   const last = meta && toDate(meta.lastBackupAt), age = last ? Math.floor((Date.now() - last) / 864e5) : null;
-  badge('tCust', fresh + del); badge('tWar', soon); badge('tStk', low);
+  badge('tCust', fresh + del); badge('tWar', soon); badge('tStk', 0);
   const T = $('todo'); T.textContent = '';
   const add = (n, text, tab, color) => { if (!n && n !== -1) return; const b = h('button'); b.type = 'button'; const i = h('i'); if (color) i.style.setProperty('--c', color); b.append(i, n > 0 ? h('b', null, intf(n)) : '', ' ' + text); if (tab) b.addEventListener('click', () => $(tab).click()); else b.addEventListener('click', backup); T.appendChild(b); };
   add(fresh, 'สมาชิกใหม่ตั้งแต่เข้ามาครั้งก่อน', 'tCust', 'var(--ok)');

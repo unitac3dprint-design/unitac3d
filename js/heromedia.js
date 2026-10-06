@@ -1,4 +1,4 @@
-import { db, doc, getDoc } from './fb.js?v=20261004q';
+import { db, doc, getDoc } from './fb.js?v=20261004r';
 /* site/hero: { type: 'image', data } or { type: 'video', mime, chunks } with heroChunks/0..n-1 = { d: base64 } */
 export async function loadHero() {
   const s = await getDoc(doc(db, 'site', 'hero'));

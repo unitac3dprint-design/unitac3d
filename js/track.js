@@ -1,7 +1,7 @@
-import { db, doc, onSnapshot } from './fb.js?v=20261004q';
-import { $, h, reveal, toast, LOGO_SVG } from './core.js?v=20261004q';
-import { CARRIERS, cleanTrack } from './carriers.js?v=20261004q';
-import { latest, fmtWhen, titleOf, detailOf, toneOf } from './shipstatus.js?v=20261004q';
+import { db, doc, onSnapshot } from './fb.js?v=20261004r';
+import { $, h, reveal, toast, LOGO_SVG } from './core.js?v=20261004r';
+import { CARRIERS, cleanTrack } from './carriers.js?v=20261004r';
+import { latest, fmtWhen, titleOf, detailOf, toneOf } from './shipstatus.js?v=20261004r';
 document.querySelectorAll('[data-logo]').forEach(e => { e.innerHTML = LOGO_SVG; });
 reveal();
 const I = {

@@ -1,5 +1,5 @@
-import { auth, db, OWNER, onAuthStateChanged, doc, collection, getDoc, getDocs, setDoc, onSnapshot } from './fb.js?v=20261004q';
-import { $, h, toast } from './core.js?v=20261004q';
+import { auth, db, OWNER, onAuthStateChanged, doc, collection, getDoc, getDocs, setDoc, onSnapshot } from './fb.js?v=20261004r';
+import { $, h, toast } from './core.js?v=20261004r';
 
 /* "เตรียมงาน": what the owner has to get ready today, tomorrow and the day after, from the live queue */
 let Q = null, names = {}, done = {}, mats = [], started = false;
@@ -70,8 +70,6 @@ function render() {
   const S = $('prepSum'); S.textContent = '';
   const st = (t, v, s, main) => { const d = h('div', 'mstat' + (main ? ' mstat--main' : '')); d.append(h('span', null, t), h('b', null, v)); if (s) d.appendChild(h('small', null, s)); return d; };
   sums.forEach(([t, n, left], i) => S.appendChild(st(t, n + ' งาน', n ? (left ? 'เหลือต้องเตรียม ' + left : 'เตรียมครบแล้ว ✓') : 'ว่าง', i === 0)));
-  const low = mats.filter(m => m.active !== false && (+m.low || 0) > 0 && (m.spools != null ? +m.spools || 0 : (+m.sealed || 0) + (+m.open || 0)) <= (+m.low || 0));
-  if (low.length) S.appendChild(st('เส้นใกล้หมด', low.length + ' รายการ', low.slice(0, 2).map(m => [m.brand, m.type, m.color].filter(Boolean).join(' ')).join(', ')));
   if (late.length) S.appendChild(st('เลยกำหนด', late.length + ' งาน', 'ดูด้านบน'));
   const badge = sums[0][2] + late.length, tab = $('tPrep');
   let b = tab.querySelector('.tbadge'); if (!badge) { if (b) b.remove(); } else { if (!b) { b = h('span', 'tbadge'); tab.appendChild(b); } b.textContent = String(badge); }
