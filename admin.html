@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/site.css?v=20261004o">
+<link rel="stylesheet" href="css/site.css?v=20261004q">
 <title>หลังร้าน · UNITAC</title>
 <meta name="description" content="UNITAC 3D PRINT ยินดีให้บริการ">
 <meta property="og:type" content="website">
@@ -279,7 +279,7 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
 .adm__tabs button:hover{background:var(--sunk);color:var(--ink)}
 .adm__tabs button[aria-selected="true"]{background:var(--accent-soft);color:var(--ink)}
 .adm__tabs button[aria-selected="true"] svg{color:var(--accent)}
-.adm__tabs .tbadge{margin-left:auto}
+.adm__tabs .tbadge{margin-left:auto;flex:none;width:auto}
 .adm__main{min-width:0;display:flex;flex-direction:column;gap:16px}
 .adm__main > [data-panel]{margin:0}
 @media (max-width:980px){
@@ -334,6 +334,31 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
 .trk__in{display:flex;gap:8px}
 .trk__in input{flex:1;min-width:0}
 .trk__in .btn{flex:none;gap:6px}
+
+/* ===== prep: next 3 days ===== */
+.prep__head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.prep__t{font-size:20px}
+.prep__sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.prep__days{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:start}
+@media (max-width:1100px){.prep__days{grid-template-columns:minmax(0,1fr)}}
+.pday{display:flex;flex-direction:column;gap:10px;padding:16px;border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--rule)}
+.pday.is-today{border-color:rgba(255,122,60,.5);background:linear-gradient(180deg,rgba(255,122,60,.07),var(--surface) 40%)}
+.pday__h{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.pday__h b{font-family:var(--font-head);font-size:18px}
+.pday__h span{font-family:var(--font-num);font-size:12px;color:var(--muted)}
+.pday__closed{padding:10px 12px;border-radius:10px;background:var(--sunk);color:var(--muted);font-size:13px}
+.pgrp{display:flex;flex-direction:column;gap:6px}
+.pgrp > span{font-size:11.5px;letter-spacing:.06em;color:var(--muted);font-weight:600}
+.ptask{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:flex-start;padding:10px 12px;border-radius:12px;background:var(--sunk);border-left:3px solid var(--c,var(--rule-strong));cursor:pointer}
+.ptask input{width:20px;height:20px;margin-top:2px;accent-color:var(--accent);cursor:pointer}
+.ptask b{display:block;font-weight:600;font-size:14.5px;line-height:1.4;overflow-wrap:anywhere}
+.ptask small{display:block;font-size:12px;color:var(--muted);line-height:1.5}
+.ptask em{font-style:normal;display:inline-block;margin-top:4px;font-size:12px;color:var(--ink-2);background:rgba(255,255,255,.04);padding:2px 8px;border-radius:999px}
+.ptask.is-done{opacity:.5}
+.ptask.is-done b{text-decoration:line-through}
+.pday__empty{font-size:13px;color:var(--muted);padding:8px 2px}
+.plate{display:flex;flex-direction:column;gap:6px;padding:14px 16px;border-radius:var(--r-lg);border:1px solid rgba(234,123,114,.45);background:rgba(234,123,114,.06)}
+.plate h3{font-size:15px;color:var(--stop)}
 </style>
 </head>
 <body>
@@ -383,6 +408,7 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
     </div>
     <div class="adm__layout">
     <nav class="adm__side" aria-label="เมนูหลังร้าน"><div class="adm__tabs" role="tablist" aria-label="ส่วนของหลังร้าน">
+      <button type="button" role="tab" aria-selected="false" data-tab="prep" id="tPrep"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/><path d="m9 15 2 2 4-4"/></svg><span>เตรียมงาน</span></button>
       <button type="button" role="tab" aria-selected="true" data-tab="cust" id="tCust"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 19v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1"/><circle cx="9.5" cy="7.5" r="3.5"/><path d="M21 19v-1a4 4 0 0 0-3-3.87M16 4.13a3.5 3.5 0 0 1 0 6.75"/></svg><span>ลูกค้า</span></button>
       <button type="button" role="tab" aria-selected="false" data-tab="ord" id="tOrd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg><span>ออเดอร์</span></button>
       <button type="button" role="tab" aria-selected="false" data-tab="war" id="tWar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg><span>ประกัน</span></button>
@@ -394,13 +420,23 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
     <div class="adm__main">
     <div class="todo" id="todo" hidden></div>
 
+    <div data-panel="prep" class="sec" hidden>
+      <div class="prep__head">
+        <div><h2 class="prep__t">งานที่ต้องเตรียมใน 3 วันข้างหน้า</h2><p class="muted small" id="prepSub">ดึงจากตารางคิว อัปเดตทันทีเมื่อแก้คิว</p></div>
+        <a class="btn btn--ghost btn--sm" href="./">เปิดตารางคิว ↗</a>
+      </div>
+      <div class="prep__sum" id="prepSum"></div>
+      <div id="prepLate"></div>
+      <div class="prep__days" id="prepDays"><p class="muted">กำลังโหลด…</p></div>
+    </div>
+
     <div data-panel="cust" class="sec">
       <div class="adm__search">
         <div class="field"><label for="cSearch" class="sr">ค้นหาลูกค้า</label><input type="search" id="cSearch" placeholder="ค้นหา ชื่อเล่น ชื่อ เบอร์ อีเมล หรือเลขสมาชิก" autocomplete="off"></div>
         <button type="button" class="btn btn--ghost" id="cScan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M7 12h10"/></svg>สแกน QR</button>
       </div>
       <section class="cnew" id="cNew" hidden>
-        <div class="cnew__h"><h2><i aria-hidden="true"></i>สมัครใหม่ใน 14 วัน</h2><span class="muted small" id="cNewN"></span></div>
+        <div class="cnew__h"><h2><i aria-hidden="true"></i>สมัครใหม่ใน 3 วัน</h2><span class="muted small" id="cNewN"></span></div>
         <div class="cnew__row" id="cNewRow"></div>
       </section>
       <div class="cfil" id="cFil" role="group" aria-label="กรองลูกค้า"></div>
@@ -711,13 +747,14 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
 </div></dialog>
 
 <footer class="foot">UNITAC · <a href="./">ตารางคิว</a> · <a href="warranty.html">เช็กประกัน</a> · <a href="portfolio.html">ผลงาน</a> · <a href="partners.html">พาร์ทเนอร์</a> · <a href="privacy.html">นโยบายความเป็นส่วนตัว</a></footer>
-<script type="module" src="js/admin.js?v=20261004o"></script>
-<script type="module" src="js/admin-partners.js?v=20261004o"></script>
-<script type="module" src="js/admin-stock.js?v=20261004o"></script>
-<script type="module" src="js/admin-portfolio.js?v=20261004o"></script>
-<script type="module" src="js/admin-tools.js?v=20261004o"></script>
-<script type="module" src="js/admin-ship.js?v=20261004o"></script>
-<script type="module" src="js/admin-hero.js?v=20261004o"></script>
-<script type="module" src="js/admin-sides.js?v=20261004o"></script>
+<script type="module" src="js/admin.js?v=20261004q"></script>
+<script type="module" src="js/admin-partners.js?v=20261004q"></script>
+<script type="module" src="js/admin-stock.js?v=20261004q"></script>
+<script type="module" src="js/admin-portfolio.js?v=20261004q"></script>
+<script type="module" src="js/admin-tools.js?v=20261004q"></script>
+<script type="module" src="js/admin-ship.js?v=20261004q"></script>
+<script type="module" src="js/admin-hero.js?v=20261004q"></script>
+<script type="module" src="js/admin-sides.js?v=20261004q"></script>
+<script type="module" src="js/admin-prep.js?v=20261004q"></script>
 </body>
 </html>

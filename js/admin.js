@@ -1,10 +1,10 @@
 import {
   auth, db, OWNER, authMsg, onAuthStateChanged, signInWithEmailAndPassword, signOut,
   doc, collection, getDoc, getDocs, setDoc, updateDoc, deleteDoc, query, where, writeBatch, serverTimestamp, increment
-} from './fb.js?v=20261004o';
-import { RANKS, rankOf, couponInfo, memberNo, toDate, fDate, fDM, money, intf, daysLeft, warrantyCode, $, h, toast, avatarEl, LOGO_SVG } from './core.js?v=20261004o';
-import { CARRIERS, trackPage, cleanTrack } from './carriers.js?v=20261004o';
-import { scanQR, parseMemberQR, scanTracking, carrierOf } from './scan.js?v=20261004o';
+} from './fb.js?v=20261004q';
+import { RANKS, rankOf, couponInfo, memberNo, toDate, fDate, fDM, money, intf, daysLeft, warrantyCode, $, h, toast, avatarEl, LOGO_SVG } from './core.js?v=20261004q';
+import { CARRIERS, trackPage, cleanTrack } from './carriers.js?v=20261004q';
+import { scanQR, parseMemberQR, scanTracking, carrierOf } from './scan.js?v=20261004q';
 
 document.querySelectorAll('[data-logo]').forEach(e => { e.innerHTML = LOGO_SVG; });
 
@@ -52,7 +52,7 @@ function matches(m, q) {
   if (!q) return true; q = q.toLowerCase().replace(/\s+/g, '');
   return [m.nickname, m.fullName, m.email, m.phone, m.no].some(v => (v || '').toLowerCase().replace(/[\s-]/g, '').includes(q.replace(/-/g, '')));
 }
-const NEW_DAYS = 14;
+const NEW_DAYS = 3;
 let cFilter = 'all';
 const isNew = (m) => { const d = toDate(m.createdAt); return d && (Date.now() - d) < NEW_DAYS * 864e5; };
 const ago = (d) => { const n = Math.floor((Date.now() - d) / 864e5); return n <= 0 ? 'วันนี้' : n === 1 ? 'เมื่อวาน' : n + ' วันก่อน'; };

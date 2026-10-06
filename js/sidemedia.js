@@ -1,7 +1,7 @@
 /* UNITAC — picture or clip in the empty space left and right of the page (wide screens only).
    site/sides = { left: { type, mime, chunks, ver, blend, motion }, right: {…} }, data in sideChunks/{side}-{ver}-{i}.
    The file is kept in the browser cache after the first visit, so later pages do not download it again. */
-import { db, doc, getDoc } from './fb.js?v=20261004o';
+import { db, doc, getDoc } from './fb.js?v=20261004q';
 
 const CONTENT = 1180, MIN_SIDE = 150, CACHE = 'unitac-sides-v1';
 let started = false;
