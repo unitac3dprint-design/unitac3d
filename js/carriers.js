@@ -9,3 +9,11 @@ export const CARRIERS = {
 export const track17 = (n) => 'https://t.17track.net/th#nums=' + encodeURIComponent(n);
 export function trackPage(n, c) { return new URL('track.html?n=' + encodeURIComponent(n) + '&c=' + encodeURIComponent(c || 'flash'), location.href).href; }
 export function cleanTrack(s) { return (s || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 30); }
+
+/* our own tracking timeline is paused for now: links go straight to the courier's site */
+export const TRACK_PAGE_ON = false;
+export function trackLink(n, c) {
+  if (TRACK_PAGE_ON) return trackPage(n, c);
+  const k = CARRIERS[c] && CARRIERS[c].url ? c : 'flash';
+  return CARRIERS[k].url ? CARRIERS[k].url(n) : track17(n);
+}

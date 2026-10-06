@@ -1,5 +1,5 @@
-import { auth, db, OWNER, onAuthStateChanged, doc, collection, getDoc, getDocs, setDoc, onSnapshot } from './fb.js?v=20261004r';
-import { $, h, toast } from './core.js?v=20261004r';
+import { auth, db, OWNER, onAuthStateChanged, doc, collection, getDoc, getDocs, setDoc, onSnapshot } from './fb.js?v=20261004u';
+import { $, h, toast } from './core.js?v=20261004u';
 
 /* "เตรียมงาน": what the owner has to get ready today, tomorrow and the day after, from the live queue */
 let Q = null, names = {}, done = {}, mats = [], started = false;

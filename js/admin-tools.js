@@ -1,5 +1,5 @@
-import { auth, db, OWNER, authMsg, onAuthStateChanged, doc, collection, getDoc, getDocs, setDoc, writeBatch, serverTimestamp } from './fb.js?v=20261004r';
-import { $, h, toast, toDate, daysLeft, intf } from './core.js?v=20261004r';
+import { auth, db, OWNER, authMsg, onAuthStateChanged, doc, collection, getDoc, getDocs, setDoc, writeBatch, serverTimestamp } from './fb.js?v=20261004u';
+import { $, h, toast, toDate, daysLeft, intf } from './core.js?v=20261004u';
 
 /* ---------- what needs attention: strip + tab badges ---------- */
 const COLS = ['members', 'orders', 'warranties', 'partners', 'materials', 'portfolio', 'portfolioFull', 'admin'];

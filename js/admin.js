@@ -1,10 +1,10 @@
 import {
   auth, db, OWNER, authMsg, onAuthStateChanged, signInWithEmailAndPassword, signOut,
   doc, collection, getDoc, getDocs, setDoc, updateDoc, deleteDoc, query, where, writeBatch, serverTimestamp, increment
-} from './fb.js?v=20261004r';
-import { RANKS, rankOf, couponInfo, memberNo, toDate, fDate, fDM, money, intf, daysLeft, warrantyCode, $, h, toast, avatarEl, LOGO_SVG } from './core.js?v=20261004r';
-import { CARRIERS, trackPage, cleanTrack } from './carriers.js?v=20261004r';
-import { scanQR, parseMemberQR, scanTracking, carrierOf } from './scan.js?v=20261004r';
+} from './fb.js?v=20261004u';
+import { RANKS, rankOf, couponInfo, memberNo, toDate, fDate, fDM, money, intf, daysLeft, warrantyCode, $, h, toast, avatarEl, LOGO_SVG } from './core.js?v=20261004u';
+import { CARRIERS, trackPage, trackLink, TRACK_PAGE_ON, cleanTrack } from './carriers.js?v=20261004u';
+import { scanQR, parseMemberQR, scanTracking, carrierOf } from './scan.js?v=20261004u';
 
 document.querySelectorAll('[data-logo]').forEach(e => { e.innerHTML = LOGO_SVG; });
 
@@ -40,7 +40,7 @@ async function loadAll() {
     orders = os.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (toDate(b.deliveredAt) || 0) - (toDate(a.deliveredAt) || 0));
     await reloadWarranties();
   } catch (x) { toast(authMsg(x.code), 5000); }
-  renderMembers(); renderOrders(); renderWarranties();
+  renderMembers(); renderOrders(); renderWarranties(); renderTags();
 }
 
 /* ---------- customers ---------- */
@@ -252,20 +252,21 @@ function ptsNote() {
 ['oPrint', 'oDesign', 'oShip', 'oCost'].forEach(id => $(id).addEventListener('input', calcTotal));
 function shipLink() {
   const n = cleanTrack($('oTrack').value), c = $('oCarrier').value, box = $('oLinkBox');
-  box.hidden = !n; if (!n) return; const url = trackPage(n, c);
+  box.hidden = !n; if (!n) return; const url = trackLink(n, c);
   $('oLink').textContent = url; $('oOpen').href = url;
 }
 function shipMsg() {
   const n = cleanTrack($('oTrack').value), c = $('oCarrier').value, o = editing;
-  return 'ส่งของแล้วครับ 📦 ' + ((o && o.title) || '') + '\nขนส่ง ' + CARRIERS[c].name + ' เลขพัสดุ ' + n + '\nกดดูสถานะได้เลย ' + trackPage(n, c);
+  return 'ส่งของแล้วครับ 📦 ' + ((o && o.title) || '') + '\nขนส่ง ' + CARRIERS[c].name + ' เลขพัสดุ ' + n + '\nกดดูสถานะได้เลย ' + trackLink(n, c);
 }
+if (!TRACK_PAGE_ON && $('oShipEdit')) $('oShipEdit').hidden = true;
 $('oTrack').addEventListener('input', shipLink); $('oCarrier').addEventListener('change', shipLink);
 $('oScanTrack').addEventListener('click', async () => {
   const n = await scanTracking(); if (!n) return;
   $('oTrack').value = n; $('oCarrier').value = carrierOf(n); shipLink();
   toast('ได้เลขพัสดุ ' + n + ' แล้ว กดบันทึกได้เลย', 4000);
 });
-$('oCopyLink').addEventListener('click', () => navigator.clipboard.writeText(trackPage(cleanTrack($('oTrack').value), $('oCarrier').value)).then(() => toast('คัดลอกลิงก์แล้ว')));
+$('oCopyLink').addEventListener('click', () => navigator.clipboard.writeText(trackLink(cleanTrack($('oTrack').value), $('oCarrier').value)).then(() => toast('คัดลอกลิงก์แล้ว')));
 $('oCopyMsg').addEventListener('click', () => navigator.clipboard.writeText(shipMsg()).then(() => toast('คัดลอกข้อความแล้ว วางในแชทลูกค้าได้เลย', 4000)));
 function editOrder(o) {
   editing = o; const adj = o.kind === 'adjust';
@@ -314,7 +315,7 @@ $('oForm').addEventListener('submit', async (e) => {
   b.update(oref, upd);
   $('oSave').disabled = true;
   try { await b.commit(); Object.assign(o, upd); if (mem) mem.points = (mem.points || 0) + ptsDiff;
-    if (upd.shipTrack) { try { const ss = await getDoc(doc(db, 'shipments', upd.shipTrack)); if (!ss.exists()) await setDoc(doc(db, 'shipments', upd.shipTrack), { number: upd.shipTrack, carrier: upd.shipCarrier, title: upd.title, events: [{ s: 'sent', title: 'ตรวจสอบและจัดส่งโดย UNITAC เรียบร้อย', detail: '', at: new Date(Date.now() - 120000).toISOString() }], eta: new Date(Date.now() + 3 * 864e5).toISOString(), source: 'manual', updatedAt: new Date().toISOString() }); } catch (_) {} } $('oDlg').close(); toast('บันทึกการแก้ไขแล้ว' + (ptsDiff && mem ? ' · แต้ม ' + (ptsDiff > 0 ? '+' : '') + ptsDiff : '')); await reloadWarranties(); refreshAll(); }
+    if (upd.shipTrack && TRACK_PAGE_ON) { try { const ss = await getDoc(doc(db, 'shipments', upd.shipTrack)); if (!ss.exists()) await setDoc(doc(db, 'shipments', upd.shipTrack), { number: upd.shipTrack, carrier: upd.shipCarrier, title: upd.title, events: [{ s: 'sent', title: 'ตรวจสอบและจัดส่งโดย UNITAC เรียบร้อย', detail: '', at: new Date(Date.now() - 120000).toISOString() }], eta: new Date(Date.now() + 3 * 864e5).toISOString(), source: 'manual', updatedAt: new Date().toISOString() }); } catch (_) {} } $('oDlg').close(); toast('บันทึกการแก้ไขแล้ว' + (ptsDiff && mem ? ' · แต้ม ' + (ptsDiff > 0 ? '+' : '') + ptsDiff : '')); await reloadWarranties(); refreshAll(); }
   catch (x) { err(authMsg(x.code)); }
   $('oSave').disabled = false;
 });
@@ -345,7 +346,7 @@ $('odOk').addEventListener('click', async () => {
   } catch (x) { $('odErr').textContent = authMsg(x.code); $('odErr').hidden = false; }
   $('odOk').disabled = false;
 });
-function refreshAll() { renderOrders(); renderMembers(); renderWarranties(); if ($('cDlg').open && cur) openMember(cur.uid); }
+function refreshAll() { renderOrders(); renderMembers(); renderWarranties(); renderTags(); if ($('cDlg').open && cur) openMember(cur.uid); }
 
 /* ---------- monthly summary ---------- */
 const fMon = new Intl.DateTimeFormat('th-TH', { month: 'long', year: 'numeric' }), fMonS = new Intl.DateTimeFormat('th-TH', { month: 'short' });
@@ -459,3 +460,68 @@ async function lookupWarranty(code) {
 
 document.querySelectorAll('dialog [data-close]').forEach(b => b.addEventListener('click', () => b.closest('dialog').close()));
 document.querySelectorAll('dialog').forEach(d => d.addEventListener('click', (e) => { if (e.target === d) d.close(); }));
+
+
+/* ---------- "เลขแท็ก": tracking numbers per customer — tap a name, type or scan the number ---------- */
+let tgFilter = 'need', tgCust = null;
+const tgDate = (d) => d ? d.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: '2-digit' }) : '';
+const isJob = (o) => o.kind !== 'adjust';
+function tgCustomers() {
+  const map = new Map();
+  orders.filter(isJob).forEach(o => {
+    const m = o.uid ? members.find(x => x.uid === o.uid) : null;
+    const key = o.uid || ('name:' + (o.nickname || o.title || '').trim());
+    if (!map.has(key)) map.set(key, { key, name: m ? (m.nickname || 'สมาชิก') : (o.nickname || o.title || 'ลูกค้า'), m, orders: [] });
+    map.get(key).orders.push(o);
+  });
+  const list = [...map.values()];
+  list.forEach(c => { c.orders.sort((a, b) => (toDate(b.deliveredAt) || toDate(b.createdAt) || 0) - (toDate(a.deliveredAt) || toDate(a.createdAt) || 0)); c.latest = c.orders[0]; c.need = !c.latest.shipTrack; });
+  return list.sort((a, b) => (b.need - a.need) || ((toDate(b.latest.deliveredAt) || 0) - (toDate(a.latest.deliveredAt) || 0)));
+}
+function renderTags() {
+  if (!$('tgList')) return;
+  const all = tgCustomers(), q = $('tgSearch').value.trim().toLowerCase(), L = $('tgList'); L.textContent = '';
+  const F = $('tgFil'); F.textContent = '';
+  [['need', 'รอใส่เลข', all.filter(c => c.need).length], ['has', 'ใส่แล้ว', all.filter(c => !c.need).length], ['all', 'ทั้งหมด', all.length]].forEach(([k, n, cnt]) => {
+    const b = h('button'); b.type = 'button'; b.setAttribute('aria-pressed', String(tgFilter === k)); b.append(n, h('b', null, String(cnt)));
+    b.addEventListener('click', () => { tgFilter = k; renderTags(); }); F.appendChild(b);
+  });
+  const list = all.filter(c => (tgFilter === 'all' || (tgFilter === 'need' ? c.need : !c.need)) &&
+    (!q || [c.name, c.m && c.m.no, ...c.orders.map(o => (o.title || '') + ' ' + (o.shipTrack || ''))].join(' ').toLowerCase().includes(q)));
+  if (!list.length) L.appendChild(h('p', 'empty', tgFilter === 'need' ? 'ใส่เลขพัสดุครบทุกคนแล้ว' : 'ไม่พบรายการ'));
+  list.slice(0, 200).forEach(c => {
+    const b = h('button', 'tgrow'); b.type = 'button'; b.addEventListener('click', () => openTag(c));
+    const t = h('span'); t.append(h('b', null, c.name), h('small', null, (c.latest.title || 'งาน') + ' · ' + tgDate(toDate(c.latest.deliveredAt) || toDate(c.latest.createdAt))));
+    const chip = h('span', 'tgchip ' + (c.need ? 'need' : 'has'), c.need ? 'รอใส่เลข' : '📦 ' + c.latest.shipTrack);
+    b.append(c.m ? avatarEl(c.m, 40) : h('span', 'av', (c.name || '?').slice(0, 1)), t, chip); L.appendChild(b);
+  });
+}
+function tgSync() {
+  const n = cleanTrack($('tgNum').value), c = $('tgCarrier').value, has = !!n;
+  $('tgUrl').hidden = $('tgBtns').hidden = !has; if (!has) return;
+  const url = trackLink(n, c); $('tgUrl').textContent = url; $('tgOpen').href = url;
+}
+function tgOrder() { return tgCust && tgCust.orders.find(o => o.id === $('tgOrder').value); }
+function openTag(c) {
+  tgCust = c; $('tgT').textContent = c.name; $('tgSub').textContent = c.m ? c.m.no : 'ลูกค้าทั่วไป'; $('tgErr').hidden = true;
+  const S = $('tgOrder'); S.textContent = '';
+  c.orders.slice(0, 20).forEach(o => { const op = h('option', null, (o.title || 'งาน') + ' · ' + tgDate(toDate(o.deliveredAt) || toDate(o.createdAt)) + (o.shipTrack ? ' · 📦 ' + o.shipTrack : '')); op.value = o.id; S.appendChild(op); });
+  const first = c.orders.find(o => !o.shipTrack) || c.orders[0]; S.value = first.id; tgFill(); $('tgDlg').showModal();
+}
+function tgFill() { const o = tgOrder(); $('tgCarrier').value = (o && o.shipCarrier) || 'flash'; $('tgNum').value = (o && o.shipTrack) || ''; tgSync(); }
+$('tgSearch').addEventListener('input', renderTags);
+$('tgOrder').addEventListener('change', tgFill);
+$('tgNum').addEventListener('input', tgSync); $('tgCarrier').addEventListener('change', tgSync);
+$('tgScan').addEventListener('click', async () => { const n = await scanTracking(); if (!n) return; $('tgNum').value = n; $('tgCarrier').value = carrierOf(n); tgSync(); toast('ได้เลขพัสดุ ' + n + ' แล้ว กดบันทึกได้เลย', 4000); });
+const tgMsg = () => { const o = tgOrder(), n = cleanTrack($('tgNum').value), c = $('tgCarrier').value; return 'ส่งของแล้วครับ 📦 ' + ((o && o.title) || '') + '\nขนส่ง ' + CARRIERS[c].name + ' เลขพัสดุ ' + n + '\nกดดูสถานะได้เลย ' + trackLink(n, c); };
+$('tgCopyMsg').addEventListener('click', () => navigator.clipboard.writeText(tgMsg()).then(() => toast('คัดลอกข้อความแล้ว วางในแชทลูกค้าได้เลย', 4000)));
+$('tgCopyLink').addEventListener('click', () => navigator.clipboard.writeText(trackLink(cleanTrack($('tgNum').value), $('tgCarrier').value)).then(() => toast('คัดลอกลิงก์แล้ว')));
+$('tgSave').addEventListener('click', async () => {
+  const o = tgOrder(); if (!o) return;
+  const n = cleanTrack($('tgNum').value), c = $('tgCarrier').value;
+  const upd = { shipTrack: n || null, shipCarrier: n ? c : null }; if (n && !o.shipTrack) upd.shippedAt = new Date();
+  $('tgSave').disabled = true;
+  try { await updateDoc(doc(db, 'orders', o.id), upd); Object.assign(o, upd); toast(n ? 'บันทึกเลขพัสดุแล้ว ลูกค้าเห็นในหน้าสมาชิกทันที' : 'ลบเลขพัสดุแล้ว'); $('tgDlg').close(); refreshAll(); }
+  catch (x) { $('tgErr').textContent = authMsg(x.code); $('tgErr').hidden = false; }
+  $('tgSave').disabled = false;
+});
