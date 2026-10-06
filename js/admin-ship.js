@@ -1,8 +1,8 @@
-import { db, doc, getDoc, setDoc } from './fb.js?v=20261004m';
-import { $, h, toast } from './core.js?v=20261004m';
-import { CARRIERS, cleanTrack, trackPage } from './carriers.js?v=20261004m';
-import { FLASH_FN_URL } from './config.js?v=20261004m';
-import { SENT_TITLE, parsePaste, titleOf, detailOf, toneOf, fmtWhen } from './shipstatus.js?v=20261004m';
+import { db, doc, getDoc, setDoc } from './fb.js?v=20261004o';
+import { $, h, toast } from './core.js?v=20261004o';
+import { CARRIERS, cleanTrack, trackPage } from './carriers.js?v=20261004o';
+import { FLASH_FN_URL } from './config.js?v=20261004o';
+import { SENT_TITLE, parsePaste, titleOf, detailOf, toneOf, fmtWhen } from './shipstatus.js?v=20261004o';
 
 /* parcel status mirrors Flash: paste the history from the Flash tracking page, it replaces the old list */
 let num = '', carrier = 'flash', data = null, base = null;
@@ -47,6 +47,9 @@ function parse() {
   const ev = parsePaste($('shPaste').value);
   if (!$('shPaste').value.trim()) { $('shParsed').textContent = ''; return; }
   if (!ev.length) { $('shParsed').textContent = 'ยังอ่านไม่ออก ตรวจว่าคัดลอกมาตั้งแต่บรรทัดวันที่ (เช่น 2026-10-03)'; $('shParsed').style.color = 'var(--warn)'; return; }
+  /* the UNITAC step is always first: if the number was entered after Flash had already scanned it, move it just before Flash's first event */
+  const first = ev.reduce((m, e) => (!m || e.at < m ? e.at : m), null);
+  if (first && base.at > first) base = { ...base, at: new Date(new Date(first).getTime() - 60000).toISOString() };
   data.events = [base].concat(ev);
   $('shParsed').style.color = 'var(--ok)'; $('shParsed').textContent = 'อ่านได้ ' + ev.length + ' สถานะ ล่าสุด: ' + ev[0].title + ' · ' + fmtWhen(ev[0].at) + ' ตรวจด้านขวาแล้วกดบันทึก';
   if (ev.some(e => e.s === 'delivered')) $('shEta').value = '';

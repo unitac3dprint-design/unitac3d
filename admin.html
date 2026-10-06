@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/site.css?v=20261004m">
+<link rel="stylesheet" href="css/site.css?v=20261004o">
 <title>หลังร้าน · UNITAC</title>
 <meta name="description" content="UNITAC 3D PRINT ยินดีให้บริการ">
 <meta property="og:type" content="website">
@@ -331,6 +331,9 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
 .cnt.one{grid-template-columns:44px minmax(0,1fr) 44px;padding:8px}
 .cnt.one button{width:44px;height:44px;font-size:20px}
 .cnt.one span b{font-size:24px}
+.trk__in{display:flex;gap:8px}
+.trk__in input{flex:1;min-width:0}
+.trk__in .btn{flex:none;gap:6px}
 </style>
 </head>
 <body>
@@ -607,7 +610,7 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
     <div class="oSaleOnly shipbox">
       <div class="frow">
         <div class="field"><label for="oCarrier">ขนส่ง</label><select id="oCarrier"><option value="flash">Flash Express</option><option value="thp">ไปรษณีย์ไทย</option><option value="kex">KEX Express</option><option value="jt">J&amp;T Express</option><option value="other">ขนส่งอื่น</option></select></div>
-        <div class="field"><label for="oTrack">เลขพัสดุ</label><input type="text" id="oTrack" maxlength="30" autocomplete="off" spellcheck="false" placeholder="TH…" style="text-transform:uppercase;font-family:var(--font-num)"></div>
+        <div class="field"><label for="oTrack">เลขพัสดุ</label><div class="trk__in"><input type="text" id="oTrack" maxlength="30" autocomplete="off" spellcheck="false" placeholder="TH…" style="text-transform:uppercase;font-family:var(--font-num)"><button type="button" class="btn btn--ghost btn--sm" id="oScanTrack" aria-label="สแกนบาร์โค้ดใบปะหน้า"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="width:17px;height:17px"><path d="M4 7V5a1 1 0 0 1 1-1h2M17 4h2a1 1 0 0 1 1 1v2M20 17v2a1 1 0 0 1-1 1h-2M7 20H5a1 1 0 0 1-1-1v-2M7 9v6M10 9v6M13 9v6M16 9v6"/></svg>สแกน</button></div></div>
       </div>
       <div class="ship__link" id="oLinkBox" hidden>
         <span class="num small" id="oLink"></span>
@@ -708,13 +711,13 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
 </div></dialog>
 
 <footer class="foot">UNITAC · <a href="./">ตารางคิว</a> · <a href="warranty.html">เช็กประกัน</a> · <a href="portfolio.html">ผลงาน</a> · <a href="partners.html">พาร์ทเนอร์</a> · <a href="privacy.html">นโยบายความเป็นส่วนตัว</a></footer>
-<script type="module" src="js/admin.js?v=20261004m"></script>
-<script type="module" src="js/admin-partners.js?v=20261004m"></script>
-<script type="module" src="js/admin-stock.js?v=20261004m"></script>
-<script type="module" src="js/admin-portfolio.js?v=20261004m"></script>
-<script type="module" src="js/admin-tools.js?v=20261004m"></script>
-<script type="module" src="js/admin-ship.js?v=20261004m"></script>
-<script type="module" src="js/admin-hero.js?v=20261004m"></script>
-<script type="module" src="js/admin-sides.js?v=20261004m"></script>
+<script type="module" src="js/admin.js?v=20261004o"></script>
+<script type="module" src="js/admin-partners.js?v=20261004o"></script>
+<script type="module" src="js/admin-stock.js?v=20261004o"></script>
+<script type="module" src="js/admin-portfolio.js?v=20261004o"></script>
+<script type="module" src="js/admin-tools.js?v=20261004o"></script>
+<script type="module" src="js/admin-ship.js?v=20261004o"></script>
+<script type="module" src="js/admin-hero.js?v=20261004o"></script>
+<script type="module" src="js/admin-sides.js?v=20261004o"></script>
 </body>
 </html>

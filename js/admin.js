@@ -1,10 +1,10 @@
 import {
   auth, db, OWNER, authMsg, onAuthStateChanged, signInWithEmailAndPassword, signOut,
   doc, collection, getDoc, getDocs, setDoc, updateDoc, deleteDoc, query, where, writeBatch, serverTimestamp, increment
-} from './fb.js?v=20261004m';
-import { RANKS, rankOf, couponInfo, memberNo, toDate, fDate, fDM, money, intf, daysLeft, warrantyCode, $, h, toast, avatarEl, LOGO_SVG } from './core.js?v=20261004m';
-import { CARRIERS, trackPage, cleanTrack } from './carriers.js?v=20261004m';
-import { scanQR, parseMemberQR } from './scan.js?v=20261004m';
+} from './fb.js?v=20261004o';
+import { RANKS, rankOf, couponInfo, memberNo, toDate, fDate, fDM, money, intf, daysLeft, warrantyCode, $, h, toast, avatarEl, LOGO_SVG } from './core.js?v=20261004o';
+import { CARRIERS, trackPage, cleanTrack } from './carriers.js?v=20261004o';
+import { scanQR, parseMemberQR, scanTracking, carrierOf } from './scan.js?v=20261004o';
 
 document.querySelectorAll('[data-logo]').forEach(e => { e.innerHTML = LOGO_SVG; });
 
@@ -260,6 +260,11 @@ function shipMsg() {
   return 'ส่งของแล้วครับ 📦 ' + ((o && o.title) || '') + '\nขนส่ง ' + CARRIERS[c].name + ' เลขพัสดุ ' + n + '\nกดดูสถานะได้เลย ' + trackPage(n, c);
 }
 $('oTrack').addEventListener('input', shipLink); $('oCarrier').addEventListener('change', shipLink);
+$('oScanTrack').addEventListener('click', async () => {
+  const n = await scanTracking(); if (!n) return;
+  $('oTrack').value = n; $('oCarrier').value = carrierOf(n); shipLink();
+  toast('ได้เลขพัสดุ ' + n + ' แล้ว กดบันทึกได้เลย', 4000);
+});
 $('oCopyLink').addEventListener('click', () => navigator.clipboard.writeText(trackPage(cleanTrack($('oTrack').value), $('oCarrier').value)).then(() => toast('คัดลอกลิงก์แล้ว')));
 $('oCopyMsg').addEventListener('click', () => navigator.clipboard.writeText(shipMsg()).then(() => toast('คัดลอกข้อความแล้ว วางในแชทลูกค้าได้เลย', 4000)));
 function editOrder(o) {
