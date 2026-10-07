@@ -1,9 +1,9 @@
 import {
   auth, db, OWNER, authMsg, onAuthStateChanged, signInWithEmailAndPassword,
   doc, collection, getDoc, getDocs, setDoc, writeBatch, serverTimestamp, increment
-} from './fb.js?v=20261004u';
-import { rankOf, couponInfo, memberNo, pointsFor, warrantyCode, qrSvg, fDate, money, intf, $, h, toast, WARRANTY_DEFAULT, sellPerGramOf } from './core.js?v=20261004u';
-import { scanQR, parseMemberQR } from './scan.js?v=20261004u';
+} from './fb.js?v=20261004w';
+import { rankOf, couponInfo, memberNo, pointsFor, warrantyCode, qrSvg, fDate, money, intf, $, h, toast, WARRANTY_DEFAULT, sellPerGramOf } from './core.js?v=20261004w';
+import { scanQR, parseMemberQR } from './scan.js?v=20261004w';
 
 const U = window.UMEM;
 let members = [], sel = null, isOwner = false, lastSaved = null;
@@ -209,6 +209,7 @@ $('saveOrderBtn').addEventListener('click', () => {
   if (lastSaved && lastSaved.total === r.grandTotal) return toast('บันทึกงานนี้ไปแล้ว กด เริ่มงานใหม่ ก่อนบันทึกงานถัดไป', 4500);
   $('odTitleIn').value = (document.getElementById('jobName').value || '').trim() || 'งานพิมพ์ 3 มิติ';
   $('odDays').value = String(WARRANTY_DEFAULT);
+  const td = new Date(); $('odStart').value = td.getFullYear() + '-' + String(td.getMonth() + 1).padStart(2, '0') + '-' + String(td.getDate()).padStart(2, '0'); $('odStartF').hidden = false;
   const sum = $('odSum'); sum.textContent = '';
   const rows = [['ลูกค้า', sel ? (sel.nickname || 'สมาชิก') + ' · ' + sel.no : 'ลูกค้าทั่วไป'], ['ค่าพิมพ์หลังหักส่วนลด', money(r.printPaid) + ' ฿'], ['ยอดรวมสุทธิ', money(r.grandTotal) + ' ฿']];
   if (sel) rows.push(['แต้มที่ได้', '+' + intf(pointsFor(r.printPaid))]);
@@ -221,7 +222,9 @@ $('orderForm').addEventListener('submit', async (e) => {
   const r = window.__unitac.last(), b = $('odOk'); if (!r) return;
   const title = $('odTitleIn').value.trim().slice(0, 80) || 'งานพิมพ์ 3 มิติ', days = Number($('odDays').value) || 0;
   const pts = sel ? pointsFor(r.printPaid) : 0, code = days ? warrantyCode() : '';
-  const now = new Date(), exp = days ? new Date(now.getTime() + days * 864e5) : null;
+  const now = new Date(), sv = $('odStart').value, sp = /^\d{4}-\d{2}-\d{2}$/.test(sv) ? sv.split('-').map(Number) : null;
+  const wStart = sp ? new Date(sp[0], sp[1] - 1, sp[2], now.getHours(), now.getMinutes()) : now;
+  const exp = days ? new Date(wStart.getTime() + days * 864e5) : null;
   const ad = sel ? (sel.addresses || []).find(a => a.id === $('msAddr').value) || null : null;
   b.disabled = true;
   try {
@@ -229,15 +232,15 @@ $('orderForm').addEventListener('submit', async (e) => {
     batch.set(oref, {
       kind: 'sale', uid: sel ? sel.uid : null, memberNo: sel ? sel.no : '', nickname: sel ? (sel.nickname || '') : '',
       title, rank: sel ? rankOf(sel).key : '', memberPct: r.memberPct || 0, couponPct: r.couponDisc > 0 ? r.couponPct : 0,
-      material: (r.m && r.m.code) || '', qty: r.qty || 1, weight: +((r.matWeight || 0) * (r.qty || 1)).toFixed(1), hours: +(r.totalHours || 0).toFixed(2),
+      material: r.matLabel || (r.m && r.m.code) || '', materials: (r.mats || []).map(x => ({ code: x.m && x.m.code, gramsPerPiece: +(+x.w || 0).toFixed(1) })), qty: r.qty || 1, weight: +((r.matWeight || 0) * (r.qty || 1)).toFixed(1), hours: +(r.totalHours || 0).toFixed(2),
       realCost: +(r.realCost || 0).toFixed(2), profit: +(r.realProfit || 0).toFixed(2), queueItemId: queuedId || '',
       printSubtotal: +r.printSubtotal.toFixed(2), discountTotal: +r.discountTotal.toFixed(2), printPaid: +r.printPaid.toFixed(2),
       designFee: +r.designFee.toFixed(2), shippingFee: +r.shippingFee.toFixed(2), total: +r.grandTotal.toFixed(2),
-      points: pts, warrantyDays: days, warrantyCode: code, expiresAt: exp,
+      points: pts, warrantyDays: days, warrantyCode: code, warrantyStart: days ? wStart : null, expiresAt: exp,
       shipTo: ad ? { label: ad.label || '', name: ad.name || '', phone: ad.phone || '', addr: ad.addr || '' } : null,
       deliveredAt: serverTimestamp()
     });
-    if (code) batch.set(doc(db, 'warranties', code), { title, days, deliveredAt: serverTimestamp(), expiresAt: exp, claims: [] });
+    if (code) batch.set(doc(db, 'warranties', code), { title, days, deliveredAt: serverTimestamp(), startAt: wStart, expiresAt: exp, claims: [] });
     if (sel) {
       const upd = { points: increment(pts) };
       if (r.couponDisc > 0) upd.welcomeUsed = true;
@@ -307,3 +310,5 @@ onAuthStateChanged(auth, async (u) => {
   if (!u || u.uid !== OWNER) return;
   try { const s = await getDoc(doc(db, 'admin', 'pay')); if (s.exists() && s.data().base) { pay = { ...pay, ...s.data() }; try { localStorage.setItem('unitac-pay', JSON.stringify(pay)); } catch (_) {} $('payOn').checked = pay.on; $('payNameIn').value = pay.name || ''; payNote(); lastAmt = -1; renderPay(); } } catch (_) {}
 });
+
+$('odDays').addEventListener('change', () => { $('odStartF').hidden = !(+$('odDays').value > 0); });

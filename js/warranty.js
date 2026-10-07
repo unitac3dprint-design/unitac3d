@@ -1,5 +1,5 @@
-import { db, doc, getDoc } from './fb.js?v=20261004u';
-import { toDate, fDate, daysLeft, $, h, reveal, LOGO_SVG } from './core.js?v=20261004u';
+import { db, doc, getDoc } from './fb.js?v=20261004w';
+import { toDate, fDate, daysLeft, $, h, reveal, LOGO_SVG } from './core.js?v=20261004w';
 document.querySelectorAll('[data-logo]').forEach(e => { e.innerHTML = LOGO_SVG; });
 document.querySelector('[data-nav="warranty"]').setAttribute('aria-current', 'page');
 reveal();
@@ -21,7 +21,7 @@ async function check(code) {
   st.append(dot, tx);
   const bar = h('div', 'bar'), f = h('span'); f.style.width = (ok ? Math.max(3, Math.min(100, left / (w.days || 30) * 100)) : 0) + '%'; f.style.setProperty('--c', ok ? (left <= 7 ? 'var(--accent)' : 'var(--ok)') : 'var(--stop)'); bar.appendChild(f);
   const d = h('dl');
-  [['ชิ้นงาน', w.title || 'งานพิมพ์ 3 มิติ'], ['รหัสประกัน', code], ['วันส่งมอบ', dl ? fDate.format(dl) : '-'], ['หมดประกัน', exp ? fDate.format(exp) : '-'], ['ระยะประกัน', (w.days || '-') + ' วัน'], ['ประวัติเคลม', (w.claims || []).length + ' ครั้ง']]
+  [['ชิ้นงาน', w.title || 'งานพิมพ์ 3 มิติ'], ['รหัสประกัน', code], ['วันส่งมอบ', dl ? fDate.format(dl) : '-'], ['เริ่มประกัน', (toDate(w.startAt) || dl) ? fDate.format(toDate(w.startAt) || dl) : '-'], ['หมดประกัน', exp ? fDate.format(exp) : '-'], ['ระยะประกัน', (w.days || '-') + ' วัน'], ['ประวัติเคลม', (w.claims || []).length + ' ครั้ง']]
     .forEach(([k, v]) => d.append(h('dt', null, k), h('dd', null, v)));
   card.append(st, bar, d); out.appendChild(card);
 }

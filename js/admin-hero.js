@@ -1,6 +1,6 @@
-import { auth, db, OWNER, authMsg, onAuthStateChanged, doc, getDoc, setDoc, writeBatch, deleteDoc, serverTimestamp } from './fb.js?v=20261004u';
-import { $, h, toast, normalizeImage } from './core.js?v=20261004u';
-import { loadHero } from './heromedia.js?v=20261004u';
+import { auth, db, OWNER, authMsg, onAuthStateChanged, doc, getDoc, setDoc, writeBatch, deleteDoc, serverTimestamp } from './fb.js?v=20261004w';
+import { $, h, toast, normalizeImage } from './core.js?v=20261004w';
+import { loadHero } from './heromedia.js?v=20261004w';
 const CHUNK = 900000, MAX_VIDEO = 8 * 1024 * 1024;
 let cur = null, started = false;
 onAuthStateChanged(auth, (u) => { if (u && u.uid === OWNER && !started) { started = true; refresh(); } });

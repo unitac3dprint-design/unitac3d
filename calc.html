@@ -411,6 +411,15 @@ html.js .rv.in{opacity:1;transform:none;transition:opacity .5s var(--ease) var(-
 .brand__logo{height:34px;width:auto;color:var(--ink);display:block}
 .paper__brand svg.paper__logosvg{width:auto;height:44px;transform:none;color:var(--p-ink)}
 .paper__mem{font-size:12.5px;color:var(--p-ink2);margin-top:4px;font-family:var(--font-num)}
+.mix{display:grid;gap:8px}
+.mix__rows{display:grid;gap:8px}
+.mix__rows:empty{display:none}
+.mix__row{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) 40px;gap:8px;align-items:center}
+.mix__row .inp{margin:0}
+.mix__x{width:40px;height:40px;border-radius:10px;border:1px solid var(--rule-strong);background:none;color:var(--muted);font-size:18px;cursor:pointer}
+.mix__x:hover{color:var(--stop);border-color:var(--stop)}
+.mix__add{justify-self:start;gap:6px}
+@media (max-width:480px){.mix__row{grid-template-columns:minmax(0,1fr) 96px 40px}}
 .paper__pay{display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px;align-items:center;margin-top:18px;padding:16px;border-radius:14px;border:1px solid var(--p-rule);background:linear-gradient(135deg,rgba(255,122,60,.06),transparent 60%)}
 .pay__qr{position:relative;width:132px;height:132px;padding:8px;border-radius:12px;background:#fff;box-shadow:0 0 0 1px var(--p-rule)}
 .pay__qrin,.pay__qrin svg{width:100%;height:100%;display:block}
@@ -574,8 +583,12 @@ dialog.cd::backdrop{background:rgba(12,10,8,.6);backdrop-filter:blur(3px)}
         <div class="field">
           <label for="matWeight">น้ำหนักต่อชิ้น</label>
           <div class="inp inp--unit"><input type="number" id="matWeight" min="0" step="any" value="0" inputmode="decimal"><span class="unit">g</span></div>
-          <p class="hint">น้ำหนักเส้นที่ใช้ต่อ 1 ชิ้น</p>
+          <p class="hint" id="matWeightHint">น้ำหนักเส้นที่ใช้ต่อ 1 ชิ้น</p>
         </div>
+      </div>
+      <div class="field mix" id="mixBlock">
+        <div class="mix__rows" id="mixRows"></div>
+        <button type="button" class="btn btn--ghost btn--sm mix__add" id="mixAdd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="width:16px;height:16px"><path d="M12 5v14M5 12h14"/></svg>เพิ่มเส้นอีกชนิด / อีกสีในงานนี้</button>
       </div>
       <div class="group" role="group" aria-labelledby="timeLab">
         <span class="lab" id="timeLab">เวลาต่อชิ้น</span>
@@ -929,7 +942,7 @@ var FIELD_IDS=['jobName','matName','qty','matWeight','printDays','printHours','p
 var JOB_RESET={jobName:'',qty:'1',matWeight:'0',printDays:'0',printHours:'0',printMins:'0',
   discountValue:'0',designFee:'0',shippingFee:'0',hardwareCost:'0'};
 
-var S={v:4,fields:{},theme:null,logo:null,materials:null,materialsAt:null};
+var S={v:4,fields:{},theme:null,logo:null,materials:null,materialsAt:null,mix:[]};
 var storageOk=true;
 var last=null;
 
@@ -966,6 +979,7 @@ function loadState(){
     if(typeof o.logo==='string'&&o.logo.indexOf('data:image/')===0) S.logo=o.logo;
     if(Array.isArray(o.materials)&&o.materials.length) S.materials=o.materials;
     if(typeof o.materialsAt==='number') S.materialsAt=o.materialsAt;
+    if(Array.isArray(o.mix)) S.mix=o.mix.filter(function(x){return x&&typeof x.code==='string';}).slice(0,6).map(function(x){return {code:x.code,w:Number(x.w)||0};});
   }catch(e){ storageOk=false; }
 }
 function writeState(){
@@ -1024,6 +1038,33 @@ function buildOptions(){
   });
   var exists=list.some(function(m){return m.code===prev;});
   sel.value=exists?prev:(list[0]?list[0].code:'');
+  if(S.mix&&S.mix.length&&$('mixRows')) renderMix();
+}
+function matByCode(code){var list=materials();for(var i=0;i<list.length;i++){if(list[i].code===code)return list[i];}return null;}
+/* extra filaments in the same job (multi-colour / multi-material) */
+function mixOptions(sel,cur){
+  var list=materials();sel.innerHTML='';
+  list.forEach(function(m){var o=document.createElement('option');o.value=m.code;o.textContent=m.code+' · '+Number(m.pricePerKg).toLocaleString('th-TH')+' ฿/kg';sel.appendChild(o);});
+  sel.value=list.some(function(m){return m.code===cur;})?cur:(list[0]?list[0].code:'');
+}
+function renderMix(){
+  var box=$('mixRows');box.innerHTML='';
+  (S.mix||[]).forEach(function(x,i){
+    var row=document.createElement('div');row.className='mix__row';
+    var w1=document.createElement('div');w1.className='inp';var sel=document.createElement('select');sel.setAttribute('aria-label','เส้นชนิดที่ '+(i+2));mixOptions(sel,x.code);x.code=sel.value;
+    var chev=document.createElementNS('http://www.w3.org/2000/svg','svg');chev.setAttribute('class','chev');chev.setAttribute('viewBox','0 0 24 24');chev.innerHTML='<path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+    w1.appendChild(sel);w1.appendChild(chev);
+    var w2=document.createElement('div');w2.className='inp inp--unit';var inp=document.createElement('input');inp.type='number';inp.min='0';inp.step='any';inp.inputMode='decimal';inp.value=x.w||0;inp.setAttribute('aria-label','น้ำหนักเส้นชนิดที่ '+(i+2)+' ต่อชิ้น');
+    var u=document.createElement('span');u.className='unit';u.textContent='g';w2.appendChild(inp);w2.appendChild(u);
+    var del=document.createElement('button');del.type='button';del.className='mix__x';del.textContent='×';del.setAttribute('aria-label','เอาเส้นชนิดนี้ออก');
+    sel.addEventListener('change',function(){x.code=sel.value;recalc();save();});
+    inp.addEventListener('input',function(){x.w=Math.max(0,Number(inp.value)||0);recalc();save();});
+    del.addEventListener('click',function(){S.mix.splice(i,1);renderMix();recalc();save();});
+    row.appendChild(w1);row.appendChild(w2);row.appendChild(del);box.appendChild(row);
+  });
+  var has=(S.mix||[]).length>0;
+  $('matWeightHint').textContent=has?'น้ำหนักเส้นหลัก (วัสดุด้านบน) ต่อ 1 ชิ้น':'น้ำหนักเส้นที่ใช้ต่อ 1 ชิ้น';
+  $('mixAdd').hidden=(S.mix||[]).length>=6;
 }
 function setSyncStatus(text){
   $('matSyncStatus').textContent=text;
@@ -1052,8 +1093,10 @@ function calc(){
   var depPerHour=machineLife>0?machineCost/machineLife:0;
   var depCost=depPerHour*totalHours;
 
-  var matCharge=listPerGram*matWeight*qty;
-  var matReal=costPerGram*matWeight*qty;
+  var mats=[{m:m,w:matWeight,list:listPerGram,cost:costPerGram}];
+  (S.mix||[]).forEach(function(x){var mm=matByCode(x.code);if(!mm||!(x.w>0))return;var lp=(Number(mm.pricePerKg)||0)/1000;var cp=(typeof mm.actualCostPerGram==='number'&&mm.actualCostPerGram>0)?mm.actualCostPerGram:lp;mats.push({m:mm,w:Number(x.w),list:lp,cost:cp});});
+  var matCharge=0,matReal=0,weightAll=0;
+  mats.forEach(function(x){x.charge=x.list*x.w*qty;x.real=x.cost*x.w*qty;matCharge+=x.charge;matReal+=x.real;weightAll+=x.w;});
 
   var buffer=1+failRate/100;
   var chargeBase=(matCharge+elecCost+depCost)*buffer+hardwareCost;
@@ -1078,7 +1121,7 @@ function calc(){
   var realMargin=grandTotal>0?(realProfit/grandTotal)*100:0;
   var perPiece=qty>0?grandTotal/qty:0;
 
-  var r={m:m,listPerGram:listPerGram,costPerGram:costPerGram,qty:qty,matWeight:matWeight,
+  var r={m:m,mats:mats,matLabel:mats.map(function(x){return x.m&&x.m.code;}).filter(Boolean).join(' + '),mainWeight:matWeight,listPerGram:listPerGram,costPerGram:costPerGram,qty:qty,matWeight:weightAll,
     hoursPerPiece:hoursPerPiece,totalHours:totalHours,elecCost:elecCost,depCost:depCost,depPerHour:depPerHour,
     matCharge:matCharge,matReal:matReal,buffer:buffer,failRate:failRate,hardwareCost:hardwareCost,
     chargeBase:chargeBase,realCost:realCost,operationFee:operationFee,printSubtotal:printSubtotal,
@@ -1115,8 +1158,19 @@ function render(r){
   /* paper */
   $('summaryJobName').textContent=(val('jobName')||'').trim()||'งานพิมพ์ 3 มิติ';
   $('dispMatName').textContent=r.m&&r.m.code?r.m.code:'—';
-  $('matSub').textContent='Material · '+fmtInt(r.matWeight)+' g × '+r.qty+' ชิ้น';
-  $('sumMatCost').textContent=fmt(r.lineMat);
+  var mainLine=r.mats&&r.mats[0];
+  $('matSub').textContent='Material · '+fmtInt(mainLine?mainLine.w:r.matWeight)+' g × '+r.qty+' ชิ้น';
+  $('sumMatCost').textContent=fmt(mainLine?mainLine.charge*r.buffer:r.lineMat);
+  var firstLi=$('sumMatCost').closest('li');
+  [].forEach.call(document.querySelectorAll('.item--mix'),function(n){n.remove();});
+  var anchor=firstLi;
+  (r.mats||[]).slice(1).forEach(function(x){
+    var li=firstLi.cloneNode(true);li.classList.add('item--mix');
+    [].forEach.call(li.querySelectorAll('[id]'),function(n){n.removeAttribute('id');});
+    var b=li.querySelector('.item__t b'),s=li.querySelector('.item__t > span'),v=li.querySelector('.item__v > span');
+    b.textContent='ค่าวัสดุ ('+x.m.code+')';s.textContent='Material · '+fmtInt(x.w)+' g × '+r.qty+' ชิ้น';v.textContent=fmt(x.charge*r.buffer);
+    anchor.after(li);anchor=li;
+  });
   $('elecSub').textContent='Electricity · '+fmtHM(r.totalHours);
   $('sumElecCost').textContent=fmt(r.lineElec);
   $('sumDepCost').textContent=fmt(r.lineDep);
@@ -1389,6 +1443,7 @@ $('applyBedBtn').addEventListener('click',function(){
 /* ================= new job ================= */
 $('newJobBtn').addEventListener('click',function(){
   Object.keys(JOB_RESET).forEach(function(id){var el=$(id);if(el)el.value=JOB_RESET[id];});
+  S.mix=[]; renderMix();
   recalc(); saveNow(); toast('เริ่มงานใหม่แล้ว');
   $('jobName').focus();
 });
@@ -1424,6 +1479,8 @@ FIELD_IDS.forEach(function(id){
 root.setAttribute('data-theme','dark');
 syncTheme();
 buildOptions();
+renderMix();
+$('mixAdd').addEventListener('click',function(){var main=val('matName'),list=materials(),pick=(list.filter(function(m){return m.code!==main;})[0]||list[0]||{}).code||'';S.mix=(S.mix||[]).concat([{code:pick,w:0}]);renderMix();var ins=$('mixRows').querySelectorAll('input');if(ins.length)ins[ins.length-1].focus();recalc();save();});
 setDiscountMode(val('discountMode'),true);
 applyLogo();
 updateSheetButtons();
@@ -1454,6 +1511,7 @@ window.__unitac={calc:calc,last:function(){return last;},materials:materials,rec
   <div class="cd__b">
     <div class="field"><label for="odTitleIn">ชื่องาน</label><div class="inp"><input type="text" id="odTitleIn" maxlength="80"></div></div>
     <div class="field"><label for="odDays">ประกัน</label><div class="inp"><select id="odDays"><option value="0">ไม่มีประกัน</option><option value="7">7 วัน</option><option value="15">15 วัน</option><option value="30" selected>30 วัน</option><option value="60">60 วัน</option><option value="90">90 วัน</option><option value="180">180 วัน</option><option value="365">1 ปี</option></select></div></div>
+    <div class="field" id="odStartF"><label for="odStart">เริ่มประกันวันที่</label><div class="inp"><input type="date" id="odStart"></div><p class="hint">ค่าเริ่มต้นคือวันนี้ เปลี่ยนเป็นวันที่ลูกค้าได้รับของได้</p></div>
     <dl class="cd__sum" id="odSum"></dl>
     <p class="hint">กดเมื่อส่งมอบหรือรับเงินแล้วเท่านั้น ระบบจะเพิ่มแต้ม ปิดคูปองต้อนรับ และออกรหัสประกันทันที</p>
     <p class="cd__err" id="odErr" hidden></p>
@@ -1484,7 +1542,7 @@ window.__unitac={calc:calc,last:function(){return last;},materials:materials,rec
   </div>
   <div class="cd__f"><button type="button" class="btn btn--ghost" data-close>ยกเลิก</button><button type="submit" class="btn btn--primary" id="lgOk">เข้าสู่ระบบ</button></div>
 </form></dialog>
-<script src="vendor/qrcode.js?v=20261004u"></script>
-<script type="module" src="js/calc-member.js?v=20261004u"></script>
+<script src="vendor/qrcode.js?v=20261004w"></script>
+<script type="module" src="js/calc-member.js?v=20261004w"></script>
 </body>
 </html>

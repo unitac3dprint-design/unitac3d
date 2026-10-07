@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/site.css?v=20261004u">
+<link rel="stylesheet" href="css/site.css?v=20261004w">
 <title>หลังร้าน · UNITAC</title>
 <meta name="description" content="UNITAC 3D PRINT ยินดีให้บริการ">
 <meta property="og:type" content="website">
@@ -650,6 +650,7 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
     <div class="frow">
       <div class="field"><label for="oDate">วันส่งมอบ</label><input type="date" id="oDate" class="input"></div>
       <div class="field oSaleOnly"><label for="oWar">ประกัน</label><select id="oWar"><option value="0">ไม่มีประกัน</option><option value="7">7 วัน</option><option value="15">15 วัน</option><option value="30">30 วัน</option><option value="60">60 วัน</option><option value="90">90 วัน</option><option value="180">180 วัน</option><option value="365">1 ปี</option></select></div>
+      <div class="field oSaleOnly" id="oWarStartF"><label for="oWarStart">เริ่มประกันวันที่</label><input type="date" id="oWarStart"><p class="hint" id="oWarEnd"></p></div>
     </div>
     <div class="frow oSaleOnly">
       <div class="field"><label for="oPrint">ค่าพิมพ์หลังหักส่วนลด (บาท)</label><input type="number" id="oPrint" step="0.01" min="0" inputmode="decimal"></div>
@@ -784,14 +785,14 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
 </div></dialog>
 
 <footer class="foot">UNITAC · <a href="./">ตารางคิว</a> · <a href="warranty.html">เช็กประกัน</a> · <a href="portfolio.html">ผลงาน</a> · <a href="partners.html">พาร์ทเนอร์</a> · <a href="privacy.html">นโยบายความเป็นส่วนตัว</a></footer>
-<script type="module" src="js/admin.js?v=20261004u"></script>
-<script type="module" src="js/admin-partners.js?v=20261004u"></script>
-<script type="module" src="js/admin-stock.js?v=20261004u"></script>
-<script type="module" src="js/admin-portfolio.js?v=20261004u"></script>
-<script type="module" src="js/admin-tools.js?v=20261004u"></script>
-<script type="module" src="js/admin-ship.js?v=20261004u"></script>
-<script type="module" src="js/admin-hero.js?v=20261004u"></script>
-<script type="module" src="js/admin-sides.js?v=20261004u"></script>
-<script type="module" src="js/admin-prep.js?v=20261004u"></script>
+<script type="module" src="js/admin.js?v=20261004w"></script>
+<script type="module" src="js/admin-partners.js?v=20261004w"></script>
+<script type="module" src="js/admin-stock.js?v=20261004w"></script>
+<script type="module" src="js/admin-portfolio.js?v=20261004w"></script>
+<script type="module" src="js/admin-tools.js?v=20261004w"></script>
+<script type="module" src="js/admin-ship.js?v=20261004w"></script>
+<script type="module" src="js/admin-hero.js?v=20261004w"></script>
+<script type="module" src="js/admin-sides.js?v=20261004w"></script>
+<script type="module" src="js/admin-prep.js?v=20261004w"></script>
 </body>
 </html>
