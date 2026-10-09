@@ -436,7 +436,30 @@ html.js .rv.in{opacity:1;transform:none;transition:opacity .5s var(--ease) var(-
 .pay__who{font-size:12.5px;color:var(--p-ink)}
 .pay__hint{font-size:11.5px;color:var(--p-muted);line-height:1.5}
 @media (max-width:420px){.paper__pay{grid-template-columns:minmax(0,1fr);justify-items:center;text-align:center}.pay__t{align-items:center}}
-.paper__war{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;align-items:center;margin-top:14px;padding-top:14px;border-top:1px dashed var(--p-rule)}
+/* tear-off warranty stub, clearly separate from the payment QR */
+.stub{position:relative;margin:22px -30px -24px;background:#F3F6F2;--w-ac:#2F7A4F}
+@media (max-width:600px){.stub{margin:20px -20px -18px}}
+.stub__cut{position:relative;display:flex;align-items:center;justify-content:center;height:22px;border-top:2px dashed #B9C2B6}
+.stub__cut span{position:relative;top:-1px;padding:0 10px;background:#F3F6F2;font-size:10.5px;color:#6F7A6C;letter-spacing:.04em}
+.stub__n{position:absolute;top:-12px;width:22px;height:22px;border-radius:50%;background:var(--ground,#141311)}
+.stub__n--l{left:-11px}.stub__n--r{right:-11px}
+.stub__body{display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px;align-items:center;padding:8px 30px 22px}
+@media (max-width:600px){.stub__body{padding:8px 20px 18px;gap:14px}}
+.stub__qr{display:flex;flex-direction:column;align-items:center;gap:5px}
+.stub__qr > div{width:104px;height:104px;padding:6px;border-radius:10px;background:#fff;box-shadow:0 0 0 1px #DCE3D9}
+.stub__qr svg{display:block;width:100%;height:100%}
+.stub__qr > span{font-size:10px;color:#6F7A6C}
+.stub__t{display:flex;flex-direction:column;gap:4px;min-width:0}
+.stub__k{font-family:var(--font-num);font-size:10px;letter-spacing:.18em;color:var(--w-ac);font-weight:600}
+.stub__code{font-family:var(--font-num);font-size:20px;font-weight:600;letter-spacing:.06em;color:var(--p-ink)}
+.stub__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:4px 0 2px}
+.stub__grid > div{display:flex;flex-direction:column;padding:6px 8px;border-radius:8px;background:#fff;box-shadow:0 0 0 1px #DCE3D9}
+.stub__grid > div > span{font-size:10px;color:#6F7A6C}
+.stub__grid b{font-size:12.5px;color:var(--p-ink);font-weight:600;white-space:nowrap}
+.stub__job{font-size:12px;color:var(--p-ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stub__url{font-size:10.5px;color:#6F7A6C;overflow-wrap:anywhere}
+.paper__war{display:none}
+@media (max-width:520px){.stub__qr > div{width:84px;height:84px}.stub__grid{grid-template-columns:1fr 1fr}.stub__grid > div:last-child{grid-column:1 / -1;flex-direction:row;gap:6px;align-items:baseline}.stub__grid > div > span{white-space:nowrap}.stub__code{font-size:17px}}
 .paper__war .qr{width:84px;height:84px}
 .paper__war .qr svg{width:100%;height:100%}
 .paper__war b{display:block;font-size:13.5px;color:var(--p-ink)}
@@ -881,8 +904,24 @@ dialog.cd::backdrop{background:rgba(12,10,8,.6);backdrop-filter:blur(3px)}
         <span class="pay__who" id="payName"></span>
       </div>
     </div>
-    <div class="paper__war" id="paperWar" hidden><div class="qr" id="pwQr" hidden></div><div><b>ประกัน <span id="pwDays"></span> วัน · ถึง <span id="pwUntil"></span> · <code id="pwCode"></code></b><span>เช็กประกันได้ในหน้าสมาชิก หรือที่ <span id="pwUrl"></span></span></div></div>
     <p class="paper__foot">UNITAC AUTHORIZED SERVICE</p>
+    <div class="stub" id="paperWar" hidden>
+      <div class="stub__cut" aria-hidden="true"><i class="stub__n stub__n--l"></i><span>✂ ฉีกตามรอยเก็บไว้เป็นใบรับประกัน</span><i class="stub__n stub__n--r"></i></div>
+      <div class="stub__body">
+        <div class="stub__qr"><div id="pwQr"></div><span>สแกนเช็กประกัน</span></div>
+        <div class="stub__t">
+          <span class="stub__k">WARRANTY CARD · ใบรับประกัน</span>
+          <code class="stub__code" id="pwCode"></code>
+          <div class="stub__grid">
+            <div><span>เริ่มประกัน</span><b id="pwStart"></b></div>
+            <div><span>หมดประกัน</span><b id="pwUntil"></b></div>
+            <div><span>ระยะ</span><b><span id="pwDays"></span> วัน</b></div>
+          </div>
+          <span class="stub__job" id="pwJob"></span>
+          <span class="stub__url">เช็กได้ในหน้าสมาชิก หรือ <span id="pwUrl"></span></span>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="logo-row">
@@ -1558,6 +1597,6 @@ window.__unitac={calc:calc,last:function(){return last;},materials:materials,rec
   <div class="cd__f"><button type="button" class="btn btn--ghost" data-close>ยกเลิก</button><button type="submit" class="btn btn--primary" id="lgOk">เข้าสู่ระบบ</button></div>
 </form></dialog>
 <script src="vendor/qrcode.js?v=20261004w"></script>
-<script type="module" src="js/calc-member.js?v=20261004w"></script>
+<script type="module" src="js/calc-member.js?v=20261010a"></script>
 </body>
 </html>
