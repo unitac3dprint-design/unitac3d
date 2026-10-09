@@ -414,12 +414,16 @@ html.js .rv.in{opacity:1;transform:none;transition:opacity .5s var(--ease) var(-
 .mix{display:grid;gap:8px}
 .mix__rows{display:grid;gap:8px}
 .mix__rows:empty{display:none}
-.mix__row{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) 40px;gap:8px;align-items:center}
+.mix__row{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) 40px;gap:8px;align-items:center;padding:10px;border:1px solid var(--rule);border-radius:12px}
+.mix__row .mix__t{grid-column:1 / -1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;gap:8px;align-items:center}
+.mix__row .mix__t .lab{font-size:12px;color:var(--muted);grid-column:1 / -1}
+.own{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2);cursor:pointer;margin-top:6px}
+.own input{width:18px;height:18px;accent-color:var(--accent)}
 .mix__row .inp{margin:0}
 .mix__x{width:40px;height:40px;border-radius:10px;border:1px solid var(--rule-strong);background:none;color:var(--muted);font-size:18px;cursor:pointer}
 .mix__x:hover{color:var(--stop);border-color:var(--stop)}
 .mix__add{justify-self:start;gap:6px}
-@media (max-width:480px){.mix__row{grid-template-columns:minmax(0,1fr) 96px 40px}}
+@media (max-width:480px){.mix__row{grid-template-columns:minmax(0,1fr) 96px 40px}.mix__row .mix__t{grid-template-columns:1fr 1fr}.mix__row .mix__t .own{grid-column:1 / -1}}
 .paper__pay{display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px;align-items:center;margin-top:18px;padding:16px;border-radius:14px;border:1px solid var(--p-rule);background:linear-gradient(135deg,rgba(255,122,60,.06),transparent 60%)}
 .pay__qr{position:relative;width:132px;height:132px;padding:8px;border-radius:12px;background:#fff;box-shadow:0 0 0 1px var(--p-rule)}
 .pay__qrin,.pay__qrin svg{width:100%;height:100%;display:block}
@@ -572,6 +576,7 @@ dialog.cd::backdrop{background:rgba(12,10,8,.6);backdrop-filter:blur(3px)}
           <select id="matName"></select>
           <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
         </div>
+        <label class="own"><input type="checkbox" id="matOwn"><span>ลูกค้าส่งเส้นนี้มาเอง (ไม่คิดค่าเส้น)</span></label>
         <p class="hint" id="matPriceHint">ต้นทุนจริง <span class="num">0.00</span> ฿/g · คิดลูกค้า <span class="num">0.00</span> ฿/g</p>
         <p class="hint" id="matSyncStatus">ใช้ราคาในเครื่อง (ยังไม่ได้เชื่อมต่อชีต)</p>
       </div>
@@ -942,7 +947,7 @@ var FIELD_IDS=['jobName','matName','qty','matWeight','printDays','printHours','p
 var JOB_RESET={jobName:'',qty:'1',matWeight:'0',printDays:'0',printHours:'0',printMins:'0',
   discountValue:'0',designFee:'0',shippingFee:'0',hardwareCost:'0'};
 
-var S={v:4,fields:{},theme:null,logo:null,materials:null,materialsAt:null,mix:[]};
+var S={v:4,fields:{},theme:null,logo:null,materials:null,materialsAt:null,mix:[],mainOwn:false};
 var storageOk=true;
 var last=null;
 
@@ -979,7 +984,8 @@ function loadState(){
     if(typeof o.logo==='string'&&o.logo.indexOf('data:image/')===0) S.logo=o.logo;
     if(Array.isArray(o.materials)&&o.materials.length) S.materials=o.materials;
     if(typeof o.materialsAt==='number') S.materialsAt=o.materialsAt;
-    if(Array.isArray(o.mix)) S.mix=o.mix.filter(function(x){return x&&typeof x.code==='string';}).slice(0,6).map(function(x){return {code:x.code,w:Number(x.w)||0};});
+    if(Array.isArray(o.mix)) S.mix=o.mix.filter(function(x){return x&&typeof x.code==='string';}).slice(0,6).map(function(x){return {code:x.code,w:Number(x.w)||0,h:Number(x.h)||0,mi:Number(x.mi)||0,own:!!x.own};});
+    S.mainOwn=!!o.mainOwn;
   }catch(e){ storageOk=false; }
 }
 function writeState(){
@@ -1060,7 +1066,13 @@ function renderMix(){
     sel.addEventListener('change',function(){x.code=sel.value;recalc();save();});
     inp.addEventListener('input',function(){x.w=Math.max(0,Number(inp.value)||0);recalc();save();});
     del.addEventListener('click',function(){S.mix.splice(i,1);renderMix();recalc();save();});
-    row.appendChild(w1);row.appendChild(w2);row.appendChild(del);box.appendChild(row);
+    var t=document.createElement('div');t.className='mix__t';
+    var lab=document.createElement('span');lab.className='lab';lab.textContent='เวลาพิมพ์เพิ่มของเส้นนี้ต่อชิ้น (ถ้าพิมพ์พร้อมกันในชิ้นเดียวกับเส้นหลัก ใส่ 0)';t.appendChild(lab);
+    [['h','ชม.'],['mi','นาที']].forEach(function(f){var wr=document.createElement('div');wr.className='inp inp--unit';var ti=document.createElement('input');ti.type='number';ti.min='0';ti.step='1';ti.inputMode='numeric';ti.value=x[f[0]]||0;ti.setAttribute('aria-label',f[1]+' ของเส้นชนิดที่ '+(i+2));var un=document.createElement('span');un.className='unit';un.textContent=f[1];wr.appendChild(ti);wr.appendChild(un);
+      ti.addEventListener('input',function(){x[f[0]]=Math.max(0,Number(ti.value)||0);recalc();save();});t.appendChild(wr);});
+    var ow=document.createElement('label');ow.className='own';var oc=document.createElement('input');oc.type='checkbox';oc.checked=!!x.own;var os=document.createElement('span');os.textContent='ลูกค้าส่งมาเอง';ow.appendChild(oc);ow.appendChild(os);
+    oc.addEventListener('change',function(){x.own=oc.checked;recalc();save();});t.appendChild(ow);
+    row.appendChild(w1);row.appendChild(w2);row.appendChild(del);row.appendChild(t);box.appendChild(row);
   });
   var has=(S.mix||[]).length>0;
   $('matWeightHint').textContent=has?'น้ำหนักเส้นหลัก (วัสดุด้านบน) ต่อ 1 ชิ้น':'น้ำหนักเส้นที่ใช้ต่อ 1 ชิ้น';
@@ -1086,17 +1098,19 @@ function calc(){
   var discountMode=val('discountMode')==='baht'?'baht':'percent';
   var discountValue=num('discountValue'),designFee=num('designFee'),shippingFee=num('shippingFee');
 
-  var hoursPerPiece=printDays*24+printHours+printMins/60;
+  var mainHours=printDays*24+printHours+printMins/60;
+  var extraHours=(S.mix||[]).reduce(function(s,x){return s+(Number(x.h)||0)+(Number(x.mi)||0)/60;},0);
+  var hoursPerPiece=mainHours+extraHours;
   var totalHours=hoursPerPiece*qty;
 
   var elecCost=(powerWatt/1000)*totalHours*elecUnit;
   var depPerHour=machineLife>0?machineCost/machineLife:0;
   var depCost=depPerHour*totalHours;
 
-  var mats=[{m:m,w:matWeight,list:listPerGram,cost:costPerGram}];
-  (S.mix||[]).forEach(function(x){var mm=matByCode(x.code);if(!mm||!(x.w>0))return;var lp=(Number(mm.pricePerKg)||0)/1000;var cp=(typeof mm.actualCostPerGram==='number'&&mm.actualCostPerGram>0)?mm.actualCostPerGram:lp;mats.push({m:mm,w:Number(x.w),list:lp,cost:cp});});
+  var mats=[{m:m,w:matWeight,list:listPerGram,cost:costPerGram,own:!!S.mainOwn}];
+  (S.mix||[]).forEach(function(x){var mm=matByCode(x.code);if(!mm||!(x.w>0))return;var lp=(Number(mm.pricePerKg)||0)/1000;var cp=(typeof mm.actualCostPerGram==='number'&&mm.actualCostPerGram>0)?mm.actualCostPerGram:lp;mats.push({m:mm,w:Number(x.w),list:lp,cost:cp,own:!!x.own});});
   var matCharge=0,matReal=0,weightAll=0;
-  mats.forEach(function(x){x.charge=x.list*x.w*qty;x.real=x.cost*x.w*qty;matCharge+=x.charge;matReal+=x.real;weightAll+=x.w;});
+  mats.forEach(function(x){x.charge=x.own?0:x.list*x.w*qty;x.real=x.own?0:x.cost*x.w*qty;matCharge+=x.charge;matReal+=x.real;weightAll+=x.w;});
 
   var buffer=1+failRate/100;
   var chargeBase=(matCharge+elecCost+depCost)*buffer+hardwareCost;
@@ -1121,7 +1135,7 @@ function calc(){
   var realMargin=grandTotal>0?(realProfit/grandTotal)*100:0;
   var perPiece=qty>0?grandTotal/qty:0;
 
-  var r={m:m,mats:mats,matLabel:mats.map(function(x){return x.m&&x.m.code;}).filter(Boolean).join(' + '),mainWeight:matWeight,listPerGram:listPerGram,costPerGram:costPerGram,qty:qty,matWeight:weightAll,
+  var r={m:m,mats:mats,mainHours:mainHours,extraHours:extraHours,matLabel:mats.map(function(x){return x.m&&(x.m.code+(x.own?' (ลูกค้าส่งมา)':''));}).filter(Boolean).join(' + '),mainWeight:matWeight,listPerGram:listPerGram,costPerGram:costPerGram,qty:qty,matWeight:weightAll,
     hoursPerPiece:hoursPerPiece,totalHours:totalHours,elecCost:elecCost,depCost:depCost,depPerHour:depPerHour,
     matCharge:matCharge,matReal:matReal,buffer:buffer,failRate:failRate,hardwareCost:hardwareCost,
     chargeBase:chargeBase,realCost:realCost,operationFee:operationFee,printSubtotal:printSubtotal,
@@ -1152,14 +1166,14 @@ function render(r){
 
   /* hints */
   $('matPriceHint').innerHTML='ต้นทุนจริง <span class="num">'+fmt(r.costPerGram)+'</span> ฿/g · คิดลูกค้า <span class="num">'+fmt(r.listPerGram)+'</span> ฿/g';
-  $('timeHint').textContent='รวม '+fmtDHM(r.hoursPerPiece)+'/ชิ้น · ทั้งงาน '+fmtDHM(r.totalHours);
+  $('timeHint').textContent='รวม '+fmtDHM(r.hoursPerPiece)+'/ชิ้น'+(r.extraHours>0?' (เส้นหลัก '+fmtDHM(r.mainHours)+' + เส้นอื่น '+fmtDHM(r.extraHours)+')':'')+' · ทั้งงาน '+fmtDHM(r.totalHours);
   $('depHint').innerHTML='ใช้คิดค่าเสื่อม — ปัจจุบัน <span class="num">'+fmt(r.depPerHour)+'</span> ฿/ชม.';
 
   /* paper */
   $('summaryJobName').textContent=(val('jobName')||'').trim()||'งานพิมพ์ 3 มิติ';
   $('dispMatName').textContent=r.m&&r.m.code?r.m.code:'—';
   var mainLine=r.mats&&r.mats[0];
-  $('matSub').textContent='Material · '+fmtInt(mainLine?mainLine.w:r.matWeight)+' g × '+r.qty+' ชิ้น';
+  $('matSub').textContent=(mainLine&&mainLine.own?'ลูกค้าส่งเส้นมาเอง · ':'Material · ')+fmtInt(mainLine?mainLine.w:r.matWeight)+' g × '+r.qty+' ชิ้น';
   $('sumMatCost').textContent=fmt(mainLine?mainLine.charge*r.buffer:r.lineMat);
   var firstLi=$('sumMatCost').closest('li');
   [].forEach.call(document.querySelectorAll('.item--mix'),function(n){n.remove();});
@@ -1168,7 +1182,7 @@ function render(r){
     var li=firstLi.cloneNode(true);li.classList.add('item--mix');
     [].forEach.call(li.querySelectorAll('[id]'),function(n){n.removeAttribute('id');});
     var b=li.querySelector('.item__t b'),s=li.querySelector('.item__t > span'),v=li.querySelector('.item__v > span');
-    b.textContent='ค่าวัสดุ ('+x.m.code+')';s.textContent='Material · '+fmtInt(x.w)+' g × '+r.qty+' ชิ้น';v.textContent=fmt(x.charge*r.buffer);
+    b.textContent='ค่าวัสดุ ('+x.m.code+')';s.textContent=(x.own?'ลูกค้าส่งเส้นมาเอง · ':'Material · ')+fmtInt(x.w)+' g × '+r.qty+' ชิ้น';v.textContent=fmt(x.charge*r.buffer);
     anchor.after(li);anchor=li;
   });
   $('elecSub').textContent='Electricity · '+fmtHM(r.totalHours);
@@ -1443,7 +1457,7 @@ $('applyBedBtn').addEventListener('click',function(){
 /* ================= new job ================= */
 $('newJobBtn').addEventListener('click',function(){
   Object.keys(JOB_RESET).forEach(function(id){var el=$(id);if(el)el.value=JOB_RESET[id];});
-  S.mix=[]; renderMix();
+  S.mix=[]; S.mainOwn=false; $('matOwn').checked=false; renderMix();
   recalc(); saveNow(); toast('เริ่มงานใหม่แล้ว');
   $('jobName').focus();
 });
@@ -1480,6 +1494,8 @@ root.setAttribute('data-theme','dark');
 syncTheme();
 buildOptions();
 renderMix();
+$('matOwn').checked=!!S.mainOwn;
+$('matOwn').addEventListener('change',function(){S.mainOwn=$('matOwn').checked;recalc();save();});
 $('mixAdd').addEventListener('click',function(){var main=val('matName'),list=materials(),pick=(list.filter(function(m){return m.code!==main;})[0]||list[0]||{}).code||'';S.mix=(S.mix||[]).concat([{code:pick,w:0}]);renderMix();var ins=$('mixRows').querySelectorAll('input');if(ins.length)ins[ins.length-1].focus();recalc();save();});
 setDiscountMode(val('discountMode'),true);
 applyLogo();
