@@ -418,7 +418,8 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
 .paper__pay{display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px;align-items:center;margin-top:18px;padding:16px;border-radius:14px;border:1px solid var(--p-rule);background:linear-gradient(135deg,rgba(255,122,60,.06),transparent 60%)}
 .pay__qr{position:relative;width:132px;height:132px;padding:8px;border-radius:12px;background:#fff;box-shadow:0 0 0 1px var(--p-rule)}
 .pay__qrin,.pay__qrin svg{width:100%;height:100%;display:block}
-.pay__qr::after{content:'';position:absolute;left:50%;top:50%;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:6px;background:#141311 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='4.3 21.5 85.5 36.5'%3E%3Cpath fill='%23FF7A3C' d='M4.85 24.9Q4.85 22.05 7.7 22.05H10.5L12.4 24.9L16.6 22.05H26Q27.3 22.05 27.3 23.3V24.54L12.14 41.96Q11.1 43.16 11.1 44.56V45.25Q11.1 46.85 12.7 46.85H25.54L47.12 22.05H84.2L89.3 27.7V28.4Q89.3 30.1 86.9 30.1H72.56L48.73 57.5H40.02Q36.23 57.5 38.73 54.63L60.06 30.1H52.46L28.63 57.5H7.65Q4.85 57.5 4.85 54.7Z'/%3E%3C/svg%3E") center/78% no-repeat;box-shadow:0 0 0 3px #fff}
+.pay__mark{position:absolute;left:50%;top:50%;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:6px;background:#141311;box-shadow:0 0 0 3px #fff;display:flex;align-items:center;justify-content:center}
+.pay__mark svg{display:block;width:20px;height:9px}
 .pay__t{display:flex;flex-direction:column;gap:3px;min-width:0}
 .pay__k{font-family:var(--font-num);font-size:10.5px;letter-spacing:.22em;color:var(--p-accent)}
 .pay__t b{font-size:15px;color:var(--p-ink)}
@@ -798,7 +799,7 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
       <p class="paper__note" id="bdNote" hidden></p>
       <div class="total"><div class="k">ยอดรวมสุทธิ<small>GRAND TOTAL</small></div><div class="v"><span id="bdTotal">0.00</span><small>THB</small></div><div class="pp" id="bdPPL" hidden>≈ <span id="bdPP"></span> ฿/ชิ้น</div></div>
       <div class="paper__pay" id="bdPay" hidden>
-        <div class="pay__qr"><div class="pay__qrin" id="bdPayQr"></div></div>
+        <div class="pay__qr"><div class="pay__qrin" id="bdPayQr"></div><span class="pay__mark" aria-hidden="true"><svg viewBox="4.3 21.5 85.5 36.5" width="20" height="9"><path fill="#FF7A3C" d="M4.85 24.9Q4.85 22.05 7.7 22.05H10.5L12.4 24.9L16.6 22.05H26Q27.3 22.05 27.3 23.3V24.54L12.14 41.96Q11.1 43.16 11.1 44.56V45.25Q11.1 46.85 12.7 46.85H25.54L47.12 22.05H84.2L89.3 27.7V28.4Q89.3 30.1 86.9 30.1H72.56L48.73 57.5H40.02Q36.23 57.5 38.73 54.63L60.06 30.1H52.46L28.63 57.5H7.65Q4.85 57.5 4.85 54.7Z"/></svg></span></div>
         <div class="pay__t"><span class="pay__k">PROMPTPAY · THAI QR</span><b>สแกนเพื่อชำระเงิน</b><span class="pay__amt"><span id="bdPayAmt">0.00</span><small>THB</small></span><span class="pay__who" id="bdPayName"></span></div>
       </div>
       <p class="paper__foot">UNITAC AUTHORIZED SERVICE</p>
