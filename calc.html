@@ -321,7 +321,7 @@ details.card .dbody{padding:2px 22px 22px}
 @media (max-width:600px){.paper{padding:22px 20px 18px;border-radius:14px}}
 .paper__head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:26px}
 .paper__logo{max-width:150px;min-width:0;display:flex;align-items:center;min-height:34px}
-.paper__logo img{max-width:150px;max-height:64px;object-fit:contain;display:block}
+.paper__logo img{max-width:150px;max-height:72px;object-fit:contain;display:block}
 .paper__brand{display:inline-flex;align-items:center;gap:9px;color:var(--p-ink)}
 .paper__brand svg{width:28px;height:20px;transform:skewX(-10deg)}
 .paper__brand b{font-family:var(--font-head);font-weight:700;font-size:19px;letter-spacing:.12em;line-height:1}
@@ -409,7 +409,7 @@ html.js .rv.in{opacity:1;transform:none;transition:opacity .5s var(--ease) var(-
 .memck small{display:block;font-size:12px;color:var(--muted)}
 .memwarn{font-size:13px;color:var(--warn);background:var(--warn-soft);padding:10px 12px;border-radius:var(--r-md)}
 .brand__logo{height:34px;width:auto;color:var(--ink);display:block}
-.paper__brand svg.paper__logosvg{width:auto;height:44px;transform:none;color:var(--p-ink)}
+.paper__brand svg.paper__logosvg{width:auto;height:72px;transform:none;color:var(--p-ink)}
 .paper__mem{font-size:12.5px;color:var(--p-ink2);margin-top:4px;font-family:var(--font-num)}
 .mix{display:grid;gap:8px}
 .mix__rows{display:grid;gap:8px}
@@ -879,7 +879,6 @@ dialog.cd::backdrop{background:rgba(12,10,8,.6);backdrop-filter:blur(3px)}
         <b>สแกนเพื่อชำระเงิน</b>
         <span class="pay__amt"><span id="payAmt">0.00</span><small>THB</small></span>
         <span class="pay__who" id="payName"></span>
-        <span class="pay__hint">สแกนด้วยแอปธนาคารใดก็ได้ ยอดเงินใส่ไว้ให้แล้ว</span>
       </div>
     </div>
     <div class="paper__war" id="paperWar" hidden><div class="qr" id="pwQr" hidden></div><div><b>ประกัน <span id="pwDays"></span> วัน · ถึง <span id="pwUntil"></span> · <code id="pwCode"></code></b><span>เช็กประกันได้ในหน้าสมาชิก หรือที่ <span id="pwUrl"></span></span></div></div>
