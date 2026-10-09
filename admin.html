@@ -371,6 +371,92 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
 .tg__fields{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
 #tgDlg .ship__url{overflow-wrap:anywhere;font-family:var(--font-num);font-size:12.5px;color:var(--muted);margin:8px 0}
 #tgNum{font-size:17px;letter-spacing:.06em}
+.paper{
+  --p-ink:#191714;--p-ink2:#4A473F;--p-muted:#6F6B62;--p-rule:#E6E2DA;--p-sunk:#F7F5F1;--p-accent:#CC4410;--p-stop:#A8302A;--p-accent-hi:#F0642A;
+  color-scheme:light;
+  background:#FFFFFF;color:var(--p-ink);
+  border-radius:var(--r-lg);box-shadow:var(--shadow-float);
+  padding:30px 30px 24px;overflow:hidden;font-size:14px;line-height:1.6;
+}
+@media (max-width:600px){.paper{padding:22px 20px 18px;border-radius:14px}}
+.paper__head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:26px}
+.paper__logo{max-width:150px;min-width:0;display:flex;align-items:center;min-height:34px}
+.paper__logo img{max-width:150px;max-height:72px;object-fit:contain;display:block}
+.paper__brand{display:inline-flex;align-items:center;gap:9px;color:var(--p-ink)}
+.paper__brand svg{width:28px;height:20px;transform:skewX(-10deg)}
+.paper__brand b{font-family:var(--font-head);font-weight:700;font-size:19px;letter-spacing:.12em;line-height:1}
+.paper__brand b sup{font-size:8px;letter-spacing:0;margin-left:2px;vertical-align:top}
+.paper__title{text-align:right}
+.paper__title h3{font-size:20px;color:var(--p-ink);line-height:1.3}
+.paper__title .en{font-size:10px;letter-spacing:.18em;color:var(--p-muted);margin-top:2px}
+.paper__title .date{font-family:var(--font-num);font-size:12px;color:var(--p-ink2);margin-top:8px}
+.paper__cust{padding-bottom:18px;margin-bottom:18px;border-bottom:1px dashed var(--p-rule)}
+.paper__cust .k{font-size:10px;letter-spacing:.16em;color:var(--p-muted);margin-bottom:4px}
+.paper__cust h4{font-size:18px;color:var(--p-ink);overflow-wrap:anywhere;line-height:1.4}
+.items{list-style:none;margin:0;padding:0;display:grid}
+.item{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid var(--p-rule)}
+.item:last-child{border-bottom:0}
+.item__ic{width:32px;height:32px;border-radius:8px;background:var(--p-sunk);color:var(--p-ink2);display:grid;place-items:center;flex:none}
+.item__ic svg{width:16px;height:16px}
+.item__t{min-width:0}
+.item__t b{display:block;font-weight:600;font-size:13.5px;color:var(--p-ink);line-height:1.5}
+.item__t > span{display:block;font-size:11px;color:var(--p-muted);line-height:1.5;font-family:var(--font-num)}
+.item__v{font-family:var(--font-num);font-variant-numeric:tabular-nums;font-size:14.5px;color:var(--p-ink);white-space:nowrap}
+.item__v small{font-family:var(--font-ui);font-size:12px;color:var(--p-muted);margin-left:4px}
+.item--stop .item__v,.item--stop .item__ic{color:var(--p-stop)}
+.item--stop .item__ic{background:#F8E3E0}
+.paper__note{font-size:11.5px;color:var(--p-muted);margin-top:10px;font-family:var(--font-num)}
+.total{margin-top:20px;background:#191714;color:#F7F5F1;border-radius:12px;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.total .k{font-size:13px;opacity:.7}
+.total .k small{display:block;font-size:10px;letter-spacing:.16em;opacity:.7}
+.total .v{font-family:var(--font-num);font-variant-numeric:tabular-nums;font-size:30px;font-weight:500;line-height:1.1;display:flex;align-items:baseline;gap:8px;overflow-wrap:anywhere}
+.total .v small{font-family:var(--font-ui);font-size:12px;letter-spacing:.12em;opacity:.7}
+.total .pp{width:100%;text-align:right;font-family:var(--font-num);font-size:12px;opacity:.7;margin-top:-4px}
+.paper__foot{margin-top:22px;text-align:center;font-size:10px;letter-spacing:.24em;color:var(--p-muted);font-weight:500}
+.paper__brand svg.paper__logosvg{width:auto;height:72px;transform:none;color:var(--p-ink)}
+.paper__mem{font-size:12.5px;color:var(--p-ink2);margin-top:4px;font-family:var(--font-num)}
+.paper__pay{display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px;align-items:center;margin-top:18px;padding:16px;border-radius:14px;border:1px solid var(--p-rule);background:linear-gradient(135deg,rgba(255,122,60,.06),transparent 60%)}
+.pay__qr{position:relative;width:132px;height:132px;padding:8px;border-radius:12px;background:#fff;box-shadow:0 0 0 1px var(--p-rule)}
+.pay__qrin,.pay__qrin svg{width:100%;height:100%;display:block}
+.pay__qr::after{content:'';position:absolute;left:50%;top:50%;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:6px;background:#141311 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='4.3 21.5 85.5 36.5'%3E%3Cpath fill='%23FF7A3C' d='M4.85 24.9Q4.85 22.05 7.7 22.05H10.5L12.4 24.9L16.6 22.05H26Q27.3 22.05 27.3 23.3V24.54L12.14 41.96Q11.1 43.16 11.1 44.56V45.25Q11.1 46.85 12.7 46.85H25.54L47.12 22.05H84.2L89.3 27.7V28.4Q89.3 30.1 86.9 30.1H72.56L48.73 57.5H40.02Q36.23 57.5 38.73 54.63L60.06 30.1H52.46L28.63 57.5H7.65Q4.85 57.5 4.85 54.7Z'/%3E%3C/svg%3E") center/78% no-repeat;box-shadow:0 0 0 3px #fff}
+.pay__t{display:flex;flex-direction:column;gap:3px;min-width:0}
+.pay__k{font-family:var(--font-num);font-size:10.5px;letter-spacing:.22em;color:var(--p-accent)}
+.pay__t b{font-size:15px;color:var(--p-ink)}
+.pay__amt{font-family:var(--font-num);font-size:24px;font-weight:600;color:var(--p-ink);line-height:1.2}
+.pay__amt small{font-size:11px;margin-left:4px;color:var(--p-muted);letter-spacing:.1em}
+.pay__who{font-size:12.5px;color:var(--p-ink)}
+@media (max-width:420px){.paper__pay{grid-template-columns:minmax(0,1fr);justify-items:center;text-align:center}.pay__t{align-items:center}}
+.stub{position:relative;margin:22px -30px -24px;background:#F3F6F2;--w-ac:#2F7A4F}
+@media (max-width:600px){.stub{margin:20px -20px -18px}}
+.stub__cut{position:relative;display:flex;align-items:center;justify-content:center;height:22px;border-top:2px dashed #B9C2B6}
+.stub__cut span{position:relative;top:-1px;padding:0 10px;background:#F3F6F2;font-size:10.5px;color:#6F7A6C;letter-spacing:.04em}
+.stub__n{position:absolute;top:-12px;width:22px;height:22px;border-radius:50%;background:var(--ground,#141311)}
+.stub__n--l{left:-11px}.stub__n--r{right:-11px}
+.stub__body{display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px;align-items:center;padding:8px 30px 22px}
+@media (max-width:600px){.stub__body{padding:8px 20px 18px;gap:14px}}
+.stub__qr{display:flex;flex-direction:column;align-items:center;gap:5px}
+.stub__qr > div{width:104px;height:104px;padding:6px;border-radius:10px;background:#fff;box-shadow:0 0 0 1px #DCE3D9}
+.stub__qr svg{display:block;width:100%;height:100%}
+.stub__qr > span{font-size:10px;color:#6F7A6C}
+.stub__t{display:flex;flex-direction:column;gap:4px;min-width:0}
+.stub__k{font-family:var(--font-num);font-size:10px;letter-spacing:.18em;color:var(--w-ac);font-weight:600}
+.stub__code{font-family:var(--font-num);font-size:20px;font-weight:600;letter-spacing:.06em;color:var(--p-ink)}
+.stub__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:4px 0 2px}
+.stub__grid > div{display:flex;flex-direction:column;padding:6px 8px;border-radius:8px;background:#fff;box-shadow:0 0 0 1px #DCE3D9}
+.stub__grid > div > span{font-size:10px;color:#6F7A6C}
+.stub__grid b{font-size:12.5px;color:var(--p-ink);font-weight:600;white-space:nowrap}
+.stub__job{font-size:12px;color:var(--p-ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stub__url{font-size:10.5px;color:#6F7A6C;overflow-wrap:anywhere}
+@media (max-width:520px){.stub__qr > div{width:84px;height:84px}.stub__grid{grid-template-columns:1fr 1fr}.stub__grid > div:last-child{grid-column:1 / -1;flex-direction:row;gap:6px;align-items:baseline}.stub__grid > div > span{white-space:nowrap}.stub__code{font-size:17px}}
+/* bill viewer */
+#bDlg{max-width:min(600px,calc(100vw - 16px))}
+#bDlg .dlg__body{background:var(--sunk);padding:16px;display:block;min-height:0;flex:1 1 auto;overscroll-behavior:contain}
+#bDlg .stub__n{background:var(--sunk)}
+.bill__bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:12px 16px;border-top:1px solid var(--rule)}
+.bill__bar .own{margin:0 auto 0 0;font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:center}
+.bill__old{font-size:12px;color:var(--muted);margin:0 0 10px;padding:8px 12px;border-radius:10px;background:var(--surface);border:1px dashed var(--rule)}
+.orow__acts button.bill{color:var(--accent)}
+@media (max-width:600px){#bDlg .dlg__body{padding:8px}}
 </style>
 </head>
 <body>
@@ -698,6 +784,46 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
   <div class="dlg__body" id="wOut"></div>
 </div></dialog>
 
+<dialog id="bDlg" aria-labelledby="bDlgT"><div class="dlg">
+  <div class="dlg__head"><h2 id="bDlgT">บิลออเดอร์</h2><button type="button" class="iconbtn" data-close aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="dlg__body">
+    <p class="bill__old" id="bdOld" hidden>ออเดอร์นี้บันทึกก่อนมีระบบเก็บบิล จึงแสดงแบบย่อ (ค่าพิมพ์รวม · ส่วนลด · ค่าเขียนแบบ · ค่าส่ง) ออเดอร์ใหม่จะเก็บรายการครบทุกบรรทัด</p>
+    <div class="paper" id="billPaper">
+      <div class="paper__head">
+        <div class="paper__logo"><span class="paper__brand" id="bdBrand"></span></div>
+        <div class="paper__title"><h3>ใบเสนอราคา</h3><p class="en">QUOTATION</p><p class="date" id="bdDate"></p></div>
+      </div>
+      <div class="paper__cust"><p class="k">PROJECT / CUSTOMER</p><h4 id="bdJob"></h4><p class="paper__mem" id="bdMem" hidden></p></div>
+      <ul class="items" id="bdItems" aria-label="รายการ"></ul>
+      <p class="paper__note" id="bdNote" hidden></p>
+      <div class="total"><div class="k">ยอดรวมสุทธิ<small>GRAND TOTAL</small></div><div class="v"><span id="bdTotal">0.00</span><small>THB</small></div><div class="pp" id="bdPPL" hidden>≈ <span id="bdPP"></span> ฿/ชิ้น</div></div>
+      <div class="paper__pay" id="bdPay" hidden>
+        <div class="pay__qr"><div class="pay__qrin" id="bdPayQr"></div></div>
+        <div class="pay__t"><span class="pay__k">PROMPTPAY · THAI QR</span><b>สแกนเพื่อชำระเงิน</b><span class="pay__amt"><span id="bdPayAmt">0.00</span><small>THB</small></span><span class="pay__who" id="bdPayName"></span></div>
+      </div>
+      <p class="paper__foot">UNITAC AUTHORIZED SERVICE</p>
+      <div class="stub" id="bdWar" hidden>
+        <div class="stub__cut" aria-hidden="true"><i class="stub__n stub__n--l"></i><span>✂ ฉีกตามรอยเก็บไว้เป็นใบรับประกัน</span><i class="stub__n stub__n--r"></i></div>
+        <div class="stub__body">
+          <div class="stub__qr"><div id="bwQr"></div><span>สแกนเช็กประกัน</span></div>
+          <div class="stub__t">
+            <span class="stub__k">WARRANTY CARD · ใบรับประกัน</span>
+            <code class="stub__code" id="bwCode"></code>
+            <div class="stub__grid"><div><span>เริ่มประกัน</span><b id="bwStart"></b></div><div><span>หมดประกัน</span><b id="bwUntil"></b></div><div><span>ระยะ</span><b><span id="bwDays"></span> วัน</b></div></div>
+            <span class="stub__job" id="bwJob"></span>
+            <span class="stub__url">เช็กได้ในหน้าสมาชิก หรือ <span id="bwUrl"></span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bill__bar">
+    <label class="own"><input type="checkbox" id="bdPayOn" checked> แสดง QR ชำระเงิน</label>
+    <button type="button" class="btn btn--ghost" data-close>ปิด</button>
+    <button type="button" class="btn btn--primary" id="bdSave">บันทึกรูป</button>
+  </div>
+</div></dialog>
+
 <a class="calcfab" id="calcFab" href="calc.html" hidden aria-label="เปิดเครื่องคิดเลข"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M8.5 7h7M8.5 11h.01M12 11h.01M15.5 11h.01M8.5 14.5h.01M12 14.5h.01M15.5 14.5h.01M8.5 18h.01M12 18h3.5"/></svg><span>เครื่องคิดเลข</span></a>
 
 <dialog id="mDlg" aria-labelledby="mDlgT"><form class="dlg" id="mForm" novalidate>
@@ -785,7 +911,8 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
 </div></dialog>
 
 <footer class="foot">UNITAC · <a href="./">ตารางคิว</a> · <a href="warranty.html">เช็กประกัน</a> · <a href="portfolio.html">ผลงาน</a> · <a href="partners.html">พาร์ทเนอร์</a> · <a href="privacy.html">นโยบายความเป็นส่วนตัว</a></footer>
-<script type="module" src="js/admin.js?v=20261004w"></script>
+<script src="vendor/qrcode.js?v=20261004w"></script>
+<script type="module" src="js/admin.js?v=20261010b"></script>
 <script type="module" src="js/admin-partners.js?v=20261004w"></script>
 <script type="module" src="js/admin-stock.js?v=20261004w"></script>
 <script type="module" src="js/admin-portfolio.js?v=20261004w"></script>

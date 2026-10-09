@@ -5,6 +5,7 @@ import {
 import { RANKS, rankOf, couponInfo, memberNo, toDate, fDate, fDM, money, intf, daysLeft, warrantyCode, $, h, toast, avatarEl, LOGO_SVG } from './core.js?v=20261004w';
 import { CARRIERS, trackPage, trackLink, TRACK_PAGE_ON, cleanTrack } from './carriers.js?v=20261004w';
 import { scanQR, parseMemberQR, scanTracking, carrierOf } from './scan.js?v=20261004w';
+import { openBill } from './admin-bill.js?v=20261010b';
 
 document.querySelectorAll('[data-logo]').forEach(e => { e.innerHTML = LOGO_SVG; });
 
@@ -212,6 +213,7 @@ $('cdDelBtn').addEventListener('click', async () => {
 /* ---------- orders ---------- */
 /* ---------- orders: edit / delete ---------- */
 const ICO_E = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4Z"/><path d="m13.5 6.5 4 4"/></svg>';
+const ICO_B = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2Z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg>';
 const ICO_D = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>';
 function orderRow(o, withWho = true) {
   const row = h('div', 'orow'), body = h('div', 'row'), hd = h('div', 'row__h');
@@ -232,6 +234,7 @@ function orderRow(o, withWho = true) {
   const acts = h('div', 'orow__acts');
   const eb = h('button'); eb.type = 'button'; eb.innerHTML = ICO_E; eb.setAttribute('aria-label', 'แก้ไข ' + (o.title || 'ออเดอร์')); eb.addEventListener('click', () => editOrder(o));
   const db_ = h('button', 'del'); db_.type = 'button'; db_.innerHTML = ICO_D; db_.setAttribute('aria-label', 'ลบ ' + (o.title || 'ออเดอร์')); db_.addEventListener('click', () => askDelete(o));
+  if (o.kind !== 'adjust') { const bb = h('button', 'bill'); bb.type = 'button'; bb.innerHTML = ICO_B; bb.title = 'ดูบิล'; bb.setAttribute('aria-label', 'ดูบิล ' + (o.title || 'ออเดอร์')); bb.addEventListener('click', () => { if ($('cDlg').open) $('cDlg').close(); openBill(o); }); acts.append(bb); }
   acts.append(eb, db_);
   row.append(body, acts);
   return row;

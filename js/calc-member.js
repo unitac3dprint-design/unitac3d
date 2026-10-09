@@ -217,6 +217,17 @@ $('saveOrderBtn').addEventListener('click', () => {
   rows.forEach(([k, v]) => sum.append(h('dt', null, k), h('dd', null, v)));
   $('odErr').hidden = true; $('orderDlg').showModal();
 });
+function billSnap() {
+  const P = $('quotePaper'); if (!P) return null;
+  const vis = (e) => e && !e.hidden && !e.closest('[hidden]');
+  const key = (li) => li.querySelector('#sumMatCost') || li.classList.contains('item--mix') ? 'mat' : li.querySelector('#sumElecCost') ? 'elec' : li.querySelector('#sumDepCost') ? 'dep' : li.id === 'rowHardware' ? 'hw' : li.querySelector('#sumProfit') ? 'op' : li.id === 'rowDesignFee' ? 'design' : li.id === 'rowShippingFee' ? 'ship' : li.classList.contains('item--stop') ? 'disc' : 'mat';
+  const lines = [...P.querySelectorAll('.items > li')].filter(vis).map(li => {
+    const b = li.querySelector('.item__t b'), sub = li.querySelector('.item__t > span'), v = li.querySelector('.item__v');
+    return { k: key(li), t: (b ? b.textContent : '').trim().slice(0, 80), s: (sub ? sub.textContent : '').trim().slice(0, 100), v: (v ? v.textContent : '').replace(/฿/g, '').trim().slice(0, 20), stop: li.classList.contains('item--stop') };
+  }).slice(0, 30);
+  const tx = (id) => { const e = $(id); return vis(e) ? e.textContent.trim().slice(0, 120) : ''; };
+  return { lines, date: tx('dateDisplay'), mem: tx('paperMem'), note: tx('failNote'), pp: vis($('perPieceLine')) ? tx('perPiece') : '' };
+}
 $('orderForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const r = window.__unitac.last(), b = $('odOk'); if (!r) return;
@@ -238,6 +249,7 @@ $('orderForm').addEventListener('submit', async (e) => {
       designFee: +r.designFee.toFixed(2), shippingFee: +r.shippingFee.toFixed(2), total: +r.grandTotal.toFixed(2),
       points: pts, warrantyDays: days, warrantyCode: code, warrantyStart: days ? wStart : null, expiresAt: exp,
       shipTo: ad ? { label: ad.label || '', name: ad.name || '', phone: ad.phone || '', addr: ad.addr || '' } : null,
+      bill: billSnap(),
       deliveredAt: serverTimestamp()
     });
     if (code) batch.set(doc(db, 'warranties', code), { title, days, deliveredAt: serverTimestamp(), startAt: wStart, expiresAt: exp, claims: [] });
