@@ -3,7 +3,7 @@
    เตือนในหลังร้านเมื่อมีคำขอค้างเกินเวลาที่ตั้งไว้ (ค่าเริ่มต้น 24 ชม.) */
 import { auth, db, OWNER, authMsg, onAuthStateChanged, doc, collection, getDoc, getDocs, setDoc, updateDoc, onSnapshot, serverTimestamp } from './fb.js?v=20261004w';
 import { $, h, toast, toDate, intf } from './core.js?v=20261004w';
-import { BOOK_DEFAULT } from './booking.js?v=20261010f';
+import { BOOK_DEFAULT, matList } from './booking.js?v=20261010g';
 
 let list = [], cfg = { ...BOOK_DEFAULT }, queue = null, started = false, filter = 'pending', cur = null, mode = '';
 const pD = (s) => { const p = s.split('-').map(Number); return new Date(p[0], p[1] - 1, p[2]); };
@@ -129,7 +129,8 @@ function card(b) {
   if (b.status === 'confirmed' && b.doneDate) dline.append(' · เสร็จ ', h('b', null, fmt(b.doneDate)));
   el.appendChild(dline);
   const mat = h('p', 'bka__m');
-  if (b.material) { const sw = h('i', 'bka__sw'); if (b.material.hex) sw.style.background = b.material.hex; mat.append(sw, [b.material.type, b.material.brand, b.material.color].filter(Boolean).join(' · ')); }
+  const ml = matList(b);
+  if (ml.length) ml.forEach((x, i) => { const sw = h('i', 'bka__sw'); if (x.hex) sw.style.background = x.hex; mat.append(i ? ', ' : '', sw, [x.type, x.brand, x.color].filter(Boolean).join(' · ')); });
   else mat.append('ให้ร้านแนะนำวัสดุ');
   mat.append(' · ' + (b.qty || 1) + ' ชิ้น');
   el.appendChild(mat);

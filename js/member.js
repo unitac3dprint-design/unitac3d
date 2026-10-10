@@ -1,5 +1,5 @@
 import { trackLink } from './carriers.js?v=20261004w';
-import { mountBooking, watchMine, setQueue, openBooking } from './booking.js?v=20261010f';
+import { mountBooking, watchMine, setQueue, openBooking } from './booking.js?v=20261010g';
 import {
   auth, db, OWNER, authMsg, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword,
   sendEmailVerification, sendPasswordResetEmail, signOut, reload,

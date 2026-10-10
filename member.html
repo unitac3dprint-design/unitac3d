@@ -196,6 +196,9 @@ dialog[open] .rankup__name{display:inline-block;animation:forgeName .6s var(--ea
 .bkm b{font-weight:600;font-size:14px}.bkm small{font-size:11.5px;color:var(--muted)}
 .bkm.is-sel{border-color:var(--accent);background:var(--accent-soft)}
 .bkcolors{display:flex;flex-wrap:wrap;gap:8px}
+.bkmats{flex-direction:column;align-items:stretch}.bkmats > .bkm{align-self:flex-start}
+.bkg{display:grid;gap:8px;padding:10px 12px;border-radius:12px;background:var(--sunk)}
+.bkg__h{display:flex;align-items:baseline;gap:8px}.bkg__h b{font-weight:600}.bkg__h small{font-size:12px;color:var(--muted)}
 .bksw{display:inline-flex;align-items:center;gap:7px;padding:6px 12px 6px 7px;border-radius:999px;border:1px solid var(--rule-strong);background:var(--surface);color:var(--ink);font:inherit;font-size:13.5px}
 .bksw i{width:20px;height:20px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
 .bksw.is-sel{border-color:var(--accent);background:var(--accent-soft)}
@@ -207,7 +210,7 @@ dialog[open] .rankup__name{display:inline-block;animation:forgeName .6s var(--ea
 .bkdone__ic{width:52px;height:52px;border-radius:50%;background:var(--ok-soft);color:var(--ok);display:grid;place-items:center;font-size:26px}
 @media (max-width:420px){.bkc{gap:3px}.bkc__d{min-height:44px}.bkc__d small{font-size:9px}}
 </style>
-<script src="js/i18n.js?v=20261010f" defer></script>
+<script src="js/i18n.js?v=20261010g" defer></script>
 <script src="js/install.js?v=20261010f" defer></script>
 </head>
 <body>
@@ -385,7 +388,7 @@ dialog[open] .rankup__name{display:inline-block;animation:forgeName .6s var(--ea
       <div class="field"><label for="bkTitle">ชื่องาน *</label><input type="text" id="bkTitle" maxlength="80" placeholder="เช่น Hop-up arm สำหรับ AAP-01"></div>
       <div class="field"><span class="lab">ลิงก์ไฟล์งาน * (STL / 3MF / STEP / รูปแบบงาน)</span><div id="bkLinks" class="bklinks"></div>
         <button type="button" class="linkbtn" id="bkAddLink">+ เพิ่มลิงก์อีกไฟล์</button><p class="hint" id="bkLinkHint">รองรับ Google Drive, OneDrive, Dropbox, Printables, Thingiverse, MakerWorld และลิงก์อื่น ๆ</p></div>
-      <div class="field"><span class="lab">วัสดุ (เส้นที่ร้านมีตอนนี้)</span><div class="bkmats" id="bkMats"></div><p class="hint" id="bkNoMats" hidden>ร้านยังไม่ได้ลงรายการเส้น เลือก "ให้ร้านแนะนำ" ได้เลย</p></div>
+      <div class="field"><span class="lab">วัสดุ (เส้นที่ร้านมีตอนนี้)</span><p class="hint" id="bkMatNote"></p><div class="bkmats" id="bkMats"></div><p class="hint" id="bkNoMats" hidden>ร้านยังไม่ได้ลงรายการเส้น เลือก "ให้ร้านแนะนำ" ได้เลย</p></div>
       <div class="field" id="bkColorF" hidden><span class="lab">สี</span><div class="bkcolors" id="bkColors"></div></div>
       <div class="field"><label for="bkQty">จำนวนชิ้น *</label><input type="number" id="bkQty" min="1" max="999" step="1" inputmode="numeric" value="1"></div>
       <div class="field"><label for="bkNote">หมายเหตุถึงร้าน</label><textarea id="bkNote" maxlength="300" rows="2" placeholder="เช่น ขอเติมเนื้อแน่น ใช้งานรับแรง"></textarea></div>
@@ -448,6 +451,6 @@ dialog[open] .rankup__name{display:inline-block;animation:forgeName .6s var(--ea
 
 <footer class="foot">UNITAC · <a href="./">ตารางคิว</a> · <a href="warranty.html">เช็กประกัน</a> · <a href="portfolio.html">ผลงาน</a> · <a href="partners.html">พาร์ทเนอร์</a> · <a href="privacy.html">นโยบายความเป็นส่วนตัว</a></footer>
 <script src="vendor/qrcode.js?v=20261004w"></script>
-<script type="module" src="js/member.js?v=20261010f"></script>
+<script type="module" src="js/member.js?v=20261010g"></script>
 </body>
 </html>

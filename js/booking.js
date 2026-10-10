@@ -23,7 +23,7 @@ export function cleanLink(u) {
 }
 
 let ctx = null, pub = null, mine = [], queue = null, unsubB = null, unsubP = null;
-let st = { step: 1, month: null, date: '', mat: null, color: null };
+let st = { step: 1, month: null, date: '', sel: [] };
 
 export function mountBooking(c) {
   ctx = c;   /* { user(), member() } */
@@ -75,7 +75,7 @@ function card(b) {
   const el = h('div', 'bk' + (b.status === 'proposed' ? ' bk--hi' : '') + (['cancelled', 'declined'].includes(b.status) ? ' bk--dim' : ''));
   const hd = h('div', 'bk__h'), [lab, cls] = STATUS[b.status] || [b.status, ''];
   hd.append(h('b', null, b.title || 'งานพิมพ์'), h('span', 'pill ' + cls, lab)); el.appendChild(hd);
-  const mat = b.material ? [b.material.type, b.material.color].filter(Boolean).join(' · ') : 'ให้ร้านแนะนำวัสดุ';
+  const mat = matText(b) || 'ให้ร้านแนะนำวัสดุ';
   const meta = h('p', 'bk__m');
   if (b.status === 'proposed') meta.textContent = 'ขอ ' + fmt(b.date) + ' → ร้านเสนอ ' + fmt(b.proposedDate);
   else meta.textContent = (b.status === 'confirmed' ? 'เริ่มพิมพ์ ' : 'ขอวันที่ ') + fmt(b.date) + (b.doneDate && b.status === 'confirmed' ? ' · คาดว่าเสร็จ ' + fmt(b.doneDate) : '');
@@ -105,7 +105,7 @@ export function openBooking() {
   if (!c.open) return toast('ร้านปิดรับจองชั่วคราว ทักแชทร้านได้เลย', 4000);
   if (active().length >= c.maxPending) return toast('มีคำขอค้างครบ ' + c.maxPending + ' รายการแล้ว รอร้านตอบก่อนจองเพิ่ม', 4500);
   const t = new Date(); t.setHours(0, 0, 0, 0); const first = addD(t, c.minDays);
-  st = { step: 1, month: new Date(first.getFullYear(), first.getMonth(), 1), date: '', mat: null, color: null };
+  st = { step: 1, month: new Date(first.getFullYear(), first.getMonth(), 1), date: '', sel: [] };
   ['bkTitle', 'bkQty', 'bkNote'].forEach(id => { $(id).value = id === 'bkQty' ? '1' : ''; });
   $('bkLinks').textContent = ''; addLinkRow('');
   $('bkErr').hidden = true;
@@ -132,7 +132,7 @@ function renderCal() {
   for (let d = 1; d <= dim; d++) {
     const ds = iD(new Date(m.getFullYear(), m.getMonth(), d)), x = dayState(ds);
     const b = h('button', 'bkc__d is-' + x.s + (st.date === ds ? ' is-sel' : '')); b.type = 'button';
-    const lab = { free: 'ว่าง ' + x.left, few: 'เหลือ 1', full: 'เต็ม', closed: 'ปิด', out: '' }[x.s];
+    const lab = { free: 'ว่าง ' + x.left, few: 'เหลือ 1', full: 'เต็ม', closed: 'หยุด', out: '' }[x.s];
     b.append(h('b', null, String(d)), h('small', null, lab));
     b.disabled = !['free', 'few'].includes(x.s);
     b.setAttribute('aria-label', fmt(ds) + (lab ? ', ' + lab : ''));
@@ -145,29 +145,39 @@ function matGroups() {
   const out = []; ((pub && pub.mats) || []).forEach(g => { if (g && g.colors && g.colors.length) out.push(g); });
   return out;
 }
+const MAX_MATS = 5;
+export function matList(b) { return (b && Array.isArray(b.materials) && b.materials.length) ? b.materials : (b && b.material ? [b.material] : []); }
+export function matText(b) { const l = matList(b); return l.length ? l.map(m => [m.type, m.color].filter(Boolean).join(' · ')).join(', ') : ''; }
+function picked() { const g = matGroups(); return st.sel.map(k => { const [gi, ci] = k.split(':').map(Number); const gr = g[gi], c = gr && gr.colors[ci]; return gr && c ? { type: (gr.type || '').slice(0, 40), brand: (gr.brand || '').slice(0, 40), color: (c.name || '').slice(0, 40), hex: /^#[0-9a-f]{6}$/i.test(c.hex || '') ? c.hex : '' } : null; }).filter(Boolean); }
 function renderMats() {
   const W = $('bkMats'); W.textContent = '';
   const groups = matGroups();
-  const none = h('button', 'bkm' + (!st.mat ? ' is-sel' : '')); none.type = 'button';
+  const none = h('button', 'bkm' + (!st.sel.length ? ' is-sel' : '')); none.type = 'button';
   none.append(h('b', null, 'ให้ร้านแนะนำ'), h('small', null, 'ไม่แน่ใจว่าใช้เส้นอะไรดี'));
-  none.addEventListener('click', () => { st.mat = null; st.color = null; renderMats(); });
+  none.addEventListener('click', () => { st.sel = []; renderMats(); });
   W.appendChild(none);
   groups.forEach((g, gi) => {
-    const b = h('button', 'bkm' + (st.mat === gi ? ' is-sel' : '')); b.type = 'button';
-    b.append(h('b', null, g.type || 'วัสดุ'), h('small', null, (g.brand ? g.brand + ' · ' : '') + g.colors.length + ' สี'));
-    b.addEventListener('click', () => { st.mat = gi; st.color = g.colors.length === 1 ? 0 : null; renderMats(); });
-    W.appendChild(b);
+    const box = h('div', 'bkg'), hd = h('div', 'bkg__h');
+    hd.append(h('b', null, g.type || 'วัสดุ'));
+    if (g.brand) hd.append(h('small', null, g.brand));
+    box.appendChild(hd);
+    const C = h('div', 'bkcolors');
+    g.colors.forEach((c, ci) => {
+      const k = gi + ':' + ci, on = st.sel.includes(k);
+      const b = h('button', 'bksw' + (on ? ' is-sel' : '')); b.type = 'button'; b.setAttribute('aria-pressed', String(on));
+      const i = h('i'); i.style.background = /^#[0-9a-f]{6}$/i.test(c.hex || '') ? c.hex : '#777';
+      b.append(i, h('span', null, c.name || 'ไม่ระบุสี'));
+      b.addEventListener('click', () => {
+        if (on) st.sel = st.sel.filter(x => x !== k);
+        else { if (st.sel.length >= MAX_MATS) return toast('เลือกได้สูงสุด ' + MAX_MATS + ' อย่าง'); st.sel = st.sel.concat(k); }
+        renderMats();
+      });
+      C.appendChild(b);
+    });
+    box.appendChild(C); W.appendChild(box);
   });
-  const C = $('bkColors'); C.textContent = '';
-  const g = st.mat != null ? groups[st.mat] : null;
-  $('bkColorF').hidden = !g;
-  if (g) g.colors.forEach((c, ci) => {
-    const b = h('button', 'bksw' + (st.color === ci ? ' is-sel' : '')); b.type = 'button';
-    const i = h('i'); i.style.background = /^#[0-9a-f]{6}$/i.test(c.hex || '') ? c.hex : '#777';
-    b.append(i, h('span', null, c.name || 'ไม่ระบุสี'));
-    b.addEventListener('click', () => { st.color = ci; renderMats(); });
-    C.appendChild(b);
-  });
+  $('bkColorF').hidden = true;
+  $('bkMatNote').textContent = st.sel.length ? 'เลือกแล้ว ' + st.sel.length + ' อย่าง (สูงสุด ' + MAX_MATS + ')' : 'แตะสีเพื่อเลือก เลือกได้หลายอย่าง';
   $('bkNoMats').hidden = groups.length > 0;
 }
 function addLinkRow(v) {
@@ -186,11 +196,11 @@ function linkHint() {
   $('bkLinkHint').className = 'hint' + (bad ? ' err' : '');
 }
 function readForm() {
-  const g = st.mat != null ? matGroups()[st.mat] : null, col = g && st.color != null ? g.colors[st.color] : null;
+  const ms = picked();
   return {
     title: $('bkTitle').value.trim().slice(0, 80), links: links().slice(0, 3), qty: Math.max(1, Math.min(999, Math.round(+$('bkQty').value || 0))),
     note: $('bkNote').value.trim().slice(0, 300),
-    material: g ? { type: (g.type || '').slice(0, 40), brand: (g.brand || '').slice(0, 40), color: col ? (col.name || '').slice(0, 40) : '', hex: col && /^#[0-9a-f]{6}$/i.test(col.hex || '') ? col.hex : '' } : null
+    materials: ms, material: ms[0] || null
   };
 }
 function check(step) {
@@ -203,8 +213,6 @@ function check(step) {
     if (!f.links.length) return err('แนบลิงก์ไฟล์งานอย่างน้อย 1 ลิงก์');
     if (raw.length !== f.links.length) return err('มีลิงก์ที่ไม่ถูกต้อง ตรวจอีกครั้ง');
     if (!(+$('bkQty').value >= 1)) return err('ใส่จำนวนชิ้น');
-    const g = st.mat != null ? matGroups()[st.mat] : null;
-    if (g && st.color == null) return err('เลือกสีของ ' + (g.type || 'วัสดุ'));
   }
   return true;
 }
@@ -213,7 +221,7 @@ function renderReview() {
   const m = ctx.member(), u = ctx.user();
   const row = (k, v) => { const d = h('div', 'kv'); d.append(h('span', null, k), h('b', null, v)); R.appendChild(d); };
   row('วันเริ่มพิมพ์', fmt(st.date)); row('ชื่องาน', f.title); row('จำนวน', f.qty + ' ชิ้น');
-  row('วัสดุ', f.material ? [f.material.type, f.material.color].filter(Boolean).join(' · ') : 'ให้ร้านแนะนำ');
+  row('วัสดุ', matText(f) || 'ให้ร้านแนะนำ');
   f.links.forEach((l, i) => row(i ? 'ไฟล์ ' + (i + 1) : 'ไฟล์', l.replace(/^https?:\/\//, '').slice(0, 48) + (l.length > 56 ? '…' : '')));
   if (f.note) row('หมายเหตุ', f.note);
   row('สมาชิก', (m.nickname || '') + ' · ' + memberNo(u.uid));
