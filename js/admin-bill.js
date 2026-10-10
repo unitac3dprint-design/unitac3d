@@ -1,5 +1,6 @@
 /* ---------- ดูบิลย้อนหลังของแต่ละออเดอร์ (หน้าตาเหมือนใบเสนอราคาในเครื่องคิดเลข) ---------- */
 import { db, doc, getDoc } from './fb.js?v=20261004w';
+import { openReceipt } from './receipt.js?v=20261010e';
 import { toDate, fDate, money, intf, qrSvg, $, h, toast, LOGO_SVG } from './core.js?v=20261004w';
 
 const I = (p) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + p + '</svg>';
@@ -118,3 +119,5 @@ $('bdSave').addEventListener('click', async () => {
   } catch (_) { toast('บันทึกรูปไม่สำเร็จ ต้องต่ออินเทอร์เน็ตเพื่อโหลดตัวช่วย'); }
   b.disabled = false;
 });
+
+$('bdReceipt').addEventListener('click', () => openReceipt($('billPaper'), curOrder && curOrder.title, curOrder && { material: curOrder.material, qty: curOrder.qty, weight: curOrder.weight, hours: curOrder.hours, sub: curOrder.printSubtotal, disc: curOrder.discountTotal, design: curOrder.designFee, ship: curOrder.shippingFee }));

@@ -806,6 +806,10 @@ dialog.cd::backdrop{background:rgba(12,10,8,.6);backdrop-filter:blur(3px)}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M4 19h16"/></svg>
         บันทึกรูป
       </button>
+      <button type="button" class="btn btn--ghost" id="receiptBtn" title="พิมพ์ใบเสร็จกระดาษม้วน 58 มม.">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M7 14h10v7H7z"/></svg>
+        ใบเสร็จ 58 มม.
+      </button>
       <button type="button" class="btn btn--primary" id="saveTransactionBtn" style="padding:8px 18px;font-size:13.5px;font-weight:600">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16.5A4.5 4.5 0 0 1 6 8a6 6 0 0 1 11.5 1.5A4 4 0 0 1 17 17H7"/><path d="M12 12v8M9 15l3-3 3 3"/></svg>
         <span id="saveTransactionLabel">บันทึกยอดขาย</span>
@@ -1599,5 +1603,6 @@ window.__unitac={calc:calc,last:function(){return last;},materials:materials,rec
 </form></dialog>
 <script src="vendor/qrcode.js?v=20261004w"></script>
 <script type="module" src="js/calc-member.js?v=20261010b"></script>
+<script type="module">import { openReceipt } from './js/receipt.js?v=20261010e'; document.getElementById('receiptBtn').addEventListener('click', () => { const r = window.__unitac && window.__unitac.last(); openReceipt(document.getElementById('quotePaper'), (document.getElementById('jobName').value || '').trim(), r ? { material: r.matLabel, qty: r.qty, weight: (r.matWeight || 0) * (r.qty || 1), hours: r.totalHours, sub: r.printSubtotal, disc: r.discountTotal, design: r.designFee, ship: r.shippingFee } : null); });</script>
 </body>
 </html>

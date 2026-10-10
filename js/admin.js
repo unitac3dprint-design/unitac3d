@@ -5,7 +5,7 @@ import {
 import { RANKS, rankOf, couponInfo, memberNo, toDate, fDate, fDM, money, intf, daysLeft, warrantyCode, $, h, toast, avatarEl, LOGO_SVG } from './core.js?v=20261004w';
 import { CARRIERS, trackPage, trackLink, TRACK_PAGE_ON, cleanTrack } from './carriers.js?v=20261004w';
 import { scanQR, parseMemberQR, scanTracking, carrierOf } from './scan.js?v=20261004w';
-import { openBill } from './admin-bill.js?v=20261010b';
+import { openBill } from './admin-bill.js?v=20261010e';
 
 document.querySelectorAll('[data-logo]').forEach(e => { e.innerHTML = LOGO_SVG; });
 
