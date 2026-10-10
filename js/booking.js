@@ -7,7 +7,7 @@ import { $, h, toast, toDate, memberNo } from './core.js?v=20261004w';
 export const BOOK_DEFAULT = { open: true, perDay: 3, maxPending: 3, minDays: 1, maxDays: 30, alertHours: 24 };
 const STATUS = {
   pending: ['รอร้านยืนยัน', 'pill--warn'], proposed: ['ร้านเสนอวันใหม่', 'pill--accent'], confirmed: ['ยืนยันคิวแล้ว', 'pill--ok'],
-  declined: ['ร้านไม่รับงานนี้', 'pill--stop'], cancelled: ['ยกเลิกแล้ว', ''], done: ['เสร็จแล้ว', 'pill--ok']
+  declined: ['ร้านปฏิเสธคำขอ', 'pill--stop'], cancelled: ['ยกเลิกแล้ว', ''], done: ['เสร็จแล้ว', 'pill--ok']
 };
 const pD = (s) => { const p = s.split('-').map(Number); return new Date(p[0], p[1] - 1, p[2]); };
 const iD = (d) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');

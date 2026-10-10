@@ -3,7 +3,7 @@
    เตือนในหลังร้านเมื่อมีคำขอค้างเกินเวลาที่ตั้งไว้ (ค่าเริ่มต้น 24 ชม.) */
 import { auth, db, OWNER, authMsg, onAuthStateChanged, doc, collection, getDoc, getDocs, setDoc, updateDoc, onSnapshot, serverTimestamp } from './fb.js?v=20261004w';
 import { $, h, toast, toDate, intf } from './core.js?v=20261004w';
-import { BOOK_DEFAULT, matList } from './booking.js?v=20261010g';
+import { BOOK_DEFAULT, matList } from './booking.js?v=20261010i';
 import { pushState, enablePush, disablePush, syncPush } from './push.js?v=20261010h';
 
 let list = [], cfg = { ...BOOK_DEFAULT }, queue = null, started = false, filter = 'pending', cur = null, mode = '';
