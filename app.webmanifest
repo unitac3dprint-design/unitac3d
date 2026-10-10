@@ -1,0 +1,24 @@
+{
+ "name": "UNITAC 3D PRINT",
+ "short_name": "UNITAC",
+ "description": "ดูคิวว่าง จองคิวพิมพ์ บัตรสมาชิก และเช็กประกันงานพิมพ์ 3 มิติ",
+ "id": "./?app=unitac",
+ "start_url": "./index.html?app=1",
+ "scope": "./",
+ "display": "standalone",
+ "orientation": "any",
+ "background_color": "#141311",
+ "theme_color": "#141311",
+ "lang": "th",
+ "icons": [
+  { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+  { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+  { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+ ],
+ "shortcuts": [
+  { "name": "จองคิวพิมพ์", "url": "./member.html#book", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+  { "name": "บัตรสมาชิก", "url": "./member.html", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+  { "name": "เช็กประกัน", "url": "./warranty.html", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
+ ],
+ "prefer_related_applications": false
+}

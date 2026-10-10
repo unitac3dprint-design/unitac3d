@@ -1,4 +1,5 @@
 import { trackLink } from './carriers.js?v=20261004w';
+import { mountBooking, watchMine, setQueue, openBooking } from './booking.js?v=20261010f';
 import {
   auth, db, OWNER, authMsg, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword,
   sendEmailVerification, sendPasswordResetEmail, signOut, reload,
@@ -16,6 +17,8 @@ const V = { loading: $('vLoading'), auth: $('vAuth'), owner: $('vOwner'), home: 
 let user = null, member = null, orders = [], unsubM = null, queueShop = null, flipped = false, showAllOrders = false;
 
 let curView = null;
+mountBooking({ user: () => user, member: () => member });
+let bookHash = location.hash === '#book';
 function show(name) {
   if (curView === name) return;
   const first = curView === null || curView === 'loading';
@@ -29,7 +32,7 @@ function route() {
   if (user.uid === OWNER) { location.replace('admin.html'); return show('owner'); }
   if (!member) return show('loading');
   if (location.hash === '#profile') { renderProfile(); show('profile'); }
-  else { renderHome(); show('home'); reveal(); }
+  else { renderHome(); show('home'); reveal(); if (bookHash || location.hash === '#book') { bookHash = false; history.replaceState(null, '', location.pathname + location.search); setTimeout(openBooking, 300); } }
 }
 window.addEventListener('hashchange', route);
 
@@ -133,6 +136,7 @@ function watchMember(u) {
   }, () => { toast('โหลดข้อมูลสมาชิกไม่สำเร็จ'); });
   loadOrders(u);
   loadShop();
+  watchMine(u.uid);
 }
 async function loadOrders(u) {
   try {
@@ -152,7 +156,7 @@ let queueDoc = null, unsubQ = null, qTimer = 0;
 function loadShop() {
   if (unsubQ) return;
   unsubQ = onSnapshot(doc(db, 'public', 'queue'), (s) => {
-    queueDoc = s.exists() ? s.data() : null; queueShop = queueDoc ? queueDoc.shop : null;
+    queueDoc = s.exists() ? s.data() : null; queueShop = queueDoc ? queueDoc.shop : null; setQueue(queueDoc);
     if (member && !V.home.hidden) { renderBook(); renderMyJobs(); }
   }, () => {});
   clearInterval(qTimer); qTimer = setInterval(() => { if (member && !V.home.hidden) renderMyJobs(); }, 30000);

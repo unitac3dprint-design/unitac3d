@@ -67,7 +67,7 @@ function card(m) {
   return c;
 }
 async function bump(m, data, msg) {
-  try { await updateDoc(doc(db, 'materials', m.id), data); Object.assign(m, data); render(); if (msg) toast(msg); }
+  try { await updateDoc(doc(db, 'materials', m.id), data); Object.assign(m, data); render(); if (msg) toast(msg); dispatchEvent(new Event('unitac-stock-changed')); }
   catch (x) { toast(authMsg(x.code)); }
 }
 
@@ -107,13 +107,13 @@ $('mForm').addEventListener('submit', async (e) => {
   try {
     if (cur) { await updateDoc(doc(db, 'materials', cur.id), data); Object.assign(cur, data); }
     else { const ref = doc(collection(db, 'materials')); data.createdAt = serverTimestamp(); await setDoc(ref, data); mats.push({ id: ref.id, ...data }); }
-    $('mDlg').close(); render(); toast('บันทึกเส้นแล้ว');
+    $('mDlg').close(); render(); toast('บันทึกเส้นแล้ว'); dispatchEvent(new Event('unitac-stock-changed'));
   } catch (x) { err(authMsg(x.code)); }
   $('mSave').disabled = false;
 });
 $('mDel').addEventListener('click', async () => {
   if (!cur || !confirm('ลบ ' + label(cur) + ' ออกจากสต็อก?')) return;
-  try { await deleteDoc(doc(db, 'materials', cur.id)); mats = mats.filter(m => m.id !== cur.id); $('mDlg').close(); render(); toast('ลบแล้ว'); }
+  try { await deleteDoc(doc(db, 'materials', cur.id)); mats = mats.filter(m => m.id !== cur.id); $('mDlg').close(); render(); toast('ลบแล้ว'); dispatchEvent(new Event('unitac-stock-changed')); }
   catch (x) { toast(authMsg(x.code)); }
 });
 

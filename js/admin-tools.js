@@ -2,7 +2,7 @@ import { auth, db, OWNER, authMsg, onAuthStateChanged, doc, collection, getDoc, 
 import { $, h, toast, toDate, daysLeft, intf } from './core.js?v=20261004w';
 
 /* ---------- what needs attention: strip + tab badges ---------- */
-const COLS = ['members', 'orders', 'warranties', 'partners', 'materials', 'portfolio', 'portfolioFull', 'admin'];
+const COLS = ['members', 'orders', 'warranties', 'partners', 'materials', 'portfolio', 'portfolioFull', 'admin', 'bookings'];
 let started = false;
 onAuthStateChanged(auth, (u) => { if (u && u.uid === OWNER && !started) { started = true; refresh(); } });
 const seenKey = 'unitac-admin-seen-members';
@@ -56,7 +56,7 @@ async function backup() {
   try {
     const out = { app: 'unitac', version: 1, exportedAt: new Date().toISOString(), data: {} };
     const q = await getDoc(doc(db, 'public', 'queue')); if (q.exists()) out.data['public'] = { queue: enc(q.data()) };
-    for (const c of COLS) { const s = await getDocs(collection(db, c)); out.data[c] = {}; s.docs.forEach(d => { out.data[c][d.id] = enc(d.data()); }); }
+    for (const c of COLS) { let s; try { s = await getDocs(collection(db, c)); } catch (e) { if (c === 'bookings') continue; throw e; } out.data[c] = {}; s.docs.forEach(d => { out.data[c][d.id] = enc(d.data()); }); }
     const blob = new Blob([JSON.stringify(out)], { type: 'application/json' });
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'unitac-backup-' + new Date().toISOString().slice(0, 10) + '.json';
     document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 800);
