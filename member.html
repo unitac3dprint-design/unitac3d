@@ -209,8 +209,24 @@ dialog[open] .rankup__name{display:inline-block;animation:forgeName .6s var(--ea
 .bkdone{text-align:center;justify-items:center}
 .bkdone__ic{width:52px;height:52px;border-radius:50%;background:var(--ok-soft);color:var(--ok);display:grid;place-items:center;font-size:26px}
 @media (max-width:420px){.bkc{gap:3px}.bkc__d{min-height:44px}.bkc__d small{font-size:9px}}
+.nfbar{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:12px 14px;border-radius:var(--r-md);background:var(--surface);border:1px solid var(--accent)}
+.nfbar[hidden]{display:none}
+.nfbar b{display:block;font-weight:600;font-size:14px}.nfbar small{display:block;font-size:12px;color:var(--muted)}
+.nf__bell{font-size:20px}
+@media (max-width:420px){.nfbar{grid-template-columns:auto minmax(0,1fr)}.nfbar .linkbtn{grid-column:1/2}.nfbar .btn{grid-column:2/3;justify-self:end}}
+.nf{display:grid;gap:12px}
+.nf__top{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:start}
+.nf__top b{font-weight:600}
+.nf__dot{width:10px;height:10px;border-radius:50%;margin-top:7px}
+.nf__dot--on{background:var(--ok);box-shadow:0 0 0 4px var(--ok-soft)}.nf__dot--off{background:var(--muted)}.nf__dot--bad{background:var(--warn)}
+.nf__acts{display:flex;gap:8px;flex-wrap:wrap}
+.nf__topics{display:grid;gap:2px;border-top:1px solid var(--rule);padding-top:10px}
+.nf__topics .lab{font-size:12.5px;color:var(--muted);margin-bottom:4px}
+.nf__t{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 0;cursor:pointer}
+.nf__t b{display:block;font-weight:500;font-size:14px}.nf__t small{display:block;font-size:12px;color:var(--muted)}
+.nf__t input{width:20px;height:20px;accent-color:var(--accent);flex:none}
 </style>
-<script src="js/i18n.js?v=20261010g" defer></script>
+<script src="js/i18n.js?v=20261010h" defer></script>
 <script src="js/install.js?v=20261010f" defer></script>
 </head>
 <body>
@@ -313,6 +329,7 @@ dialog[open] .rankup__name{display:inline-block;animation:forgeName .6s var(--ea
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12c0-4.4 3.6-8 8-8s8 3.6 8 8-3.6 8-8 8c-1.2 0-2.4-.3-3.4-.8L4 20l.9-3.9A8 8 0 0 1 4 12Z"/></svg>
           ทักแชทร้านทาง Messenger</a>
       </div>
+      <div class="nfbar" id="nfBar" hidden></div>
     </div>
     <div class="home__col">
       <section class="card sec rv" style="--d:60ms" id="bkSec" hidden aria-labelledby="bkTitleH">
@@ -363,6 +380,10 @@ dialog[open] .rankup__name{display:inline-block;animation:forgeName .6s var(--ea
       <div id="aList" class="alist"></div>
       <button type="button" class="addbtn" id="aAdd">+ เพิ่มที่อยู่</button>
     </section>
+    <section class="sec" aria-labelledby="nfTitle">
+      <div class="sec__h"><h2 id="nfTitle">การแจ้งเตือน</h2></div>
+      <div class="card nf" id="nfBox"></div>
+    </section>
     <div class="prof__foot">
       <button type="button" class="linkbtn linkbtn--muted" data-signout>ออกจากระบบ</button>
       <a href="privacy.html" class="small muted">นโยบายความเป็นส่วนตัว</a>
@@ -407,7 +428,8 @@ dialog[open] .rankup__name{display:inline-block;animation:forgeName .6s var(--ea
   <span class="bkdone__ic" aria-hidden="true">✓</span>
   <h2 id="bkDoneT">ส่งคำขอจองแล้ว</h2>
   <p class="muted">ร้านได้รับคำขอแล้ว ดูผลได้ที่ "การจองของฉัน" ในหน้าสมาชิก</p>
-  <button type="button" class="btn btn--primary btn--block" data-close>ตกลง</button>
+  <button type="button" class="btn btn--primary btn--block" id="bkDoneNf" hidden>🔔 เปิดแจ้งเตือนเมื่อร้านตอบ</button>
+  <button type="button" class="btn btn--ghost btn--block" data-close>ตกลง</button>
 </div></div></dialog>
 
 <dialog id="addrDlg" aria-labelledby="addrTitle"><form class="dlg" id="addrForm" novalidate>
@@ -451,6 +473,6 @@ dialog[open] .rankup__name{display:inline-block;animation:forgeName .6s var(--ea
 
 <footer class="foot">UNITAC · <a href="./">ตารางคิว</a> · <a href="warranty.html">เช็กประกัน</a> · <a href="portfolio.html">ผลงาน</a> · <a href="partners.html">พาร์ทเนอร์</a> · <a href="privacy.html">นโยบายความเป็นส่วนตัว</a></footer>
 <script src="vendor/qrcode.js?v=20261004w"></script>
-<script type="module" src="js/member.js?v=20261010g"></script>
+<script type="module" src="js/member.js?v=20261010h"></script>
 </body>
 </html>

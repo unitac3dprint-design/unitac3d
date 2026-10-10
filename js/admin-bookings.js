@@ -4,6 +4,7 @@
 import { auth, db, OWNER, authMsg, onAuthStateChanged, doc, collection, getDoc, getDocs, setDoc, updateDoc, onSnapshot, serverTimestamp } from './fb.js?v=20261004w';
 import { $, h, toast, toDate, intf } from './core.js?v=20261004w';
 import { BOOK_DEFAULT, matList } from './booking.js?v=20261010g';
+import { pushState, enablePush, disablePush, syncPush } from './push.js?v=20261010h';
 
 let list = [], cfg = { ...BOOK_DEFAULT }, queue = null, started = false, filter = 'pending', cur = null, mode = '';
 const pD = (s) => { const p = s.split('-').map(Number); return new Date(p[0], p[1] - 1, p[2]); };
@@ -16,8 +17,10 @@ const today = () => iD(new Date());
 const ageH = (b) => (Date.now() - (toDate(b.createdAt) || Date.now())) / 36e5;
 const LBL = { pending: ['รอตอบ', 'pill--warn'], proposed: ['รอลูกค้าตอบ', 'pill--accent'], confirmed: ['ยืนยันแล้ว', 'pill--ok'], declined: ['ไม่รับ', 'pill--stop'], cancelled: ['ยกเลิก', ''], done: ['เสร็จแล้ว', 'pill--ok'] };
 
-onAuthStateChanged(auth, (u) => { if (u && u.uid === OWNER && !started) { started = true; start(); } });
+onAuthStateChanged(auth, (u) => { if (u && u.uid === OWNER && !started) { started = true; start(); syncPush(OWNER, 'owner'); } });
+addEventListener('unitac-push', (e) => { const d = e.detail || {}; if (d.title) toast(d.title + (d.body ? ' · ' + d.body : ''), 6000); });
 async function start() {
+  if (location.hash === '#bk') setTimeout(() => { const t = $('tBk'); if (t) t.click(); }, 300);
   try { const s = await getDoc(doc(db, 'public', 'booking')); if (s.exists() && s.data().cfg) cfg = { ...BOOK_DEFAULT, ...s.data().cfg }; } catch (_) {}
   onSnapshot(doc(db, 'public', 'queue'), (s) => { queue = s.exists() ? s.data() : null; }, () => {});
   let first = true;
@@ -242,12 +245,42 @@ function fillCfg() {
   $('bksOpen').checked = !!cfg.open; $('bksPer').value = cfg.perDay; $('bksPend').value = cfg.maxPending;
   $('bksMin').value = cfg.minDays; $('bksMax').value = cfg.maxDays; $('bksAlert').value = cfg.alertHours;
   $('bksBlocked').value = (cfg.blocked || []).filter(d => d >= today()).join(', ');
-  $('bksNotif').textContent = !('Notification' in window) ? 'เบราว์เซอร์นี้ไม่รองรับ' : Notification.permission === 'granted' ? 'เปิดอยู่ในเครื่องนี้ ✓' : 'เปิดแจ้งเตือนในเครื่องนี้';
-  $('bksNotif').disabled = !('Notification' in window) || Notification.permission === 'granted';
+  pushUi();
 }
 $('bkaCfgBtn').addEventListener('click', () => { fillCfg(); $('bksErr').hidden = true; $('bksDlg').showModal(); });
 document.querySelectorAll('#bksDlg [data-close]').forEach(b => b.addEventListener('click', () => $('bksDlg').close()));
-$('bksNotif').addEventListener('click', async () => { try { await Notification.requestPermission(); } catch (_) {} fillCfg(); alertCheck(); });
+async function pushUi() {
+  const st = await pushState();
+  $('bksPushSt').textContent = { on: 'เปิดอยู่ในเครื่องนี้ ✓ คำขอจองใหม่และคำขอค้างจะเด้งเข้าเครื่องนี้', off: 'ยังไม่ได้เปิดในเครื่องนี้', denied: 'เบราว์เซอร์บล็อกการแจ้งเตือนไว้ เปิดได้ที่รูปกุญแจหน้าลิงก์ → การแจ้งเตือน', 'ios-install': 'iPhone/iPad: ติดตั้งหลังร้านเป็นแอปบนหน้าจอโฮมก่อน', unsupported: 'เบราว์เซอร์นี้ไม่รองรับ ลองใช้ Chrome' }[st];
+  $('bksNotif').hidden = st !== 'off'; $('bksOff').hidden = st !== 'on'; $('bksTest').hidden = st !== 'on';
+}
+$('bksNotif').addEventListener('click', async () => {
+  try { await enablePush(OWNER, 'owner'); toast('เปิดแจ้งเตือนในเครื่องนี้แล้ว'); } catch (x) { toast(String(x && x.message) === 'denied' ? 'เบราว์เซอร์บล็อกการแจ้งเตือน' : 'เปิดแจ้งเตือนไม่สำเร็จ ลองใหม่', 4500); }
+  pushUi();
+});
+$('bksOff').addEventListener('click', async () => { await disablePush(); toast('ปิดแจ้งเตือนในเครื่องนี้แล้ว'); pushUi(); });
+$('bksTest').addEventListener('click', async () => {
+  try { await setDoc(doc(collection(db, 'broadcasts')), { to: 'owner', title: 'ทดสอบแจ้งเตือน UNITAC ✓', body: 'ถ้าเห็นข้อความนี้ แจ้งเตือนหลังร้านใช้งานได้แล้ว', link: 'admin.html#bk', createdAt: serverTimestamp() }); toast('ส่งแล้ว ควรเด้งภายในไม่กี่วินาที', 4500); }
+  catch (x) { toast(authMsg(x.code), 5000); }
+});
+/* ---------- announcement to members ---------- */
+$('bcBtn').addEventListener('click', async () => {
+  $('bcErr').hidden = true; $('bcDlg').showModal(); $('bcCount').textContent = 'กำลังนับเครื่องที่เปิดรับแจ้งเตือน…';
+  try { const s = await getDocs(collection(db, 'pushTokens')); const mem = s.docs.filter(d => d.data().role === 'member'); const people = new Set(mem.map(d => d.data().uid)).size;
+    $('bcCount').textContent = 'สมาชิกที่เปิดแจ้งเตือนไว้ ' + people + ' คน (' + mem.length + ' เครื่อง)'; }
+  catch (x) { $('bcCount').textContent = 'นับไม่ได้: ' + authMsg(x.code); }
+});
+document.querySelectorAll('#bcDlg [data-close]').forEach(b => b.addEventListener('click', () => $('bcDlg').close()));
+$('bcSend').addEventListener('click', async () => {
+  const title = $('bcTitle').value.trim(), body = $('bcBody').value.trim();
+  if (!title) { $('bcErr').textContent = 'ใส่หัวข้อ'; $('bcErr').hidden = false; return; }
+  if (!confirm('ส่งประกาศ "' + title + '" ถึงสมาชิกทุกคนที่เปิดแจ้งเตือน?')) return;
+  $('bcSend').disabled = true;
+  try { await setDoc(doc(collection(db, 'broadcasts')), { to: 'members', title: title.slice(0, 60), body: body.slice(0, 180), link: $('bcLink').value, createdAt: serverTimestamp() });
+    $('bcDlg').close(); $('bcTitle').value = ''; $('bcBody').value = ''; toast('ส่งประกาศแล้ว', 4000); }
+  catch (x) { $('bcErr').textContent = authMsg(x.code); $('bcErr').hidden = false; }
+  $('bcSend').disabled = false;
+});
 $('bksSave').addEventListener('click', async () => {
   const n = (id, lo, hi) => Math.max(lo, Math.min(hi, Math.round(+$(id).value || 0)));
   const blocked = $('bksBlocked').value.split(/[\s,]+/).map(s => s.trim()).filter(s => /^\d{4}-\d{2}-\d{2}$/.test(s));

@@ -1,5 +1,7 @@
 import { trackLink } from './carriers.js?v=20261004w';
 import { mountBooking, watchMine, setQueue, openBooking } from './booking.js?v=20261010g';
+import { mountNotify, syncNotify, renderNotify, renderNotifyBar, turnOnNotify } from './notify-ui.js?v=20261010h';
+import { pushState, disablePush } from './push.js?v=20261010h';
 import {
   auth, db, OWNER, authMsg, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword,
   sendEmailVerification, sendPasswordResetEmail, signOut, reload,
@@ -18,6 +20,7 @@ let user = null, member = null, orders = [], unsubM = null, queueShop = null, fl
 
 let curView = null;
 mountBooking({ user: () => user, member: () => member });
+mountNotify({ user: () => user, member: () => member });
 let bookHash = location.hash === '#book';
 function show(name) {
   if (curView === name) return;
@@ -137,6 +140,7 @@ function watchMember(u) {
   loadOrders(u);
   loadShop();
   watchMine(u.uid);
+  syncNotify();
 }
 async function loadOrders(u) {
   try {
@@ -199,11 +203,13 @@ function renderTopEnd() {
 }
 document.querySelectorAll('[data-signout]').forEach(b => b.addEventListener('click', async () => {
   try { if (user) localStorage.removeItem('unitac-member-cache:' + user.uid); } catch (_) {}
+  try { await Promise.race([disablePush(), new Promise(r => setTimeout(r, 2500))]); } catch (_) {}
   await signOut(auth); location.hash = ''; toast('ออกจากระบบแล้ว');
 }));
 
 /* ---------- home ---------- */
 function renderHome() {
+  renderNotifyBar();
   const m = member, uid = user.uid, r = rankOf(m);
   renderTopEnd();
   const ha = $('helloAv'); ha.textContent = ''; ha.appendChild(avatarEl(m, 52));
@@ -452,6 +458,7 @@ function checkRankUp() {
 
 /* ---------- profile ---------- */
 function renderProfile() {
+  renderNotify();
   const m = member;
   const pa = $('pAv'); pa.textContent = ''; pa.appendChild(avatarEl(m, 104));
   $('pAvDel').hidden = !m.avatar;
@@ -533,3 +540,10 @@ $('delOk').addEventListener('click', async () => {
 
 document.querySelectorAll('dialog [data-close]').forEach(b => b.addEventListener('click', () => b.closest('dialog').close()));
 document.querySelectorAll('dialog').forEach(d => d.addEventListener('click', (e) => { if (e.target === d) d.close(); }));
+
+/* after a booking request: offer notifications for the shop's reply */
+new MutationObserver(async () => {
+  const d = $('bkDone'); if (!d || !d.open) return;
+  const st = await pushState(); $('bkDoneNf').hidden = st !== 'off';
+}).observe($('bkDone'), { attributes: true, attributeFilter: ['open'] });
+$('bkDoneNf').addEventListener('click', async () => { $('bkDoneNf').hidden = true; await turnOnNotify(); });
