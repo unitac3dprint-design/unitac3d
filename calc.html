@@ -643,7 +643,7 @@ dialog.cd::backdrop{background:rgba(12,10,8,.6);backdrop-filter:blur(3px)}
   <!-- 02 ส่วนลด & ค่าบริการเพิ่มเติม -->
   <section class="card rv" aria-labelledby="s2">
     <h3 class="card__title" id="s2"><span class="step">02</span>ส่วนลด &amp; ค่าบริการเพิ่มเติม</h3>
-    <p class="card__sub">ส่วนลดหักจากค่าพิมพ์เท่านั้น ค่าบริการอื่นบวกทีหลัง</p>
+    <p class="card__sub">ส่วนลดทุกแบบ (สมาชิก คูปอง ส่วนลดร้าน) หักจากค่าวัสดุ (เส้นพิมพ์) เท่านั้น</p>
     <div class="stack">
       <div class="frow frow--2">
         <div class="field">
@@ -870,7 +870,7 @@ dialog.cd::backdrop{background:rgba(12,10,8,.6);backdrop-filter:blur(3px)}
       </li>
       <li class="item item--stop" id="rowMember" hidden>
         <span class="item__ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8Z"/><circle cx="7.5" cy="7.5" r="1.2"/></svg></span>
-        <span class="item__t"><b id="memberLabel">ส่วนลดสมาชิก</b><span>Member Discount</span></span>
+        <span class="item__t"><b id="memberLabel">ส่วนลดสมาชิก</b><span>Member Discount · เฉพาะค่าวัสดุ</span></span>
         <span class="item__v">-<span id="sumMember">0.00</span><small>฿</small></span>
       </li>
       <li class="item item--stop" id="rowCoupon" hidden>
@@ -880,7 +880,7 @@ dialog.cd::backdrop{background:rgba(12,10,8,.6);backdrop-filter:blur(3px)}
       </li>
       <li class="item item--stop" id="rowDiscount" hidden>
         <span class="item__ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8Z"/><circle cx="7.5" cy="7.5" r="1.2"/></svg></span>
-        <span class="item__t"><b id="discountLabel">ส่วนลด</b><span>Discount</span></span>
+        <span class="item__t"><b id="discountLabel">ส่วนลด</b><span>Discount · เฉพาะค่าวัสดุ</span></span>
         <span class="item__v">-<span id="sumDiscount">0.00</span><small>฿</small></span>
       </li>
       <li class="item" id="rowDesignFee" hidden>
@@ -1162,13 +1162,15 @@ function calc(){
   var operationFee=chargeBase*(markupPercent/100);
   var printSubtotal=chargeBase+operationFee;
 
-  /* member discounts (UNITAC membership): rank % + welcome coupon (capped 500 ฿), both on print cost only */
+  /* member discounts (UNITAC membership): rank % + welcome coupon (capped 500 ฿), material charge only */
   var U=window.UMEM||{};
   var memberPct=U.sel?(Number(U.rankPct)||0):0, couponPct=(U.sel&&U.useCoupon)?(Number(U.couponPct)||0):0;
-  var memberDisc=Math.min(printSubtotal*memberPct/100,printSubtotal);
-  var couponDisc=Math.min(printSubtotal*couponPct/100,500,printSubtotal-memberDisc);
-  var discountAmount=(discountMode==='baht')?discountValue:printSubtotal*(clamp(discountValue,0,100)/100);
-  discountAmount=Math.min(Math.max(discountAmount,0),printSubtotal-memberDisc-couponDisc);
+  /* every discount (member rank, welcome coupon, shop discount) applies to the filament/material charge only */
+  var discBase=matCharge*buffer;
+  var memberDisc=Math.min(discBase*memberPct/100,discBase);
+  var couponDisc=Math.min(discBase*couponPct/100,500,discBase-memberDisc);
+  var discountAmount=(discountMode==='baht')?discountValue:discBase*(clamp(discountValue,0,100)/100);
+  discountAmount=Math.min(Math.max(discountAmount,0),Math.max(0,discBase-memberDisc-couponDisc));
   var discountTotal=memberDisc+couponDisc+discountAmount;
   var printPaid=printSubtotal-discountTotal;
   var points=Math.max(0,Math.floor(printPaid/10));
@@ -1183,7 +1185,7 @@ function calc(){
     matCharge:matCharge,matReal:matReal,buffer:buffer,failRate:failRate,hardwareCost:hardwareCost,
     chargeBase:chargeBase,realCost:realCost,operationFee:operationFee,printSubtotal:printSubtotal,
     discountMode:discountMode,discountValue:discountValue,discountAmount:discountAmount,
-    memberPct:memberPct,couponPct:couponPct,memberDisc:memberDisc,couponDisc:couponDisc,discountTotal:discountTotal,printPaid:printPaid,points:points,
+    memberPct:memberPct,couponPct:couponPct,memberDisc:memberDisc,couponDisc:couponDisc,discBase:discBase,discountTotal:discountTotal,printPaid:printPaid,points:points,
     designFee:designFee,shippingFee:shippingFee,grandTotal:grandTotal,realProfit:realProfit,realMargin:realMargin,perPiece:perPiece,
     lineMat:matCharge*buffer,lineElec:elecCost*buffer,lineDep:depCost*buffer};
   /* never let a NaN/Infinity reach the screen */
@@ -1240,7 +1242,7 @@ function render(r){
   $('sumMember').textContent=fmt(r.memberDisc);
   $('rowCoupon').hidden=!(r.couponDisc>0);
   $('couponLabel').textContent='คูปองต้อนรับ +'+fmtInt(r.couponPct)+'%';
-  $('couponSub').textContent=(r.printSubtotal*r.couponPct/100>500)?'Welcome Coupon · ลดสูงสุด 500 ฿':'Welcome Coupon';
+  $('couponSub').textContent=(r.discBase*r.couponPct/100>500)?'Welcome Coupon · เฉพาะค่าวัสดุ · ลดสูงสุด 500 ฿':'Welcome Coupon · เฉพาะค่าวัสดุ';
   $('sumCoupon').textContent=fmt(r.couponDisc);
   $('rowDiscount').hidden=!(r.discountAmount>0);
   var dl=U.sel?'ส่วนลดพิเศษ':'ส่วนลด';
