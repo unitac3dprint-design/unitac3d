@@ -287,7 +287,7 @@ function renderLadder(r) {
     d.append(i, h('span', null, x.key), h('span', 'need', x.min === 0 ? 'สมัคร' : x.partner ? 'partner' : intf(x.min) + ' แต้ม'), h('span', 'num', x.disc + '%'));
     box.appendChild(d);
   });
-  box.appendChild(h('p', 'ladder__note', 'ส่วนลดใช้กับค่าวัสดุ (เส้นพิมพ์) เท่านั้น ไม่รวมค่าไฟ ค่าดำเนินงาน ค่าเขียนแบบ และค่าจัดส่ง · แต้มคิดจากค่าพิมพ์ ทุก 10 บาท = 1 แต้ม สะสมตลอดชีพ แรงค์ไม่ลด'));
+  box.appendChild(h('p', 'ladder__note', 'ส่วนลดใช้กับค่าวัสดุและค่าดำเนินงาน ไม่รวมค่าไฟ ค่าเสื่อมเครื่อง ค่าวัสดุอื่น ค่าเขียนแบบ และค่าจัดส่ง · แต้มคิดจากค่าพิมพ์ ทุก 10 บาท = 1 แต้ม สะสมตลอดชีพ แรงค์ไม่ลด'));
 }
 $('ladderBtn').addEventListener('click', () => {
   const box = $('ladder'), open = box.hidden; box.hidden = !open;
@@ -315,7 +315,7 @@ function renderCoupon() {
   const t = h('span', 'coupon__t');
   if (seen) {
     t.append(h('b', null, 'คูปองต้อนรับ +' + c.pct + '%'),
-      h('span', null, 'ใช้กับค่าวัสดุงานแรก บวกเพิ่มจาก Bronze ลดส่วนนี้ได้สูงสุด ' + intf(COUPON_CAP) + ' บาท'),
+      h('span', null, 'ใช้กับค่าวัสดุและค่าดำเนินงานของงานแรก บวกเพิ่มจาก Bronze ลดส่วนนี้ได้สูงสุด ' + intf(COUPON_CAP) + ' บาท'),
       h('span', null, c.expires ? 'ใช้ได้ถึง ' + fDate.format(c.expires) + ' · เหลือ ' + daysLeft(c.expires) + ' วัน' : ''));
     if (!c.verified) t.appendChild(Object.assign(h('span', null, 'ยืนยันอีเมลก่อนจึงจะใช้ได้'), { style: 'color:var(--warn)' }));
     el.setAttribute('aria-label', 'คูปองต้อนรับ ' + c.pct + '%');
@@ -448,7 +448,7 @@ function checkRankUp() {
   let prev = null; try { prev = localStorage.getItem(key); localStorage.setItem(key, r.key); } catch (_) {}
   const idx = (k) => RANKS.findIndex(x => x.key === k);
   if (prev && idx(r.key) > idx(prev)) {
-    $('upRank').textContent = r.key; $('upDisc').textContent = 'ส่วนลดค่าวัสดุของคุณตอนนี้ ' + r.disc + '%';
+    $('upRank').textContent = r.key; $('upDisc').textContent = 'ส่วนลดของคุณตอนนี้ ' + r.disc + '%';
     const c = $('upCard'); c.textContent = ''; c.appendChild(rankCard(member, user.uid, { qr: false }));
     $('forge').style.setProperty('--fc', r.key === 'Rhodium' ? '#E7E8EA' : r.c);
     attachTilt(c.querySelector('.rcard'), c);

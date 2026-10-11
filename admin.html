@@ -61,6 +61,8 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
 @media (max-width:520px){.cd__ptsform{grid-template-columns:minmax(0,1fr)}}
 .cd__rh{padding:12px 14px;border-radius:var(--r-md);border:1px solid var(--rule)}
 .addr{padding:10px 12px;border-radius:var(--r-sm);background:var(--sunk);margin-bottom:6px;white-space:pre-line;overflow-wrap:anywhere}
+.addr--cp{display:flex;gap:10px;align-items:flex-start}.addr__t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.addr__t b{font-size:12px;color:var(--muted);font-weight:600}.addr__cp{flex-shrink:0;white-space:nowrap}
+.shipaddr{margin-bottom:12px}.shipaddr>.lab{display:block;font-size:13px;margin-bottom:6px}
 .wcard{display:grid;gap:14px}
 .claims{display:grid;gap:6px}
 .claim{padding:10px 12px;border-radius:var(--r-sm);background:var(--sunk);font-size:13.5px}
@@ -788,6 +790,7 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
       <div class="field"><span class="lab">กำไร</span><div class="emailbox num" id="oProfit">-</div></div>
     </div>
     <div class="oSaleOnly shipbox">
+      <div class="shipaddr"><span class="lab">ที่อยู่จัดส่ง</span><div id="oAddr"></div></div>
       <div class="frow">
         <div class="field"><label for="oCarrier">ขนส่ง</label><select id="oCarrier"><option value="flash">Flash Express</option><option value="thp">ไปรษณีย์ไทย</option><option value="kex">KEX Express</option><option value="jt">J&amp;T Express</option><option value="other">ขนส่งอื่น</option></select></div>
         <div class="field"><label for="oTrack">เลขพัสดุ</label><div class="trk__in"><input type="text" id="oTrack" maxlength="30" autocomplete="off" spellcheck="false" placeholder="TH…" style="text-transform:uppercase;font-family:var(--font-num)"><button type="button" class="btn btn--ghost btn--sm" id="oScanTrack" aria-label="สแกนบาร์โค้ดใบปะหน้า"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="width:17px;height:17px"><path d="M4 7V5a1 1 0 0 1 1-1h2M17 4h2a1 1 0 0 1 1 1v2M20 17v2a1 1 0 0 1-1 1h-2M7 20H5a1 1 0 0 1-1-1v-2M7 9v6M10 9v6M13 9v6M16 9v6"/></svg>สแกน</button></div></div>
@@ -989,6 +992,7 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
   <div class="dlg__head"><div><h2 id="tgT">ใส่เลขพัสดุ</h2><p class="muted small" id="tgSub"></p></div><button type="button" class="iconbtn" data-close aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
   <div class="dlg__body">
     <div class="field"><label for="tgOrder">งาน</label><select id="tgOrder"></select></div>
+    <div class="shipaddr"><span class="lab">ที่อยู่จัดส่ง</span><div id="tgAddr"></div></div>
     <div class="ship">
       <div class="tg__fields">
         <div class="field"><label for="tgCarrier">ขนส่ง</label><select id="tgCarrier"><option value="flash">Flash Express</option><option value="thp">ไปรษณีย์ไทย</option><option value="kex">KEX Express</option><option value="jt">J&amp;T Express</option><option value="other">ขนส่งอื่น</option></select></div>
@@ -1004,7 +1008,7 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
 
 <footer class="foot">UNITAC · <a href="./">ตารางคิว</a> · <a href="warranty.html">เช็กประกัน</a> · <a href="portfolio.html">ผลงาน</a> · <a href="partners.html">พาร์ทเนอร์</a> · <a href="privacy.html">นโยบายความเป็นส่วนตัว</a></footer>
 <script src="vendor/qrcode.js?v=20261004w"></script>
-<script type="module" src="js/admin.js?v=20261010e"></script>
+<script type="module" src="js/admin.js?v=20261011c"></script>
 <script type="module" src="js/admin-partners.js?v=20261004w"></script>
 <script type="module" src="js/admin-stock.js?v=20261010f"></script>
 <script type="module" src="js/admin-portfolio.js?v=20261004w"></script>

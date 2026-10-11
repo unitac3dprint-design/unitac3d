@@ -119,6 +119,33 @@ $('cScan').addEventListener('click', async () => {
   openMember(uid);
 });
 
+/* ---------- shipping address: show + one-tap copy (name / phone / address, ready to paste on the parcel app) ---------- */
+const addrText = (a) => [a.name, a.phone, a.addr].map(x => (x || '').trim()).filter(Boolean).join('\n');
+async function copyText(t, msg) {
+  try { await navigator.clipboard.writeText(t); }
+  catch (_) { const ta = h('textarea'); ta.value = t; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (__) {} ta.remove(); }
+  toast(msg || 'คัดลอกแล้ว');
+}
+function addrCard(a, note) {
+  const box = h('div', 'addr addr--cp'), t = h('div', 'addr__t');
+  t.append(h('b', null, (a.label || 'ที่อยู่') + (a.main ? ' (หลัก)' : '') + (note ? ' · ' + note : '')), h('span', null, addrText(a)));
+  const b = h('button', 'btn btn--ghost btn--sm addr__cp', '📋 คัดลอก'); b.type = 'button';
+  b.addEventListener('click', () => copyText(addrText(a), 'คัดลอกที่อยู่แล้ว วางในแอปขนส่งได้เลย'));
+  box.append(t, b); return box;
+}
+/* the order's own ship-to first, otherwise the member's main (or first) address */
+function shipAddr(o) {
+  if (o && o.shipTo && (o.shipTo.addr || o.shipTo.name)) return { a: o.shipTo, note: 'ที่ลูกค้าเลือกตอนสั่ง' };
+  const m = o && o.uid ? members.find(x => x.uid === o.uid) : null, list = (m && m.addresses) || [];
+  const a = list.find(x => x.main) || list[0];
+  return a ? { a, note: 'ที่อยู่หลักของสมาชิก' } : null;
+}
+function fillShipAddr(el, o) {
+  if (!el) return; el.textContent = '';
+  const s = shipAddr(o);
+  el.appendChild(s ? addrCard(s.a, s.note) : h('p', 'muted small', o && o.uid ? 'สมาชิกยังไม่ได้บันทึกที่อยู่' : 'ลูกค้าทั่วไป ไม่มีที่อยู่ในระบบ'));
+}
+
 function openMember(uid) {
   cur = members.find(m => m.uid === uid); if (!cur) return;
   const m = cur, r = rankOf(m), c = couponInfo(m, uid);
@@ -134,7 +161,7 @@ function openMember(uid) {
   [['อีเมล', (m.email || '-') + (m.verified ? ' ✓' : '')], ['เบอร์', m.phone || '-'], ['สมัครเมื่อ', created ? fDate.format(created) : '-'],
    ['คูปองหมดอายุ', c.expires ? fDate.format(c.expires) : '-']].forEach(([k, v]) => { info.append(h('dt', null, k), h('dd', null, v)); });
   const ad = $('cdAddr'); ad.textContent = '';
-  (m.addresses || []).forEach(a => ad.appendChild(h('div', 'addr', (a.label || 'ที่อยู่') + (a.main ? ' (หลัก)' : '') + '\n' + [a.name, a.phone].filter(Boolean).join(' · ') + '\n' + (a.addr || ''))));
+  (m.addresses || []).forEach(a => ad.appendChild(addrCard(a)));
   if (!(m.addresses || []).length) ad.appendChild(h('p', 'muted', 'ยังไม่มีที่อยู่'));
   fillRank(m);
   $('cdVer').hidden = !!m.verified;
@@ -283,6 +310,7 @@ function editOrder(o) {
   $('oPts').value = o.points || 0; $('oErr').hidden = true;
   $('oCost').value = o.realCost != null ? o.realCost : '';
   $('oCarrier').value = o.shipCarrier || 'flash'; $('oTrack').value = o.shipTrack || ''; shipLink();
+  fillShipAddr($('oAddr'), o);
   if (!adj) calcTotal(); else $('oPtsNote').textContent = '';
   $('oDlg').showModal();
 }
@@ -514,7 +542,7 @@ function openTag(c) {
   c.orders.slice(0, 20).forEach(o => { const op = h('option', null, (o.title || 'งาน') + ' · ' + tgDate(toDate(o.deliveredAt) || toDate(o.createdAt)) + (o.shipTrack ? ' · 📦 ' + o.shipTrack : '')); op.value = o.id; S.appendChild(op); });
   const first = c.orders.find(o => !o.shipTrack) || c.orders[0]; S.value = first.id; tgFill(); $('tgDlg').showModal();
 }
-function tgFill() { const o = tgOrder(); $('tgCarrier').value = (o && o.shipCarrier) || 'flash'; $('tgNum').value = (o && o.shipTrack) || ''; tgSync(); }
+function tgFill() { const o = tgOrder(); fillShipAddr($('tgAddr'), o); $('tgCarrier').value = (o && o.shipCarrier) || 'flash'; $('tgNum').value = (o && o.shipTrack) || ''; tgSync(); }
 $('tgSearch').addEventListener('input', renderTags);
 $('tgOrder').addEventListener('change', tgFill);
 $('tgNum').addEventListener('input', tgSync); $('tgCarrier').addEventListener('change', tgSync);
