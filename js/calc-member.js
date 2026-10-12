@@ -212,10 +212,10 @@ $('saveOrderBtn').addEventListener('click', () => {
   const td = new Date(); $('odStart').value = td.getFullYear() + '-' + String(td.getMonth() + 1).padStart(2, '0') + '-' + String(td.getDate()).padStart(2, '0'); $('odStartF').hidden = false;
   const sum = $('odSum'); sum.textContent = '';
   const rows = [['ลูกค้า', sel ? (sel.nickname || 'สมาชิก') + ' · ' + sel.no : 'ลูกค้าทั่วไป'], ['ค่าพิมพ์หลังหักส่วนลด', money(r.printPaid) + ' ฿'], ['ยอดรวมสุทธิ', money(r.grandTotal) + ' ฿']];
-  if (sel) rows.push(['แต้มที่ได้', '+' + intf(pointsFor(r.printPaid))]);
+  if (sel) rows.push(['แต้ม (เข้าเมื่อชำระแล้ว)', '+' + intf(pointsFor(r.printPaid))]);
   if (sel && r.couponDisc > 0) rows.push(['คูปองต้อนรับ', 'ใช้ (+' + r.couponPct + '%) แล้วปิด']);
   rows.forEach(([k, v]) => sum.append(h('dt', null, k), h('dd', null, v)));
-  $('odErr').hidden = true; $('orderDlg').showModal();
+  $('odErr').hidden = true; $('odPay').value = ''; $('orderDlg').showModal();
 });
 function billSnap() {
   const P = $('quotePaper'); if (!P) return null;
@@ -237,6 +237,7 @@ $('orderForm').addEventListener('submit', async (e) => {
   const wStart = sp ? new Date(sp[0], sp[1] - 1, sp[2], now.getHours(), now.getMinutes()) : now;
   const exp = days ? new Date(wStart.getTime() + days * 864e5) : null;
   const ad = sel ? (sel.addresses || []).find(a => a.id === $('msAddr').value) || null : null;
+  const pm = $('odPay').value, paid = !!pm;
   b.disabled = true;
   try {
     const batch = writeBatch(db), oref = doc(collection(db, 'orders'));
@@ -250,18 +251,21 @@ $('orderForm').addEventListener('submit', async (e) => {
       points: pts, warrantyDays: days, warrantyCode: code, warrantyStart: days ? wStart : null, expiresAt: exp,
       shipTo: ad ? { label: ad.label || '', name: ad.name || '', phone: ad.phone || '', addr: ad.addr || '' } : null,
       bill: billSnap(),
+      pay: paid ? { s: 'paid', method: pm, at: new Date() } : { s: 'unpaid' },
+      ptsPending: !!(sel && pts && !paid), ptsByPay: !!(sel && pts && paid),
       deliveredAt: serverTimestamp()
     });
     if (code) batch.set(doc(db, 'warranties', code), { title, days, deliveredAt: serverTimestamp(), startAt: wStart, expiresAt: exp, claims: [] });
     if (sel) {
-      const upd = { points: increment(pts) };
+      const upd = {};
+      if (paid && pts) upd.points = increment(pts);   /* points only once the order is paid */
       if (r.couponDisc > 0) upd.welcomeUsed = true;
-      batch.update(doc(db, 'members', sel.uid), upd);
+      if (Object.keys(upd).length) batch.update(doc(db, 'members', sel.uid), upd);
     }
     await batch.commit();
     if (queuedId) { try { await markQueueDone(queuedId); } catch (_) {} queuedId = null; }
     $('orderDlg').close();
-    if (sel) { sel.points = (sel.points || 0) + pts; if (r.couponDisc > 0) { sel.welcomeUsed = true; $('msCoupon').disabled = true; $('msCouponNote').textContent = 'ใช้กับออเดอร์นี้แล้ว'; } }
+    if (sel) { if (paid) sel.points = (sel.points || 0) + pts; if (r.couponDisc > 0) { sel.welcomeUsed = true; $('msCoupon').disabled = true; $('msCouponNote').textContent = 'ใช้กับออเดอร์นี้แล้ว'; } }
     lastSaved = { total: r.grandTotal };
     if (code) {
       const wurl = new URL('warranty.html?c=' + code, location.href).href;
@@ -270,7 +274,7 @@ $('orderForm').addEventListener('submit', async (e) => {
       $('pwUrl').textContent = new URL('warranty.html', location.href).host + new URL('warranty.html', location.href).pathname;
       $('paperWar').hidden = false;
     }
-    toast('บันทึกออเดอร์แล้ว' + (pts ? ' · +' + intf(pts) + ' แต้ม' : '') + (code ? ' · รหัสประกัน ' + code : ''), 5000);
+    toast('บันทึกออเดอร์แล้ว' + (paid ? ' · ชำระแล้ว' : ' · รอชำระ') + (pts ? (paid ? ' · +' + intf(pts) + ' แต้ม' : ' · แต้มเข้าเมื่อชำระ') : '') + (code ? ' · รหัสประกัน ' + code : ''), 5000);
   } catch (x) { $('odErr').textContent = authMsg(x.code); $('odErr').hidden = false; }
   b.disabled = false;
 });
@@ -292,7 +296,7 @@ export function promptPay(base, amt) {
   return s + crc16(s);
 }
 function validBase(s) { if (!/^000201/.test(s) || s.length < 30) return false; return crc16(s.slice(0, -4)) === s.slice(-4).toUpperCase() && tlv(s).some(([t]) => t === '29' || t === '30'); }
-function savePay() { try { localStorage.setItem('unitac-pay', JSON.stringify(pay)); } catch (_) {} if (isOwner) setDoc(doc(db, 'admin', 'pay'), pay).catch(() => {}); }
+function savePay() { try { localStorage.setItem('unitac-pay', JSON.stringify(pay)); } catch (_) {} if (isOwner) { setDoc(doc(db, 'admin', 'pay'), pay).catch(() => {}); setDoc(doc(db, 'public', 'pay'), { base: pay.base, name: pay.name || '', on: pay.on !== false }).catch(() => {}); } }
 function payNote() { const acc = (tlv(pay.base).find(([t]) => t === '29' || t === '30') || [, ''])[1]; const id = (tlv(acc).find(([t]) => t !== '00') || [, ''])[1]; $('payIdNote').textContent = id ? 'ใช้ QR รับเงินเลขอ้างอิง ' + id.replace(/^(\d{3})\d+(\d{4})$/, '$1•••••$2') : 'ยังไม่ได้ตั้ง QR รับเงิน'; }
 let lastAmt = -1;
 function renderPay() {

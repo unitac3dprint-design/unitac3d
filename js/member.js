@@ -2,6 +2,7 @@ import { trackLink } from './carriers.js?v=20261004w';
 import { mountBooking, watchMine, setQueue, openBooking } from './booking.js?v=20261010i';
 import { mountNotify, syncNotify, renderNotify, renderNotifyBar, turnOnNotify } from './notify-ui.js?v=20261010h';
 import { pushState, disablePush } from './push.js?v=20261010h';
+import { promptPay, validBase, isPaid } from './pay.js?v=20261012a';
 import {
   auth, db, OWNER, authMsg, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword,
   sendEmailVerification, sendPasswordResetEmail, signOut, reload,
@@ -363,16 +364,41 @@ function renderOrders() {
   const list = showAllOrders ? orders : orders.slice(0, 3);
   list.forEach(o => {
     const row = h('div', 'row'), hd = h('div', 'row__h'), adj = o.kind === 'adjust';
-    hd.append(h('span', 'row__t', adj ? 'ปรับแต้มโดยร้าน: ' + (o.title || '') : (o.title || 'งานพิมพ์')), h('span', adj ? 'pill' : 'pill pill--ok', adj ? 'ปรับแต้ม' : 'ส่งมอบแล้ว'));
+    const paid = isPaid(o);
+    hd.append(h('span', 'row__t', adj ? 'ปรับแต้มโดยร้าน: ' + (o.title || '') : (o.title || 'งานพิมพ์')), h('span', adj ? 'pill' : paid ? 'pill pill--ok' : 'pill pill--warn', adj ? 'ปรับแต้ม' : paid ? 'ชำระแล้ว' : 'รอชำระ'));
     const d = toDate(o.deliveredAt);
     const meta = [d ? fDate.format(d) : '', o.points ? (o.points > 0 ? '+' : '') + intf(o.points) + ' แต้ม' : '', o.warrantyCode ? 'ประกัน ' + o.warrantyDays + ' วัน' : ''].filter(Boolean).join(' · ');
     row.append(hd, h('span', 'row__m', meta));
+    if (!adj && !paid) {
+      const pb = h('div', 'row__pay');
+      if (o.ptsPending && o.points > 0) pb.appendChild(h('span', 'hint', 'แต้มจะเข้าเมื่อร้านยืนยันว่าชำระแล้ว'));
+      const b = h('button', 'btn btn--primary btn--sm'); b.type = 'button'; b.append(h('span', null, 'ชำระเงิน'), h('span', 'num', ' ' + money(o.total) + ' ฿'));
+      b.addEventListener('click', () => openPayDlg(o)); pb.appendChild(b); row.appendChild(pb);
+    }
     if (o.shipTrack) { const t = h('a', 'linkbtn', '📦 ติดตามพัสดุ ' + o.shipTrack); t.href = trackLink(o.shipTrack, o.shipCarrier || 'flash'); t.target = '_blank'; t.rel = 'noopener'; t.addEventListener('click', () => { if (navigator.clipboard) navigator.clipboard.writeText(o.shipTrack).catch(() => {}); }); row.appendChild(t); }
     L.appendChild(row);
   });
   $('oAllBtn').hidden = orders.length <= 3;
   $('oAllBtn').textContent = showAllOrders ? 'แสดงน้อยลง' : 'ดูทั้งหมด (' + orders.length + ')';
 }
+/* ---------- pay an unpaid order: PromptPay QR with the amount filled in · the shop ticks "ชำระแล้ว" ---------- */
+let payInfo;
+async function shopPay() {
+  if (payInfo !== undefined) return payInfo;
+  try { const s = await getDoc(doc(db, 'public', 'pay')); payInfo = s.exists() ? s.data() : null; } catch (_) { payInfo = null; }
+  return payInfo;
+}
+async function openPayDlg(o) {
+  const amt = Math.round((+o.total || 0) * 100) / 100;
+  $('payJob').textContent = o.title || 'งานพิมพ์'; $('payAmt').textContent = money(amt);
+  $('payQr').textContent = ''; $('payName').textContent = ''; $('payNoQr').hidden = true; $('payQrBox').hidden = false;
+  $('payDlg').showModal();
+  const p = await shopPay();
+  if (p && p.on !== false && validBase(p.base) && amt > 0) { $('payQr').innerHTML = qrSvg(promptPay(p.base, amt)); if (p.name) $('payName').append(h('span', null, 'ชื่อบัญชี'), ': ' + p.name); }
+  else { $('payQrBox').hidden = true; $('payNoQr').hidden = false; }
+}
+/* the shop just updated something (paid, shipped…): refresh the list */
+addEventListener('unitac-push', () => { if (user) loadOrders(user); });
 $('oAllBtn').addEventListener('click', () => { showAllOrders = !showAllOrders; $('oAllBtn').setAttribute('aria-expanded', String(showAllOrders)); renderOrders(); });
 
 /* ---------- booking via Messenger ---------- */

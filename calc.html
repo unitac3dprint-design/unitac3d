@@ -1574,8 +1574,9 @@ window.__unitac={calc:calc,last:function(){return last;},materials:materials,rec
     <div class="field"><label for="odTitleIn">ชื่องาน</label><div class="inp"><input type="text" id="odTitleIn" maxlength="80"></div></div>
     <div class="field"><label for="odDays">ประกัน</label><div class="inp"><select id="odDays"><option value="0">ไม่มีประกัน</option><option value="7">7 วัน</option><option value="15">15 วัน</option><option value="30" selected>30 วัน</option><option value="60">60 วัน</option><option value="90">90 วัน</option><option value="180">180 วัน</option><option value="365">1 ปี</option></select></div></div>
     <div class="field" id="odStartF"><label for="odStart">เริ่มประกันวันที่</label><div class="inp"><input type="date" id="odStart"></div><p class="hint">ค่าเริ่มต้นคือวันนี้ เปลี่ยนเป็นวันที่ลูกค้าได้รับของได้</p></div>
+    <div class="field"><label for="odPay">การชำระเงิน</label><div class="inp"><select id="odPay"><option value="">รอชำระ</option><option value="transfer">ชำระแล้ว · โอน</option><option value="cash">ชำระแล้ว · เงินสด</option><option value="other">ชำระแล้ว · อื่น ๆ</option></select></div><p class="hint">แต้มสมาชิกเข้าเมื่อชำระแล้วเท่านั้น ถ้ายังไม่จ่าย ไปกด "ชำระแล้ว" ทีหลังได้ในหลังร้าน</p></div>
     <dl class="cd__sum" id="odSum"></dl>
-    <p class="hint">กดเมื่อส่งมอบหรือรับเงินแล้วเท่านั้น ระบบจะเพิ่มแต้ม ปิดคูปองต้อนรับ และออกรหัสประกันทันที</p>
+    <p class="hint">ระบบจะปิดคูปองต้อนรับและออกรหัสประกันทันที</p>
     <p class="cd__err" id="odErr" hidden></p>
   </div>
   <div class="cd__f"><button type="button" class="btn btn--ghost" data-close>ยกเลิก</button><button type="submit" class="btn btn--primary" id="odOk">ยืนยันบันทึก</button></div>
@@ -1605,7 +1606,7 @@ window.__unitac={calc:calc,last:function(){return last;},materials:materials,rec
   <div class="cd__f"><button type="button" class="btn btn--ghost" data-close>ยกเลิก</button><button type="submit" class="btn btn--primary" id="lgOk">เข้าสู่ระบบ</button></div>
 </form></dialog>
 <script src="vendor/qrcode.js?v=20261004w"></script>
-<script type="module" src="js/calc-member.js?v=20261010b"></script>
+<script type="module" src="js/calc-member.js?v=20261012a"></script>
 <script type="module">import { openReceipt } from './js/receipt.js?v=20261012a'; document.getElementById('receiptBtn').addEventListener('click', () => { const r = window.__unitac && window.__unitac.last(); openReceipt(document.getElementById('quotePaper'), (document.getElementById('jobName').value || '').trim(), r ? { material: r.matLabel, qty: r.qty, weight: (r.matWeight || 0) * (r.qty || 1), hours: r.totalHours, sub: r.printSubtotal, disc: r.discountTotal, design: r.designFee, ship: r.shippingFee } : null); });</script>
 </body>
 </html>

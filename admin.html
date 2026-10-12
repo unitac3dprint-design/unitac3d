@@ -124,6 +124,21 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
 @media (max-width:600px){.bars{gap:4px}.bar2 em{display:none}}
 .orow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;align-items:center;padding:12px 0;border-top:1px solid var(--rule)}
 .orow:first-child{border-top:0}
+.paper__st{margin:10px 0 0;text-align:right;font-weight:700;font-size:14px;color:#B0641A}.paper__st.is-paid{color:#1E7A4C}
+.paybar{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.paytag{display:inline-flex;align-items:center;gap:6px;min-height:30px;padding:0 12px;border-radius:999px;font-size:12.5px;font-weight:600}
+.paytag--due{background:var(--warn-soft);color:var(--warn)}
+.paytag--ok{background:var(--ok-soft);color:var(--ok)}
+button.paytag--ok:hover{filter:brightness(1.15)}
+.paygo{min-height:30px;padding:0 14px;border-radius:999px;background:var(--ok);color:#0E1A14;font-size:12.5px;font-weight:700}
+.paygo:hover{filter:brightness(1.08)}
+.paym{display:flex;gap:8px;flex-wrap:wrap}
+.paym label{flex:1;min-width:84px}
+.paym input{position:absolute;opacity:0;pointer-events:none}
+.paym span{display:grid;place-items:center;min-height:44px;border-radius:12px;border:1px solid var(--rule-strong);font-weight:600;font-size:14px;cursor:pointer}
+.paym input:checked+span{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.paym input:focus-visible+span{outline:2px solid var(--accent);outline-offset:2px}
+.pyamt{font-family:var(--font-num);font-size:28px;font-weight:600;margin:2px 0 4px}
 .orow__acts{display:flex;gap:6px}
 .orow__acts button{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;color:var(--muted);border:1px solid var(--rule)}
 .orow__acts button:hover{color:var(--ink);border-color:var(--rule-strong)}
@@ -593,7 +608,7 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
       </div>
       <div class="mo__stats" id="moStats"></div>
       <div class="card mo__chartc"><div class="sec__h"><h2>ยอดขาย 12 เดือนล่าสุด</h2><span>กดแท่งเพื่อดูเดือนนั้น</span></div><div class="bars" id="moChart"></div></div>
-      <div class="card sec"><div class="sec__h"><h2 id="oHead">ออเดอร์</h2><span id="oCount"></span></div><div id="oList" class="rows"></div></div>
+      <div class="card sec"><div class="sec__h"><h2 id="oHead">ออเดอร์</h2><span id="oCount"></span></div><div class="cfil" id="oPayFil" role="group" aria-label="กรองสถานะชำระ" style="margin-bottom:10px"></div><div id="oList" class="rows"></div></div>
     </div>
 
     <div data-panel="tag" class="sec" hidden>
@@ -807,6 +822,22 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
   <div class="dlg__foot"><span class="sp"></span><button type="button" class="btn btn--ghost" data-close>ยกเลิก</button><button type="submit" class="btn btn--primary" id="oSave">บันทึก</button></div>
 </form></dialog>
 
+<dialog id="pyDlg" aria-labelledby="pyT"><div class="dlg">
+  <div class="dlg__head"><div><h2 id="pyT">ชำระแล้ว</h2><p class="muted small" id="pySub"></p></div><button type="button" class="iconbtn" data-close aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="dlg__body">
+    <p class="pyamt" id="pyAmt"></p>
+    <div class="field"><span class="lab">ชำระโดย</span><div class="paym" role="radiogroup" aria-label="ชำระโดย">
+      <label><input type="radio" name="pyM" value="transfer" checked><span>โอน</span></label>
+      <label><input type="radio" name="pyM" value="cash"><span>เงินสด</span></label>
+      <label><input type="radio" name="pyM" value="other"><span>อื่น ๆ</span></label>
+    </div></div>
+    <div class="field"><label for="pyAt">วันเวลาที่ชำระ</label><input type="datetime-local" id="pyAt" class="input"></div>
+    <p class="hint" id="pyPts"></p>
+    <p class="err" id="pyErr" hidden></p>
+  </div>
+  <div class="dlg__foot"><button type="button" class="btn btn--ghost" id="pyUndo" hidden>เปลี่ยนเป็นรอชำระ</button><span class="sp"></span><button type="button" class="btn btn--ghost" data-close>ปิด</button><button type="button" class="btn btn--primary" id="pyOk">✓ ชำระแล้ว</button></div>
+</div></dialog>
+
 <dialog id="odDlg" aria-labelledby="odDlgT"><div class="dlg">
   <div class="dlg__head"><h2 id="odDlgT">ลบออเดอร์</h2></div>
   <div class="dlg__body">
@@ -837,6 +868,7 @@ dialog.wide{max-width:min(720px,calc(100vw - 24px))}
       <ul class="items" id="bdItems" aria-label="รายการ"></ul>
       <p class="paper__note" id="bdNote" hidden></p>
       <div class="total"><div class="k">ยอดรวมสุทธิ<small>GRAND TOTAL</small></div><div class="v"><span id="bdTotal">0.00</span><small>THB</small></div><div class="pp" id="bdPPL" hidden>≈ <span id="bdPP"></span> ฿/ชิ้น</div></div>
+      <p class="paper__st" id="bdPaySt" hidden></p>
       <div class="paper__pay" id="bdPay" hidden>
         <div class="pay__qr"><div class="pay__qrin" id="bdPayQr"></div><span class="pay__mark" aria-hidden="true"><svg viewBox="4.3 21.5 85.5 36.5" width="20" height="9"><path fill="#FF7A3C" d="M4.85 24.9Q4.85 22.05 7.7 22.05H10.5L12.4 24.9L16.6 22.05H26Q27.3 22.05 27.3 23.3V24.54L12.14 41.96Q11.1 43.16 11.1 44.56V45.25Q11.1 46.85 12.7 46.85H25.54L47.12 22.05H84.2L89.3 27.7V28.4Q89.3 30.1 86.9 30.1H72.56L48.73 57.5H40.02Q36.23 57.5 38.73 54.63L60.06 30.1H52.46L28.63 57.5H7.65Q4.85 57.5 4.85 54.7Z"/></svg></span></div>
         <div class="pay__t"><span class="pay__k">PROMPTPAY · THAI QR</span><b>สแกนเพื่อชำระเงิน</b><span class="pay__amt"><span id="bdPayAmt">0.00</span><small>THB</small></span><span class="pay__who" id="bdPayName"></span></div>

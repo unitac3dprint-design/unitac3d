@@ -1,5 +1,5 @@
 /* ---------- ดูบิลย้อนหลังของแต่ละออเดอร์ (หน้าตาเหมือนใบเสนอราคาในเครื่องคิดเลข) ---------- */
-import { db, doc, getDoc } from './fb.js?v=20261004w';
+import { db, doc, getDoc, setDoc } from './fb.js?v=20261004w';
 import { openReceipt } from './receipt.js?v=20261012a';
 import { toDate, fDate, money, intf, qrSvg, $, h, toast, LOGO_SVG } from './core.js?v=20261004w';
 
@@ -34,6 +34,12 @@ async function loadPay() {
   return pay;
 }
 
+/* members see the shop's receive-money QR (with the amount filled in) for unpaid orders: keep public/pay in sync */
+export async function publishPay() {
+  const p = await loadPay();
+  try { const s = await getDoc(doc(db, 'public', 'pay')); const c = s.exists() ? s.data() : null; if (c && c.base === p.base && c.name === (p.name || '') && c.on === (p.on !== false)) return; } catch (_) {}
+  try { await setDoc(doc(db, 'public', 'pay'), { base: p.base, name: p.name || '', on: p.on !== false }); } catch (_) {}
+}
 const fDay = new Intl.DateTimeFormat('th-TH', { year: 'numeric', month: 'short', day: 'numeric' });
 const num = (n) => (+n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
@@ -86,11 +92,15 @@ export async function openBill(o) {
     $('bwDays').textContent = o.warrantyDays || 0; $('bwJob').textContent = o.title || '';
     $('bwUrl').textContent = url.host + url.pathname; W.hidden = false;
   } else W.hidden = true;
-  /* PromptPay */
+  /* payment status */
+  const paid = !!(o.pay && o.pay.s === 'paid'), pAt = paid ? toDate(o.pay.at) : null;
+  $('bdPaySt').textContent = paid ? 'ชำระแล้ว ✓' + (o.pay.method ? ' · ' + ({ transfer: 'โอน', cash: 'เงินสด', other: 'อื่น ๆ' }[o.pay.method] || '') : '') + (pAt ? ' · ' + fDay.format(pAt) : '') : 'รอชำระ';
+  $('bdPaySt').className = 'paper__st' + (paid ? ' is-paid' : ''); $('bdPaySt').hidden = false;
+  /* PromptPay (not needed once paid) */
   $('bdPay').hidden = true;
   $('bDlg').showModal(); P.scrollIntoView?.({ block: 'start' });
   const p = await loadPay(); if (curOrder !== o) return;
-  const amt = Math.round((+o.total || 0) * 100) / 100, show = p.on !== false && amt > 0 && validBase(p.base) && $('bdPayOn').checked;
+  const amt = Math.round((+o.total || 0) * 100) / 100, show = !paid && p.on !== false && amt > 0 && validBase(p.base) && $('bdPayOn').checked;
   if (show) { $('bdPayQr').innerHTML = qrSvg(promptPay(p.base, amt)); $('bdPayAmt').textContent = num(amt); $('bdPayName').textContent = p.name ? 'ชื่อบัญชี: ' + p.name : ''; }
   $('bdPay').hidden = !show;
 }
@@ -120,4 +130,4 @@ $('bdSave').addEventListener('click', async () => {
   b.disabled = false;
 });
 
-$('bdReceipt').addEventListener('click', () => openReceipt($('billPaper'), curOrder && curOrder.title, curOrder && { material: curOrder.material, qty: curOrder.qty, weight: curOrder.weight, hours: curOrder.hours, sub: curOrder.printSubtotal, disc: curOrder.discountTotal, design: curOrder.designFee, ship: curOrder.shippingFee }));
+$('bdReceipt').addEventListener('click', () => openReceipt($('billPaper'), curOrder && curOrder.title, curOrder && { material: curOrder.material, qty: curOrder.qty, weight: curOrder.weight, hours: curOrder.hours, sub: curOrder.printSubtotal, disc: curOrder.discountTotal, design: curOrder.designFee, ship: curOrder.shippingFee, pay: curOrder.pay && curOrder.pay.s === 'paid' ? (curOrder.pay.method || 'paid') : 'unpaid' }));
