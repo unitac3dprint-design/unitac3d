@@ -108,17 +108,48 @@ export function openBooking() {
   st = { step: 1, month: new Date(first.getFullYear(), first.getMonth(), 1), date: '', sel: [] };
   ['bkTitle', 'bkQty', 'bkNote'].forEach(id => { $(id).value = id === 'bkQty' ? '1' : ''; });
   $('bkLinks').textContent = ''; addLinkRow('');
-  $('bkErr').hidden = true;
+  $('bkErr').hidden = true; $('bkCalWrap').hidden = true; $('bkCalBtn').setAttribute('aria-expanded', 'false');
   renderStep(); $('bkDlg').showModal();
 }
+const NEXT_T = { 1: 'ถัดไป · แนบลิงก์ไฟล์งาน', 2: 'ถัดไป · ตรวจแล้วส่ง' };
 function renderStep() {
-  const s = st.step;
+  const s = st.step, c = cfg();
   document.querySelectorAll('#bkDlg [data-step]').forEach(e => { e.hidden = +e.dataset.step !== s; });
   document.querySelectorAll('#bkSteps i').forEach((e, i) => e.classList.toggle('on', i < s));
-  $('bkStepN').textContent = s + '/3';
+  /* timeline: done / now / next + a one-line summary under finished steps */
+  const f = readForm(), sum = { '1': st.date ? fmt(st.date) : '', '1b': matText(f) || 'ให้ร้านแนะนำ', '2': f.title ? f.title + ' · ' + f.qty + ' ชิ้น' : '' };
+  document.querySelectorAll('#bkDlg .bkn').forEach(n => {
+    const k = n.dataset.node, ns = parseInt(k, 10);
+    n.classList.toggle('is-done', ns < s); n.classList.toggle('is-now', ns === s); n.classList.toggle('is-next', ns > s);
+    let d = n.querySelector('.bkn__done'); if (d) d.remove();
+    if (ns < s && sum[k]) { d = h('p', 'bkn__done', sum[k]); n.querySelector('.bkn__h').after(d); }
+  });
+  $('bkStepN').textContent = s + ' / 3';
+  $('bkRange').textContent = 'จองล่วงหน้า ' + c.minDays + '–' + c.maxDays + ' วัน';
   $('bkBack').hidden = s === 1; $('bkNext').hidden = s === 3; $('bkSend').hidden = s !== 3;
+  $('bkNextT').textContent = NEXT_T[s] || 'ถัดไป';
   $('bkErr').hidden = true;
-  if (s === 1) renderCal(); if (s === 2) renderMats(); if (s === 3) renderReview();
+  if (s === 1) { renderChips(); renderCal(); renderMats(); } if (s === 3) renderReview();
+  renderSum();
+  const b = document.querySelector('#bkDlg .bktl'); if (b) b.scrollTop = 0;
+}
+function renderSum() { const f = readForm(); $('bkSum').textContent = st.date ? fmt(st.date) + ' · ' + (matText(f) || 'ยังไม่เลือกเส้น (ข้ามได้)') : ''; }
+/* the next days as big chips (swipe sideways); the month calendar stays one tap away */
+function renderChips() {
+  const c = cfg(), C = $('bkChips'); C.textContent = '';
+  const t = new Date(); t.setHours(0, 0, 0, 0);
+  const wd = new Intl.DateTimeFormat('th-TH', { weekday: 'short' });
+  for (let i = c.minDays; i <= c.maxDays; i++) {
+    const d = addD(t, i), ds = iD(d), x = dayState(ds); if (x.s === 'out') continue;
+    const ok = ['free', 'few'].includes(x.s), b = h('button', 'bkchip' + (x.s === 'few' ? ' is-few' : '') + (st.date === ds ? ' is-sel' : '')); b.type = 'button';
+    b.setAttribute('role', 'option'); b.setAttribute('aria-selected', String(st.date === ds));
+    const lab = x.s === 'free' ? 'ว่าง ' + x.left : x.s === 'few' ? 'เหลือ 1' : x.s === 'full' ? 'เต็ม' : 'หยุด';
+    b.append(h('span', null, wd.format(d)), h('b', null, String(d.getDate())), h('small', null, lab));
+    b.disabled = !ok; b.setAttribute('aria-label', fmt(ds) + ', ' + lab);
+    b.addEventListener('click', () => { st.date = ds; const mm = new Date(d.getFullYear(), d.getMonth(), 1); st.month = mm; renderChips(); renderCal(); renderSum(); });
+    C.appendChild(b);
+  }
+  const sel = C.querySelector('.is-sel'); if (sel) sel.scrollIntoView({ block: 'nearest', inline: 'center' });
 }
 function renderCal() {
   const c = cfg(), m = st.month, G = $('bkCal'); G.textContent = '';
@@ -136,7 +167,7 @@ function renderCal() {
     b.append(h('b', null, String(d)), h('small', null, lab));
     b.disabled = !['free', 'few'].includes(x.s);
     b.setAttribute('aria-label', fmt(ds) + (lab ? ', ' + lab : ''));
-    b.addEventListener('click', () => { st.date = ds; renderCal(); });
+    b.addEventListener('click', () => { st.date = ds; renderCal(); renderChips(); renderSum(); });
     G.appendChild(b);
   }
   $('bkPick').textContent = st.date ? fmt(st.date) : 'ยังไม่ได้เลือกวัน';
@@ -154,7 +185,7 @@ function renderMats() {
   const groups = matGroups();
   const none = h('button', 'bkm' + (!st.sel.length ? ' is-sel' : '')); none.type = 'button';
   none.append(h('b', null, 'ให้ร้านแนะนำ'), h('small', null, 'ไม่แน่ใจว่าใช้เส้นอะไรดี'));
-  none.addEventListener('click', () => { st.sel = []; renderMats(); });
+  none.addEventListener('click', () => { st.sel = []; renderMats(); renderSum(); });
   W.appendChild(none);
   groups.forEach((g, gi) => {
     const box = h('div', 'bkg'), hd = h('div', 'bkg__h');
@@ -170,14 +201,14 @@ function renderMats() {
       b.addEventListener('click', () => {
         if (on) st.sel = st.sel.filter(x => x !== k);
         else { if (st.sel.length >= MAX_MATS) return toast('เลือกได้สูงสุด ' + MAX_MATS + ' อย่าง'); st.sel = st.sel.concat(k); }
-        renderMats();
+        renderMats(); renderSum();
       });
       C.appendChild(b);
     });
     box.appendChild(C); W.appendChild(box);
   });
   $('bkColorF').hidden = true;
-  $('bkMatNote').textContent = st.sel.length ? 'เลือกแล้ว ' + st.sel.length + ' อย่าง (สูงสุด ' + MAX_MATS + ')' : 'แตะสีเพื่อเลือก เลือกได้หลายอย่าง';
+  $('bkMatNote').textContent = 'เลือกแล้ว ' + st.sel.length + ' / ' + MAX_MATS;
   $('bkNoMats').hidden = groups.length > 0;
 }
 function addLinkRow(v) {
@@ -226,6 +257,7 @@ function renderReview() {
   if (f.note) row('หมายเหตุ', f.note);
   row('สมาชิก', (m.nickname || '') + ' · ' + memberNo(u.uid));
 }
+$('bkCalBtn') && $('bkCalBtn').addEventListener('click', () => { const w = $('bkCalWrap'), open = w.hidden; w.hidden = !open; $('bkCalBtn').setAttribute('aria-expanded', String(open)); if (open) renderCal(); });
 $('bkPrev') && $('bkPrev').addEventListener('click', () => { st.month = new Date(st.month.getFullYear(), st.month.getMonth() - 1, 1); renderCal(); });
 $('bkNextM') && $('bkNextM').addEventListener('click', () => { st.month = new Date(st.month.getFullYear(), st.month.getMonth() + 1, 1); renderCal(); });
 $('bkNext') && $('bkNext').addEventListener('click', () => { if (check(st.step)) { st.step++; renderStep(); } });

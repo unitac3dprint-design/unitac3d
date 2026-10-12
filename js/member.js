@@ -1,5 +1,5 @@
 import { trackLink } from './carriers.js?v=20261004w';
-import { mountBooking, watchMine, setQueue, openBooking } from './booking.js?v=20261010i';
+import { mountBooking, watchMine, setQueue, openBooking } from './booking.js?v=20261012c';
 import { mountNotify, syncNotify, renderNotify, renderNotifyBar, turnOnNotify } from './notify-ui.js?v=20261010h';
 import { pushState, disablePush } from './push.js?v=20261010h';
 import { promptPay, validBase, isPaid } from './pay.js?v=20261012a';
@@ -229,7 +229,6 @@ function renderHome() {
   if (!card || cb.dataset.key !== key) {
     cb.textContent = ''; card = rankCard(m, uid); cb.dataset.key = key;
     if (flipped) card.classList.add('is-flipped'); cb.appendChild(card); attachTilt(card);
-    const inner = card.querySelector('.rcard__in'); if (inner) inner.appendChild(h('span', 'tagchain'));   /* ball chain through the punched hole, tilts with the tag */
   }
   if (!glinted && !matchMedia('(prefers-reduced-motion: reduce)').matches) { glinted = true; requestAnimationFrame(() => card.classList.add('is-glint')); }
   $('flipHint').textContent = flipped ? 'ปัดหรือแตะเพื่อพลิกกลับ' : 'แตะหรือปัดเพื่อพลิก · กดค้างเพื่อยื่นที่ร้าน';

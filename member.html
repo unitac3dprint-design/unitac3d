@@ -242,11 +242,8 @@ dialog[open] .rankup__name{display:inline-block;animation:forgeName .6s var(--ea
 .hbtn svg{width:20px;height:20px}
 @media (max-width:760px){.hello #helloAv{display:none}.hello h1{font-size:26px}}
 .taghost{position:relative;isolation:isolate}
-.taghost::before{content:'';position:absolute;z-index:-1;left:50%;top:44%;width:120%;height:120%;transform:translate(-50%,-50%);background:radial-gradient(closest-side,var(--accent-glow),transparent 70%);pointer-events:none;animation:glowfloat 7s ease-in-out infinite}
-@keyframes glowfloat{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-48%,-53%) scale(1.06)}}
-.rcard.dt .tagchain{position:absolute;left:8.5%;top:50%;width:30cqw;height:2.6cqw;transform-origin:0 50%;transform:translateZ(.6cqw) rotate(-128deg);
-  background:radial-gradient(circle at 50% 50%,#E6E8EA 0 32%,#8E949A 52%,transparent 56%) 0 0/2.6cqw 100% repeat-x;filter:drop-shadow(0 .5cqw .4cqw rgba(0,0,0,.55));pointer-events:none;z-index:3}
-.rcard.dt .tagchain::before{content:'';position:absolute;left:-2.6cqw;top:50%;width:5.2cqw;height:5.2cqw;margin-top:-2.6cqw;border-radius:50%;border:.7cqw solid #C9CDD1;box-shadow:inset 0 0 0 .3cqw #6E747A,0 .3cqw .5cqw rgba(0,0,0,.5)}
+.taghost::before{content:'';position:absolute;z-index:-1;left:0;right:0;top:-10%;bottom:-10%;background:radial-gradient(closest-side,var(--accent-glow),transparent 70%);pointer-events:none;animation:glowfloat 7s ease-in-out infinite}
+@keyframes glowfloat{0%,100%{opacity:.8}50%{opacity:1}}
 .prog__row{display:flex;align-items:center;gap:16px}
 .prog__t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
 .pring{--p:0;--rc:var(--accent);flex:none;width:84px;height:84px;border-radius:50%;background:conic-gradient(var(--rc) calc(var(--p)*1%),var(--sunk) 0);display:grid;place-items:center;position:relative}
@@ -282,11 +279,73 @@ dialog[open] .rankup__name{display:inline-block;animation:forgeName .6s var(--ea
 }
 .paydlg__amt{font-family:var(--font-num)}
 @media (prefers-reduced-motion:reduce){.taghost::before,.paystrip__dot{animation:none}}
+
+/* ---------- booking v3: vertical timeline · date chips · sticky footer ---------- */
+.bkdlg{max-width:min(560px,calc(100vw - 24px));padding:0}
+.bkdlg > .dlg{display:flex;flex-direction:column;max-height:min(860px,calc(100dvh - 24px));padding:0;overflow:hidden}
+.bkh{display:flex;align-items:center;gap:6px;padding:12px 14px 8px}
+.bkh h2{flex:1;font-size:19px;font-family:var(--font-head)}
+.bkh__b{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;color:var(--ink);flex:none}
+.bkh__b:hover{background:var(--sunk)}
+.bkh__b + .bkh__b{display:none}
+.bkh__b[hidden] + .bkh__b{display:grid}
+.bkh__n{font-family:var(--font-num);font-size:13px;color:var(--accent);padding:4px 14px;background:var(--accent-soft);transform:skewX(-20deg)}
+.bksteps{display:none}
+.bktl{flex:1;overflow:auto;padding:8px 16px 16px;display:flex;flex-direction:column;gap:0}
+.bkn{position:relative;padding:0 0 18px 28px}
+.bkn::before{content:'';position:absolute;left:6px;top:20px;bottom:-2px;width:2px;background:var(--rule-strong)}
+.bkn:last-of-type::before{display:none}
+.bkn.is-done::before,.bkn.is-now::before{background:var(--accent)}
+.bkn__dot{position:absolute;left:0;top:6px;width:14px;height:14px;border-radius:50%;border:2px solid var(--rule-strong);background:var(--ground)}
+.bkn.is-now .bkn__dot,.bkn.is-done .bkn__dot{border-color:var(--accent);background:var(--accent);box-shadow:0 0 0 4px rgba(255,122,60,.18)}
+.bkn__h{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;min-height:26px}
+.bkn__h h3{flex:1;font-family:var(--font-head);font-size:17px;font-weight:600}
+.bkn__s{font-size:12.5px;color:var(--muted)}
+.bkn.is-next .bkn__h h3{color:var(--muted);font-weight:500;font-size:15.5px}
+.bkn__b{display:grid;gap:12px;margin-top:10px}
+.bkn__b[hidden]{display:none}
+.bkn__done{margin-top:2px;font-size:13px;color:var(--ink-2)}
+.bkchips{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x proximity;margin-right:-16px;padding:2px 16px 4px 0;scrollbar-width:none}
+.bkchips::-webkit-scrollbar{display:none}
+.bkchip{flex:none;scroll-snap-align:start;width:64px;height:84px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border:1px solid var(--rule-strong);background:var(--surface);color:var(--ink);
+  clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px));border-radius:4px;font:inherit;transition:transform .2s var(--ease)}
+.bkchip:active{transform:scale(.95)}
+.bkchip span{font-size:12px;color:var(--muted)}
+.bkchip b{font-family:var(--font-num);font-size:20px;font-weight:500;line-height:1.2}
+.bkchip small{font-size:11px;color:var(--ok)}
+.bkchip.is-few small{color:var(--warn)}
+.bkchip:disabled{background:repeating-linear-gradient(131deg,var(--surface) 0 6px,var(--sunk) 6px 12px);color:var(--muted);cursor:not-allowed}
+.bkchip:disabled b{text-decoration:line-through}
+.bkchip:disabled small{color:var(--muted)}
+.bkchip.is-sel{background:var(--accent);border-color:var(--accent);color:var(--on-accent);box-shadow:0 10px 24px -8px rgba(255,122,60,.6)}
+.bkchip.is-sel span,.bkchip.is-sel small{color:var(--on-accent);font-weight:600}
+.bkcalbtn{display:inline-flex;align-items:center;gap:6px;justify-self:start;min-height:40px;color:var(--accent);font-size:13.5px;font-weight:500}
+.bkcalbtn[aria-expanded="true"]{color:var(--ink)}
+.bkcalwrap{display:grid;gap:10px;padding:12px;border-radius:16px;background:var(--sunk)}
+.bkcalwrap[hidden]{display:none}
+.bkcalwrap .bkc__d{background:var(--surface)}
+.bkmats{display:flex;flex-direction:column;gap:12px}
+.bkg{background:transparent;padding:0;gap:8px}
+.bkg__h b{font-size:14px}
+.bksw{min-height:44px;padding:0 14px 0 8px;gap:8px}
+.bksw i{width:26px;height:26px;display:grid;place-items:center}
+.bksw.is-sel{border:1.5px solid var(--accent);background:var(--accent-soft);font-weight:600}
+.bksw.is-sel i::after{content:'';width:9px;height:5px;border-left:2.5px solid #fff;border-bottom:2.5px solid #fff;transform:translateY(-1px) rotate(-45deg);filter:drop-shadow(0 0 1px rgba(0,0,0,.8))}
+.bkm{min-height:44px}
+.bkfoot{display:grid;gap:8px;padding:10px 16px calc(14px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--rule);background:var(--surface)}
+.bkfoot__s{font-size:13px;color:var(--ink-2);display:flex;align-items:center;gap:8px;min-height:1.2em}
+.bkfoot__s::before{content:'';width:18px;height:4px;background:var(--accent);transform:skewX(-41deg);flex:none}
+.bkfoot__s:empty{display:none}
+.bkgo{min-height:54px;font-size:15.5px;gap:8px}
+@media (max-width:600px){
+  .bkdlg{max-width:100%;width:100%;height:100%;max-height:100%;margin:0;border-radius:0}
+  .bkdlg > .dlg{height:100%;max-height:none;border-radius:0;border:0}
+}
 </style>
-<script src="js/i18n.js?v=20261012b" defer></script>
+<script src="js/i18n.js?v=20261012c" defer></script>
 <script src="js/install.js?v=20261010f" defer></script>
-<link rel="stylesheet" href="css/mobile.css?v=20261012b">
-<script src="js/mobile.js?v=20261012b" defer></script>
+<link rel="stylesheet" href="css/mobile.css?v=20261012c">
+<script src="js/mobile.js?v=20261012c" defer></script>
 </head>
 <body>
 <header class="top">
@@ -467,35 +526,60 @@ dialog[open] .rankup__name{display:inline-block;animation:forgeName .6s var(--ea
 </main>
 
 <dialog id="bkDlg" class="bkdlg" aria-labelledby="bkDlgT"><div class="dlg">
-  <div class="dlg__head"><h2 id="bkDlgT">จองคิวพิมพ์ <span class="muted small" id="bkStepN">1/3</span></h2><button type="button" class="iconbtn" data-close aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
-  <div class="dlg__body">
-    <div class="bksteps" id="bkSteps" aria-hidden="true"><i></i><i></i><i></i></div>
-    <div data-step="1">
-      <h3 class="bk__h3">เลือกวันเริ่มพิมพ์</h3>
-      <div class="bkc__bar"><button type="button" class="iconbtn" id="bkPrev" aria-label="เดือนก่อน"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg></button><b id="bkMon"></b><button type="button" class="iconbtn" id="bkNextM" aria-label="เดือนถัดไป"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button></div>
-      <div class="bkc" id="bkCal"></div>
-      <div class="bkleg"><span><i class="l-free"></i>ว่าง</span><span><i class="l-few"></i>เหลือน้อย</span><span><i class="l-full"></i>เต็ม</span><span><i class="l-closed"></i>ร้านปิด</span></div>
-      <div class="bkpick"><span class="muted small">วันที่เลือก</span><b id="bkPick"></b></div>
-      <p class="hint">เป็นวันที่ร้านเริ่มพิมพ์ ร้านจะแจ้งวันเสร็จหลังดูไฟล์</p>
-    </div>
-    <div data-step="2" hidden>
-      <h3 class="bk__h3">รายละเอียดงาน</h3>
-      <div class="field"><label for="bkTitle">ชื่องาน *</label><input type="text" id="bkTitle" maxlength="80" placeholder="เช่น Hop-up arm สำหรับ AAP-01"></div>
+  <div class="bkh">
+    <button type="button" class="bkh__b" id="bkBack" aria-label="ย้อนกลับ" hidden><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg></button>
+    <button type="button" class="bkh__b" data-close aria-label="ปิด"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    <h2 id="bkDlgT">จองคิวพิมพ์</h2>
+    <span class="bkh__n" id="bkStepN">1 / 3</span>
+  </div>
+  <div class="bksteps" id="bkSteps" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="dlg__body bktl">
+    <section class="bkn" data-node="1">
+      <div class="bkn__h"><i class="bkn__dot"></i><h3>เลือกวันเริ่มงาน</h3><span class="bkn__s" id="bkRange">จองล่วงหน้า 1–30 วัน</span></div>
+      <div class="bkn__b" data-step="1">
+        <div class="bkchips" id="bkChips" role="listbox" aria-label="วันที่ว่าง"></div>
+        <button type="button" class="bkcalbtn" id="bkCalBtn" aria-expanded="false"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg><span>เลือกจากปฏิทินทั้งเดือน</span></button>
+        <div class="bkcalwrap" id="bkCalWrap" hidden>
+          <div class="bkc__bar"><button type="button" class="iconbtn" id="bkPrev" aria-label="เดือนก่อน"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg></button><b id="bkMon"></b><button type="button" class="iconbtn" id="bkNextM" aria-label="เดือนถัดไป"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button></div>
+          <div class="bkc" id="bkCal"></div>
+          <div class="bkleg"><span><i class="l-free"></i>ว่าง</span><span><i class="l-few"></i>เหลือน้อย</span><span><i class="l-full"></i>เต็ม</span><span><i class="l-closed"></i>ร้านปิด</span></div>
+        </div>
+        <p class="hint">เป็นวันที่ร้านเริ่มพิมพ์ ร้านจะแจ้งวันเสร็จหลังดูไฟล์</p>
+        <span class="sr" id="bkPick"></span>
+      </div>
+    </section>
+    <section class="bkn" data-node="1b">
+      <div class="bkn__h"><i class="bkn__dot"></i><h3>เส้นที่ต้องการ</h3><span class="bkn__s" id="bkMatNote"></span></div>
+      <div class="bkn__b" data-step="1">
+        <div class="bkmats" id="bkMats"></div><p class="hint" id="bkNoMats" hidden>ร้านยังไม่ได้ลงรายการเส้น เลือก "ให้ร้านแนะนำ" ได้เลย</p>
+        <div class="field" id="bkColorF" hidden><span class="lab">สี</span><div class="bkcolors" id="bkColors"></div></div>
+        <p class="hint">ไม่แน่ใจเรื่องเส้น? ข้ามได้ ร้านจะช่วยแนะนำ</p>
+      </div>
+    </section>
+    <section class="bkn" data-node="2">
+      <div class="bkn__h"><i class="bkn__dot"></i><h3>แนบลิงก์ไฟล์งาน</h3><span class="bkn__s">2 / 3</span></div>
+      <div class="bkn__b" data-step="2" hidden>
+        <div class="field"><label for="bkTitle">ชื่องาน *</label><input type="text" id="bkTitle" maxlength="80" placeholder="เช่น Hop-up arm สำหรับ AAP-01"></div>
       <div class="field"><span class="lab">ลิงก์ไฟล์งาน * (STL / 3MF / STEP / รูปแบบงาน)</span><div id="bkLinks" class="bklinks"></div>
         <button type="button" class="linkbtn" id="bkAddLink">+ เพิ่มลิงก์อีกไฟล์</button><p class="hint" id="bkLinkHint">รองรับ Google Drive, OneDrive, Dropbox, Printables, Thingiverse, MakerWorld และลิงก์อื่น ๆ</p></div>
-      <div class="field"><span class="lab">วัสดุ (เส้นที่ร้านมีตอนนี้)</span><p class="hint" id="bkMatNote"></p><div class="bkmats" id="bkMats"></div><p class="hint" id="bkNoMats" hidden>ร้านยังไม่ได้ลงรายการเส้น เลือก "ให้ร้านแนะนำ" ได้เลย</p></div>
-      <div class="field" id="bkColorF" hidden><span class="lab">สี</span><div class="bkcolors" id="bkColors"></div></div>
-      <div class="field"><label for="bkQty">จำนวนชิ้น *</label><input type="number" id="bkQty" min="1" max="999" step="1" inputmode="numeric" value="1"></div>
+        <div class="field"><label for="bkQty">จำนวนชิ้น *</label><input type="number" id="bkQty" min="1" max="999" step="1" inputmode="numeric" value="1"></div>
       <div class="field"><label for="bkNote">หมายเหตุถึงร้าน</label><textarea id="bkNote" maxlength="300" rows="2" placeholder="เช่น ขอเติมเนื้อแน่น ใช้งานรับแรง"></textarea></div>
-    </div>
-    <div data-step="3" hidden>
-      <h3 class="bk__h3">ตรวจแล้วส่งคำขอ</h3>
-      <div class="bkrev" id="bkReview"></div>
-      <p class="banner bkwarn">นี่เป็นคำขอจอง ยังไม่ใช่คิวจริง ร้านจะดูไฟล์แล้วตอบกลับ ราคาแจ้งหลังร้านดูงาน</p>
-    </div>
+      </div>
+    </section>
+    <section class="bkn" data-node="3">
+      <div class="bkn__h"><i class="bkn__dot"></i><h3>ยืนยันการจอง</h3><span class="bkn__s">3 / 3</span></div>
+      <div class="bkn__b" data-step="3" hidden>
+        <div class="bkrev" id="bkReview"></div>
+        <p class="banner bkwarn">นี่เป็นคำขอจอง ยังไม่ใช่คิวจริง ร้านจะดูไฟล์แล้วตอบกลับ ราคาแจ้งหลังร้านดูงาน</p>
+      </div>
+    </section>
     <p class="err" id="bkErr" hidden></p>
   </div>
-  <div class="dlg__foot"><button type="button" class="btn btn--ghost" id="bkBack" hidden>ย้อนกลับ</button><span class="sp"></span><button type="button" class="btn btn--primary" id="bkNext">ถัดไป</button><button type="button" class="btn btn--primary" id="bkSend" hidden>ส่งคำขอจอง</button></div>
+  <div class="bkfoot">
+    <p class="bkfoot__s" id="bkSum"></p>
+    <button type="button" class="btn btn--primary btn--block bkgo" id="bkNext"><span id="bkNextT">ถัดไป · แนบลิงก์ไฟล์งาน</span><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    <button type="button" class="btn btn--primary btn--block bkgo" id="bkSend" hidden>ส่งคำขอจอง</button>
+  </div>
 </div></dialog>
 
 <dialog id="payDlg" class="sheet" aria-labelledby="payT"><div class="dlg"><div class="dlg__body paydlg">
@@ -557,6 +641,6 @@ dialog[open] .rankup__name{display:inline-block;animation:forgeName .6s var(--ea
 
 <footer class="foot">UNITAC · <a href="./">ตารางคิว</a> · <a href="warranty.html">เช็กประกัน</a> · <a href="portfolio.html">ผลงาน</a> · <a href="partners.html">พาร์ทเนอร์</a> · <a href="privacy.html">นโยบายความเป็นส่วนตัว</a></footer>
 <script src="vendor/qrcode.js?v=20261004w"></script>
-<script type="module" src="js/member.js?v=20261012b"></script>
+<script type="module" src="js/member.js?v=20261012d"></script>
 </body>
 </html>
