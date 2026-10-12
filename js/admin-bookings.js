@@ -260,7 +260,7 @@ $('bksNotif').addEventListener('click', async () => {
 });
 $('bksOff').addEventListener('click', async () => { await disablePush(); toast('ปิดแจ้งเตือนในเครื่องนี้แล้ว'); pushUi(); });
 $('bksTest').addEventListener('click', async () => {
-  try { await setDoc(doc(collection(db, 'broadcasts')), { to: 'owner', title: 'ทดสอบแจ้งเตือน UNITAC ✓', body: 'ถ้าเห็นข้อความนี้ แจ้งเตือนหลังร้านใช้งานได้แล้ว', link: 'admin.html#bk', createdAt: serverTimestamp() }); toast('ส่งแล้ว ควรเด้งภายในไม่กี่วินาที', 4500); }
+  try { await setDoc(doc(collection(db, 'broadcasts')), { to: 'owner', title: 'ทดสอบแจ้งเตือน UNITAC ✓', body: 'ถ้าเห็นข้อความนี้ แจ้งเตือนหลังร้านใช้งานได้แล้ว', link: 'admin/#bk', createdAt: serverTimestamp() }); toast('ส่งแล้ว ควรเด้งภายในไม่กี่วินาที', 4500); }
   catch (x) { toast(authMsg(x.code), 5000); }
 });
 /* ---------- announcement to members ---------- */

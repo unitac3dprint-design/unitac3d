@@ -36,6 +36,9 @@
     };
     function alertMsg() { var t = document.getElementById('toast'); if (t) { t.textContent = 'เปิดเมนูของเบราว์เซอร์ แล้วเลือก "ติดตั้งแอป" หรือ "เพิ่มไปยังหน้าจอหลัก"'; t.classList.add('show'); setTimeout(function () { t.classList.remove('show'); }, 4500); } }
     document.querySelectorAll('[data-act]').forEach(function (b) { b.addEventListener('click', function () { var f = ACT[b.dataset.act]; if (f) f(); }); });
+    /* app shortcuts / notification links: admin/#ord, #bk, #tag, #cust … open that section */
+    function fromHash() { var k = (location.hash || '').slice(1); if (k && tab(k)) go(k); }
+    setTimeout(fromHash, 350); addEventListener('hashchange', fromHash);
     new MutationObserver(sync).observe(tabs, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ['aria-selected'] });
     sync();
   }

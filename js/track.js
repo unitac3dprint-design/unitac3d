@@ -1,6 +1,6 @@
 import { db, doc, onSnapshot } from './fb.js?v=20261004w';
 import { $, h, reveal, toast, LOGO_SVG } from './core.js?v=20261004w';
-import { CARRIERS, cleanTrack } from './carriers.js?v=20261004w';
+import { CARRIERS, cleanTrack } from './carriers.js?v=20261013a';
 import { latest, fmtWhen, titleOf, detailOf, toneOf } from './shipstatus.js?v=20261004w';
 document.querySelectorAll('[data-logo]').forEach(e => { e.innerHTML = LOGO_SVG; });
 reveal();

@@ -103,7 +103,7 @@ $('installBtn').addEventListener('click', async () => {
   })();
   const steps = inApp ? ['ตอนนี้เปิดอยู่ในแอป Facebook / Messenger / LINE ซึ่งติดตั้งไม่ได้', 'กดเมนู ⋯ มุมขวาบน แล้วเลือก "เปิดในเบราว์เซอร์" (Chrome หรือ Safari)', 'เข้าหลังร้านอีกครั้ง แล้วกดปุ่ม "ติดตั้งเป็นแอป"']
     : isIOS ? ['ต้องเปิดใน Safari (Chrome บน iPhone ติดตั้งไม่ได้)', 'กดปุ่มแชร์ ⬆︎ ด้านล่างจอ', 'เลื่อนหาแล้วเลือก "เพิ่มไปยังหน้าจอโฮม" แล้วกด "เพิ่ม"']
-    : ['กดเมนู ⋮ มุมขวาบนของ Chrome', 'เลือก "ติดตั้งแอป" หรือ "เพิ่มลงในหน้าจอหลัก"', 'กด "ติดตั้ง" ไอคอน UNITAC จะขึ้นบนหน้าจอ'];
+    : ['กดเมนู ⋮ มุมขวาบนของ Chrome', 'เลือก "ติดตั้งแอป" หรือ "เพิ่มลงในหน้าจอหลัก"', 'กด "ติดตั้ง" ไอคอน UNITAC Admin (สีส้ม) จะขึ้นบนหน้าจอ'];
   const b = box.querySelector('#instBody'); b.textContent = '';
   const ol = document.createElement('ol'); ol.style.cssText = 'margin:0;padding-left:1.3em;display:grid;gap:10px;line-height:1.6';
   steps.forEach(s => { const li = document.createElement('li'); li.textContent = s; ol.appendChild(li); });

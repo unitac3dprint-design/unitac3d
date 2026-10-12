@@ -1,4 +1,4 @@
-import { trackLink } from './carriers.js?v=20261004w';
+import { trackLink } from './carriers.js?v=20261013a';
 import { mountBooking, watchMine, setQueue, openBooking } from './booking.js?v=20261012c';
 import { mountNotify, syncNotify, renderNotify, renderNotifyBar, turnOnNotify } from './notify-ui.js?v=20261010h';
 import { pushState, disablePush } from './push.js?v=20261010h';
@@ -33,7 +33,7 @@ function show(name) {
 }
 function route() {
   if (!user) return show('auth');
-  if (user.uid === OWNER) { location.replace('admin.html'); return show('owner'); }
+  if (user.uid === OWNER) { location.replace('admin/'); return show('owner'); }
   if (!member) return show('loading');
   if (location.hash === '#profile' || location.hash === '#notify') { const nf = location.hash === '#notify'; renderProfile(); show('profile'); if (nf) setTimeout(() => { const b = $('nfBox'); if (b) b.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 250); }
   else { renderHome(); show('home'); reveal(); if (bookHash || location.hash === '#book') { bookHash = false; history.replaceState(null, '', location.pathname + location.search); setTimeout(openBooking, 300); } }

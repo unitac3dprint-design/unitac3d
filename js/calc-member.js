@@ -268,10 +268,10 @@ $('orderForm').addEventListener('submit', async (e) => {
     if (sel) { if (paid) sel.points = (sel.points || 0) + pts; if (r.couponDisc > 0) { sel.welcomeUsed = true; $('msCoupon').disabled = true; $('msCouponNote').textContent = 'ใช้กับออเดอร์นี้แล้ว'; } }
     lastSaved = { total: r.grandTotal };
     if (code) {
-      const wurl = new URL('warranty.html?c=' + code, location.href).href;
+      const wurl = new URL('warranty.html?c=' + code, document.baseURI).href;
       $('pwDays').textContent = days; $('pwUntil').textContent = fDate.format(exp); $('pwStart').textContent = fDate.format(wStart); $('pwCode').textContent = code;
       $('pwJob').textContent = title; $('pwQr').innerHTML = qrSvg(wurl);
-      $('pwUrl').textContent = new URL('warranty.html', location.href).host + new URL('warranty.html', location.href).pathname;
+      $('pwUrl').textContent = new URL('warranty.html', document.baseURI).host + new URL('warranty.html', document.baseURI).pathname;
       $('paperWar').hidden = false;
     }
     toast('บันทึกออเดอร์แล้ว' + (paid ? ' · ชำระแล้ว' : ' · รอชำระ') + (pts ? (paid ? ' · +' + intf(pts) + ' แต้ม' : ' · แต้มเข้าเมื่อชำระ') : '') + (code ? ' · รหัสประกัน ' + code : ''), 5000);

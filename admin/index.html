@@ -1,0 +1,1186 @@
+<!doctype html>
+<html lang="th">
+<head>
+<link rel="manifest" href="admin/manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/admin-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="UNITAC Admin">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="robots" content="noindex">
+<meta charset="utf-8">
+<base href="../">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#141311">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%224.3 21.5 85.5 36.5%22%3E%3Cstyle%3Epath%7Bfill:#FF7A3C%7D%3C/style%3E%3Cpath d=%22M4.85 24.9Q4.85 22.05 7.7 22.05H10.5L12.4 24.9L16.6 22.05H26Q27.3 22.05 27.3 23.3V24.54L12.14 41.96Q11.1 43.16 11.1 44.56V45.25Q11.1 46.85 12.7 46.85H25.54L47.12 22.05H84.2L89.3 27.7V28.4Q89.3 30.1 86.9 30.1H72.56L48.73 57.5H40.02Q36.23 57.5 38.73 54.63L60.06 30.1H52.46L28.63 57.5H7.65Q4.85 57.5 4.85 54.7Z%22/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/site.css?v=20261004w">
+<title>หลังร้าน · UNITAC</title>
+<meta name="description" content="UNITAC 3D PRINT ยินดีให้บริการ">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="UNITAC 3D PRINT">
+<meta property="og:title" content="หลังร้าน · UNITAC 3D PRINT">
+<meta property="og:description" content="UNITAC 3D PRINT ยินดีให้บริการ">
+<meta property="og:url" content="https://unitac3dprint-design.github.io/unitac3d/">
+<meta property="og:image" content="https://unitac3dprint-design.github.io/unitac3d/og.png">
+<meta property="og:image:width" content="2400">
+<meta property="og:image:height" content="1260">
+<meta property="og:locale" content="th_TH">
+<meta name="twitter:card" content="summary_large_image">
+<style>.adm{padding-top:26px;padding-bottom:110px;display:flex;flex-direction:column;gap:18px}
+.adm__loading{padding:60px 0;text-align:center}
+.adm__login{max-width:440px;margin:20px auto;display:grid;gap:10px;width:100%}
+.adm__head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.adm__head h1{font-size:26px}
+.adm__acts{display:flex;gap:8px;flex-wrap:wrap}
+
+.adm__search{display:flex;gap:10px;align-items:flex-end}
+.adm__search .field{flex:1}
+.clist{display:grid;gap:8px}
+.crow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;width:100%;padding:12px 14px;border-radius:var(--r-md);background:var(--surface);border:1px solid var(--rule);text-align:left;transition:border-color .2s var(--ease)}
+.crow:hover{border-color:var(--rule-strong)}
+.crow__t{min-width:0;display:grid;gap:2px}
+.crow__t b{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.crow__t span{font-size:12.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.crow__r{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.crow__flags{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+.rk{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600}
+.rk i{width:9px;height:9px;border-radius:2px;background:var(--c)}
+dialog.wide{max-width:min(720px,calc(100vw - 24px))}
+.cd__who{display:flex;align-items:center;gap:12px;min-width:0}
+.cd__who h2{overflow-wrap:anywhere}
+.cd__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:520px){.cd__grid{grid-template-columns:minmax(0,1fr)}}
+.cd__stat{display:grid;gap:2px;padding:12px 14px;border-radius:var(--r-md);background:var(--sunk)}
+.cd__stat b{font-size:16px;font-weight:600}
+.cd__info{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:6px 16px;margin:0;font-size:14px}
+.cd__info dt{color:var(--muted)}
+.cd__info dd{margin:0;overflow-wrap:anywhere}
+.cd__ptsform{display:grid;grid-template-columns:140px minmax(0,1fr) auto;gap:10px;align-items:end}
+@media (max-width:520px){.cd__ptsform{grid-template-columns:minmax(0,1fr)}}
+.cd__rh{padding:12px 14px;border-radius:var(--r-md);border:1px solid var(--rule)}
+.addr{padding:10px 12px;border-radius:var(--r-sm);background:var(--sunk);margin-bottom:6px;white-space:pre-line;overflow-wrap:anywhere}
+.addr--cp{display:flex;gap:10px;align-items:flex-start}.addr__t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.addr__t b{font-size:12px;color:var(--muted);font-weight:600}.addr__cp{flex-shrink:0;white-space:nowrap}
+.shipaddr{margin-bottom:12px}.shipaddr>.lab{display:block;font-size:13px;margin-bottom:6px}
+.wcard{display:grid;gap:14px}
+.claims{display:grid;gap:6px}
+.claim{padding:10px 12px;border-radius:var(--r-sm);background:var(--sunk);font-size:13.5px}
+.claim span{display:block;font-family:var(--font-num);font-size:11.5px;color:var(--muted)}
+
+.pa{display:grid;grid-template-columns:380px minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:900px){.pa{grid-template-columns:minmax(0,1fr)}}
+.pa__list{display:flex;flex-direction:column;gap:14px}
+.addbtn{min-height:46px;border-radius:var(--r-md);border:1px dashed var(--rule-strong);color:var(--ink-2);font-size:14px}
+.addbtn:hover{color:var(--ink);border-color:var(--ink-2)}
+.pa__groups{display:flex;flex-direction:column;gap:14px}
+.pa__g{display:flex;flex-direction:column;gap:6px}
+.pa__g > span{font-family:var(--font-num);font-size:11px;letter-spacing:.16em;color:var(--muted)}
+.pa__row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:6px 8px 6px 6px;border-radius:12px;border:1px solid var(--rule);background:var(--surface)}
+.pa__row.is-on{border-color:var(--accent);background:var(--sunk)}
+.pa__pick{display:grid;grid-template-columns:64px minmax(0,1fr);gap:10px;align-items:center;text-align:left;color:inherit;min-height:44px;border-radius:8px;min-width:0}
+.pa__thumb{height:40px;border-radius:8px;background:#1A1816;display:grid;place-items:center;overflow:hidden}
+.pa__thumb img{max-width:80%;max-height:70%;object-fit:contain}
+.pa__thumb.is-dark img{filter:invert(1) hue-rotate(180deg)}
+.pa__nm{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.pa__mv{display:flex;gap:2px}
+.pa__mv button{width:32px;height:32px;border-radius:8px;display:grid;place-items:center;color:var(--muted);border:1px solid var(--rule)}
+.pa__mv button:hover:not(:disabled){color:var(--ink);border-color:var(--rule-strong)}
+.pa__mv button:disabled{opacity:.3}
+.pa__mv svg{width:14px;height:14px}
+.pa__form{display:flex;flex-direction:column;gap:16px}
+.pa__h{font-size:18px}
+.pa__top{display:grid;grid-template-columns:220px minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:600px){.pa__top{grid-template-columns:minmax(0,1fr)}}
+.pa__drop{display:block;cursor:pointer;border-radius:14px}
+.pa__drop:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.pa__drop{border:1px dashed var(--rule-strong);padding:6px 6px 12px}
+.pa__drop .ptile{width:100%}
+.pa__size output{float:right;font-family:var(--font-num);color:var(--ink)}
+.pa__size input[type=range]{width:100%;accent-color:var(--accent);min-height:32px}
+.pa__ph{font-size:13px;color:var(--muted)}
+.pa__acts{display:flex;gap:10px;align-items:center;padding-top:14px;border-top:1px solid var(--rule)}
+.pa__acts .sp{flex:1}
+.pa__empty{padding:40px 0;text-align:center}
+
+/* monthly summary */
+.mo__bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mo__bar h2{font-size:24px;min-width:9em;text-align:center}
+.mo__stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.mstat{display:grid;gap:2px;padding:16px 18px;border-radius:var(--r-md);background:var(--surface);border:1px solid var(--rule)}
+.mstat span{font-size:12.5px;color:var(--muted)}
+.mstat b{font-family:var(--font-num);font-size:22px;font-weight:500}
+.mstat small{font-size:12px;color:var(--muted)}
+.mstat--main{background:var(--accent-soft);border-color:rgba(255,122,60,.4)}
+.mstat--main b{color:var(--accent);font-size:26px}
+.bars{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:8px;align-items:end;height:180px;padding-top:10px}
+.bar2{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;height:100%;min-width:0;border-radius:8px;padding:0 2px}
+.bar2 i{display:block;width:100%;max-width:38px;border-radius:6px 6px 2px 2px;background:var(--rule-strong);min-height:3px;transition:background .2s}
+.bar2 span{font-size:11.5px;color:var(--muted);white-space:nowrap}
+.bar2 em{font-style:normal;font-family:var(--font-num);font-size:10.5px;color:var(--ink-2);white-space:nowrap}
+.bar2:hover i{background:var(--ink-2)}
+.bar2.is-on i{background:var(--accent)}
+.bar2.is-on span{color:var(--ink)}
+@media (max-width:600px){.bars{gap:4px}.bar2 em{display:none}}
+.orow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;align-items:center;padding:12px 0;border-top:1px solid var(--rule)}
+.orow:first-child{border-top:0}
+.paper__st{margin:10px 0 0;text-align:right;font-weight:700;font-size:14px;color:#B0641A}.paper__st.is-paid{color:#1E7A4C}
+.paybar{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.paytag{display:inline-flex;align-items:center;gap:6px;min-height:30px;padding:0 12px;border-radius:999px;font-size:12.5px;font-weight:600}
+.paytag--due{background:var(--warn-soft);color:var(--warn)}
+.paytag--ok{background:var(--ok-soft);color:var(--ok)}
+button.paytag--ok:hover{filter:brightness(1.15)}
+.paygo{min-height:30px;padding:0 14px;border-radius:999px;background:var(--ok);color:#0E1A14;font-size:12.5px;font-weight:700}
+.paygo:hover{filter:brightness(1.08)}
+.paym{display:flex;gap:8px;flex-wrap:wrap}
+.paym label{flex:1;min-width:84px}
+.paym input{position:absolute;opacity:0;pointer-events:none}
+.paym span{display:grid;place-items:center;min-height:44px;border-radius:12px;border:1px solid var(--rule-strong);font-weight:600;font-size:14px;cursor:pointer}
+.paym input:checked+span{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.paym input:focus-visible+span{outline:2px solid var(--accent);outline-offset:2px}
+.pyamt{font-family:var(--font-num);font-size:28px;font-weight:600;margin:2px 0 4px}
+.orow__acts{display:flex;gap:6px}
+.orow__acts button{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;color:var(--muted);border:1px solid var(--rule)}
+.orow__acts button:hover{color:var(--ink);border-color:var(--rule-strong)}
+.orow__acts button.del:hover{color:var(--stop);border-color:var(--stop)}
+.orow__acts svg{width:16px;height:16px}
+/* warranty list */
+.wfil{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.wfil .field{flex:1 1 260px;max-width:380px}
+.wchips{display:flex;gap:8px;flex-wrap:wrap}
+.wchips button{min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--rule-strong);color:var(--ink-2);font-size:13.5px;font-weight:500}
+.wchips button[aria-pressed="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+.wchips b{font-family:var(--font-num);font-weight:500;margin-left:6px;opacity:.7}
+.wlist2{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
+.wit{display:grid;gap:8px;padding:14px 16px;border-radius:var(--r-md);background:var(--surface);border:1px solid var(--rule);text-align:left;color:var(--ink);width:100%;transition:border-color .2s}
+.wit:hover{border-color:var(--rule-strong)}
+.wit__h{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.wit__h b{font-weight:500;min-width:0;overflow-wrap:anywhere}
+.wit__m{font-family:var(--font-num);font-size:12px;color:var(--muted)}
+.wit .bar{height:6px}
+.calcfab{position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:35;display:inline-flex;align-items:center;gap:10px;min-height:56px;padding:0 22px 0 18px;border-radius:999px;background:var(--accent);color:var(--on-accent);font-weight:600;font-size:15px;text-decoration:none;box-shadow:0 14px 30px -10px rgba(255,122,60,.65),0 4px 10px rgba(0,0,0,.4);transition:transform .25s var(--ease),background .2s}
+.calcfab:hover{transform:translateY(-2px);background:var(--accent-hi);color:var(--on-accent)}
+.calcfab svg{width:22px;height:22px}
+@media (max-width:600px){.calcfab span{display:none}.calcfab{padding:0;width:56px;justify-content:center}}
+
+/* filament stock */
+.stk__stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.stk__bar{display:flex;flex-direction:column;gap:12px}
+.stk__acts{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.stk__acts .field{flex:1 1 220px;max-width:340px}
+.stk__grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px}
+.spool{display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--rule)}
+.spool.is-low{border-color:rgba(234,123,114,.55)}
+.spool.is-off{opacity:.55}
+.spool__h{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center}
+.spool__sw{width:40px;height:40px;border-radius:50%;background:var(--sw);box-shadow:inset 0 0 0 6px rgba(0,0,0,.25),0 0 0 1px var(--rule-strong)}
+.spool__t b{display:block;font-weight:600;line-height:1.35;overflow-wrap:anywhere}
+.spool__t span{font-size:12.5px;color:var(--muted)}
+.spool__p{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;font-size:12px;color:var(--muted)}
+.spool__p b{display:block;font-family:var(--font-num);font-size:14px;color:var(--ink);font-weight:500}
+.spool__s{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cnt{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:6px;padding:6px;border-radius:12px;background:var(--sunk)}
+.cnt span{text-align:center;font-size:12px;color:var(--muted);line-height:1.3}
+.cnt span b{display:block;font-family:var(--font-num);font-size:18px;color:var(--ink);font-weight:500}
+.cnt button{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;color:var(--ink-2);border:1px solid var(--rule-strong);font-size:18px;line-height:1}
+.cnt button:hover{color:var(--ink);border-color:var(--ink-2)}
+.spool__acts{display:flex;gap:8px;flex-wrap:wrap}
+.spool__acts .btn{flex:1}
+
+/* things to look at */
+.todo{display:flex;gap:8px;flex-wrap:wrap}
+.todo button{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;border-radius:999px;background:var(--surface);border:1px solid var(--rule-strong);color:var(--ink-2);font-size:13.5px}
+.todo button:hover{color:var(--ink);border-color:var(--ink-2)}
+.todo i{width:8px;height:8px;border-radius:50%;background:var(--c,var(--accent));flex:none}
+.todo b{font-family:var(--font-num);font-weight:500;color:var(--ink)}
+.tbadge{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;margin-left:6px;border-radius:999px;background:var(--accent);color:var(--on-accent);font-family:var(--font-num);font-size:11.5px;font-weight:600;line-height:1;vertical-align:1px}
+#rsLbl{cursor:pointer}
+#rsLbl:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+
+/* portfolio admin */
+.pf__bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+#pfAddL{cursor:pointer}
+#pfAddL:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.pf__grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.pfc{display:flex;flex-direction:column;border-radius:var(--r-md);overflow:hidden;background:var(--surface);border:1px solid var(--rule)}
+.pfc.is-off{opacity:.55}
+.pfc__img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;background:#0E0D0B;cursor:pointer}
+.pfc__b{display:grid;gap:4px;padding:10px 12px}
+.pfc__b b{font-weight:500;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pfc__b span{font-size:12px;color:var(--muted)}
+.pfc__a{display:flex;gap:6px;padding:0 12px 12px}
+.pfc__a button{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;color:var(--muted);border:1px solid var(--rule)}
+.pfc__a button:hover:not(:disabled){color:var(--ink);border-color:var(--rule-strong)}
+.pfc__a button:disabled{opacity:.3}
+.pfc__a .grow{flex:1;width:auto;font-size:13px;color:var(--ink-2)}
+.pfc__a svg{width:15px;height:15px}
+
+.rkbox{padding:14px 16px;border-radius:var(--r-md);border:1px solid var(--rule);background:var(--surface)}
+.rk__row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:end}
+.rk__row--pts{grid-template-columns:auto 130px minmax(0,1fr) auto;margin-top:6px}
+.rk__mode{min-width:200px}
+.rk__mode button{min-height:38px;font-size:13px}
+@media (max-width:620px){.rk__row--pts{grid-template-columns:minmax(0,1fr)}.rk__mode{min-width:0}}
+#cdNow{font-family:var(--font-num);font-size:12.5px;color:var(--muted)}
+
+.shipbox{display:grid;gap:10px;padding:12px 14px;border-radius:var(--r-md);background:var(--sunk)}
+.ship__link{display:grid;gap:8px}
+.ship__link .num{color:var(--ink-2);overflow-wrap:anywhere}
+.ship__btns{display:flex;gap:8px;flex-wrap:wrap}
+
+/* shipment editor */
+.sh__grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:700px){.sh__grid{grid-template-columns:minmax(0,1fr)}}
+.sh__chips{display:flex;flex-wrap:wrap;gap:6px}
+.sh__chips button{min-height:38px;padding:0 12px;border-radius:999px;border:1px solid var(--rule-strong);color:var(--ink-2);font-size:13px}
+.sh__chips button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:600}
+.sh__list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.sh__list li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;padding:10px 12px;border-radius:10px;background:var(--sunk)}
+.sh__list li:first-child{box-shadow:inset 0 0 0 1px rgba(255,122,60,.5)}
+.sh__list b{display:block;font-weight:500;font-size:14px;overflow-wrap:anywhere}
+.sh__list span{font-family:var(--font-num);font-size:11.5px;color:var(--muted)}
+.sh__list button{width:32px;height:32px;border-radius:8px;color:var(--muted);display:grid;place-items:center}
+.sh__list button:hover{color:var(--stop)}
+.sh__list button svg{width:14px;height:14px}
+.sh__list .is-new{box-shadow:inset 0 0 0 1px var(--ok)}
+
+.sh__how{list-style:none;counter-reset:s;margin:0;padding:0;display:grid;gap:10px}
+.sh__how li{counter-increment:s;display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13.5px;color:var(--ink-2)}
+.sh__how li::before{content:counter(s);width:24px;height:24px;border-radius:50%;background:var(--sunk);color:var(--ink);display:grid;place-items:center;font-family:var(--font-num);font-size:12px;flex:none}
+.sh__how li span{flex:1 1 200px}
+#shPaste{font-family:var(--font-num);font-size:12.5px;min-height:200px}
+.sh__list li{grid-template-columns:minmax(0,1fr)}
+.sh__list em{font-style:normal;display:block;font-size:12.5px;color:var(--ink-2);line-height:1.5;margin-top:2px}
+.sh__list .is-ok{box-shadow:inset 0 0 0 1px var(--ok)!important}
+.sh__list .is-bad{box-shadow:inset 0 0 0 1px var(--stop)!important}
+
+.hero-set{display:grid;grid-template-columns:260px minmax(0,1fr);gap:18px;align-items:center}
+@media (max-width:640px){.hero-set{grid-template-columns:minmax(0,1fr)}}
+.hero-set__pv{aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#0E0D0B;display:grid;place-items:center;border:1px dashed var(--rule-strong)}
+.hero-set__pv img,.hero-set__pv video{width:100%;height:100%;object-fit:cover;display:block}
+.hero-set__t{display:grid;gap:8px}
+.hero-set__t h2{font-size:17px}
+.hero-set__btns{display:flex;gap:8px;flex-wrap:wrap}
+.hero-set__btns label{cursor:pointer}
+.hero-set__btns label:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.hero-set__spec{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;margin:2px 0 4px;font-size:12.5px;color:var(--ink-2)}
+.hero-set__spec dt{color:var(--muted)}
+.hero-set__spec dd{margin:0}
+.hero-set__spec b{color:var(--ink);font-family:var(--font-num);font-weight:500}
+
+.sd__info{display:grid;gap:8px}
+.sd__info h2{font-size:17px}
+.sd__grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:14px}
+.sd{display:grid;grid-template-columns:120px minmax(0,1fr);gap:16px;align-items:start}
+.sd__pv{aspect-ratio:350/950;border-radius:12px;overflow:hidden;background:#000;display:grid;place-items:center;border:1px dashed var(--rule-strong)}
+.sd__pv img,.sd__pv video{width:100%;height:100%;object-fit:cover;object-position:50% var(--py,35%);display:block}
+.sd__t{display:grid;gap:10px}
+.sd__t h2{font-size:17px}
+
+.sd__size label{display:flex;justify-content:space-between}
+.sd__size output{font-family:var(--font-num);color:var(--ink)}
+.sd__size input{width:100%;accent-color:var(--accent);min-height:30px}
+.sd__pv{position:relative}
+.sd__pv .z{position:absolute;inset:0;transform-origin:50% var(--py,35%)}
+.sd__pv .z img,.sd__pv .z video{position:absolute;inset:0}
+
+/* ===== layout: sidebar on desktop, sticky scrolling chips on mobile ===== */
+.adm{max-width:1320px}
+.adm__head{padding-bottom:4px}
+.adm__layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:28px;align-items:start;margin-top:16px}
+.adm__side{position:sticky;top:16px;z-index:5}
+.adm__tabs{display:flex;flex-direction:column;gap:4px;padding:8px;border-radius:18px;background:var(--surface);border:1px solid var(--rule)}
+.adm__tabs button{display:flex;align-items:center;gap:12px;width:100%;min-height:46px;padding:0 14px;border-radius:12px;color:var(--ink-2);font-size:15px;font-weight:500;text-align:left;white-space:nowrap;transition:background .2s,color .2s}
+.adm__tabs button svg{width:20px;height:20px;flex:none;color:var(--muted);transition:color .2s}
+.adm__tabs button span{flex:1}
+.adm__tabs button:hover{background:var(--sunk);color:var(--ink)}
+.adm__tabs button[aria-selected="true"]{background:var(--accent-soft);color:var(--ink)}
+.adm__tabs button[aria-selected="true"] svg{color:var(--accent)}
+.adm__tabs .tbadge{margin-left:auto;flex:none;width:auto}
+.adm__main{min-width:0;display:flex;flex-direction:column;gap:16px}
+.adm__main > [data-panel]{margin:0}
+@media (max-width:980px){
+  .adm__layout{display:block;margin-top:10px}
+  .adm__side{position:sticky;top:0;margin:0 -16px 14px;padding:8px 16px;background:linear-gradient(var(--ground) 80%,transparent)}
+  .adm__tabs{flex-direction:row;overflow-x:auto;scrollbar-width:none;padding:0;background:none;border:0;border-radius:0;gap:8px}
+  .adm__tabs::-webkit-scrollbar{display:none}
+  .adm__tabs button{flex:none;width:auto;min-height:42px;padding:0 14px;border-radius:999px;border:1px solid var(--rule-strong);font-size:14px;gap:8px}
+  .adm__tabs button svg{width:17px;height:17px}
+  .adm__tabs button[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:var(--ground)}
+  .adm__tabs button[aria-selected="true"] svg{color:var(--ground)}
+  .adm__head{flex-wrap:nowrap}
+  .adm__head h1{font-size:22px;flex:none}
+  .adm__acts{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-right:-16px;padding-right:16px}
+  .adm__acts::-webkit-scrollbar{display:none}
+  .adm__acts > *{flex:none}
+}
+/* ===== customers ===== */
+.cnew{display:flex;flex-direction:column;gap:10px}
+.cnew__h{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.cnew__h h2{font-size:17px;display:flex;align-items:center;gap:8px}
+.cnew__h h2 i{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 4px rgba(116,196,155,.15)}
+.cnew__row{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(200px,240px);gap:10px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
+.ncard{display:flex;flex-direction:column;gap:10px;padding:14px;border-radius:var(--r-md);background:linear-gradient(180deg,rgba(116,196,155,.08),var(--surface) 60%);border:1px solid rgba(116,196,155,.3);text-align:left;color:var(--ink);transition:border-color .2s,transform .2s var(--ease)}
+.ncard:hover{border-color:var(--ok);transform:translateY(-2px)}
+.ncard__top{display:flex;align-items:center;gap:10px;min-width:0}
+.ncard__top > div b{display:block;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ncard__top > div > span{display:block;font-size:12px;color:var(--muted);font-family:var(--font-num)}
+.ncard__m{display:flex;flex-wrap:wrap;gap:6px}
+.cfil{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.cfil::-webkit-scrollbar{display:none}
+.cfil button{flex:none;min-height:38px;padding:0 14px;border-radius:999px;border:1px solid var(--rule-strong);color:var(--ink-2);font-size:13.5px;font-weight:500}
+.cfil button[aria-pressed="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+.cfil b{font-family:var(--font-num);font-weight:500;margin-left:6px;opacity:.65}
+.crow{grid-template-columns:auto minmax(0,1fr) auto;align-items:center;padding:12px 16px;gap:14px}
+.crow__t{gap:4px}
+.crow__t b{font-size:15.5px;font-weight:600}
+.crow__meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+.crow__r{flex-direction:column;align-items:flex-end;gap:2px;text-align:right}
+.crow__pts{font-family:var(--font-num);font-size:12.5px;color:var(--muted)}
+.crow .pill{font-size:11.5px;padding:2px 9px}
+.crow__new{font-size:11px;font-weight:600;color:var(--ok);margin-left:6px}
+@media (max-width:600px){
+  .crow{grid-template-columns:auto minmax(0,1fr);padding:12px}
+  .crow__r{grid-column:2;flex-direction:row;align-items:center;justify-content:flex-start;gap:10px}
+}
+/* ===== stock: one spool count ===== */
+.spool__s{grid-template-columns:1fr}
+.cnt.one{grid-template-columns:44px minmax(0,1fr) 44px;padding:8px}
+.cnt.one button{width:44px;height:44px;font-size:20px}
+.cnt.one span b{font-size:24px}
+.trk__in{display:flex;gap:8px}
+.trk__in input{flex:1;min-width:0}
+.trk__in .btn{flex:none;gap:6px}
+
+/* ===== prep: next 3 days ===== */
+.prep__head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.prep__t{font-size:20px}
+.prep__sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.prep__days{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:start}
+@media (max-width:1100px){.prep__days{grid-template-columns:minmax(0,1fr)}}
+.pday{display:flex;flex-direction:column;gap:10px;padding:16px;border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--rule)}
+.pday.is-today{border-color:rgba(255,122,60,.5);background:linear-gradient(180deg,rgba(255,122,60,.07),var(--surface) 40%)}
+.pday__h{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.pday__h b{font-family:var(--font-head);font-size:18px}
+.pday__h span{font-family:var(--font-num);font-size:12px;color:var(--muted)}
+.pday__closed{padding:10px 12px;border-radius:10px;background:var(--sunk);color:var(--muted);font-size:13px}
+.pgrp{display:flex;flex-direction:column;gap:6px}
+.pgrp > span{font-size:11.5px;letter-spacing:.06em;color:var(--muted);font-weight:600}
+.ptask{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:flex-start;padding:10px 12px;border-radius:12px;background:var(--sunk);border-left:3px solid var(--c,var(--rule-strong));cursor:pointer}
+.ptask input{width:20px;height:20px;margin-top:2px;accent-color:var(--accent);cursor:pointer}
+.ptask b{display:block;font-weight:600;font-size:14.5px;line-height:1.4;overflow-wrap:anywhere}
+.ptask small{display:block;font-size:12px;color:var(--muted);line-height:1.5}
+.ptask em{font-style:normal;display:inline-block;margin-top:4px;font-size:12px;color:var(--ink-2);background:rgba(255,255,255,.04);padding:2px 8px;border-radius:999px}
+.ptask.is-done{opacity:.5}
+.ptask.is-done b{text-decoration:line-through}
+.pday__empty{font-size:13px;color:var(--muted);padding:8px 2px}
+.plate{display:flex;flex-direction:column;gap:6px;padding:14px 16px;border-radius:var(--r-lg);border:1px solid rgba(234,123,114,.45);background:rgba(234,123,114,.06)}
+.plate h3{font-size:15px;color:var(--stop)}
+
+.tgrow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;width:100%;padding:12px 16px;border-radius:var(--r-md);background:var(--surface);border:1px solid var(--rule);text-align:left;color:var(--ink);transition:border-color .2s}
+.tgrow:hover{border-color:var(--rule-strong)}
+.tgrow b{display:block;font-weight:600;font-size:15px}
+.tgrow small{display:block;font-size:12.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tgchip{font-family:var(--font-num);font-size:12.5px;padding:4px 10px;border-radius:999px;white-space:nowrap}
+.tgchip.need{background:var(--accent-soft);color:var(--accent)}
+.tgchip.has{background:rgba(116,196,155,.12);color:var(--ok)}
+@media (max-width:600px){.tgrow{grid-template-columns:auto minmax(0,1fr)}.tgrow .tgchip{grid-column:2;justify-self:start}}
+.tg__fields{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+#tgDlg .ship__url{overflow-wrap:anywhere;font-family:var(--font-num);font-size:12.5px;color:var(--muted);margin:8px 0}
+#tgNum{font-size:17px;letter-spacing:.06em}
+.paper{
+  --p-ink:#191714;--p-ink2:#4A473F;--p-muted:#6F6B62;--p-rule:#E6E2DA;--p-sunk:#F7F5F1;--p-accent:#CC4410;--p-stop:#A8302A;--p-accent-hi:#F0642A;
+  color-scheme:light;
+  background:#FFFFFF;color:var(--p-ink);
+  border-radius:var(--r-lg);box-shadow:var(--shadow-float);
+  padding:30px 30px 24px;overflow:hidden;font-size:14px;line-height:1.6;
+}
+@media (max-width:600px){.paper{padding:22px 20px 18px;border-radius:14px}}
+.paper__head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:26px}
+.paper__logo{max-width:150px;min-width:0;display:flex;align-items:center;min-height:34px}
+.paper__logo img{max-width:150px;max-height:72px;object-fit:contain;display:block}
+.paper__brand{display:inline-flex;align-items:center;gap:9px;color:var(--p-ink)}
+.paper__brand svg{width:28px;height:20px;transform:skewX(-10deg)}
+.paper__brand b{font-family:var(--font-head);font-weight:700;font-size:19px;letter-spacing:.12em;line-height:1}
+.paper__brand b sup{font-size:8px;letter-spacing:0;margin-left:2px;vertical-align:top}
+.paper__title{text-align:right}
+.paper__title h3{font-size:20px;color:var(--p-ink);line-height:1.3}
+.paper__title .en{font-size:10px;letter-spacing:.18em;color:var(--p-muted);margin-top:2px}
+.paper__title .date{font-family:var(--font-num);font-size:12px;color:var(--p-ink2);margin-top:8px}
+.paper__cust{padding-bottom:18px;margin-bottom:18px;border-bottom:1px dashed var(--p-rule)}
+.paper__cust .k{font-size:10px;letter-spacing:.16em;color:var(--p-muted);margin-bottom:4px}
+.paper__cust h4{font-size:18px;color:var(--p-ink);overflow-wrap:anywhere;line-height:1.4}
+.items{list-style:none;margin:0;padding:0;display:grid}
+.item{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid var(--p-rule)}
+.item:last-child{border-bottom:0}
+.item__ic{width:32px;height:32px;border-radius:8px;background:var(--p-sunk);color:var(--p-ink2);display:grid;place-items:center;flex:none}
+.item__ic svg{width:16px;height:16px}
+.item__t{min-width:0}
+.item__t b{display:block;font-weight:600;font-size:13.5px;color:var(--p-ink);line-height:1.5}
+.item__t > span{display:block;font-size:11px;color:var(--p-muted);line-height:1.5;font-family:var(--font-num)}
+.item__v{font-family:var(--font-num);font-variant-numeric:tabular-nums;font-size:14.5px;color:var(--p-ink);white-space:nowrap}
+.item__v small{font-family:var(--font-ui);font-size:12px;color:var(--p-muted);margin-left:4px}
+.item--stop .item__v,.item--stop .item__ic{color:var(--p-stop)}
+.item--stop .item__ic{background:#F8E3E0}
+.paper__note{font-size:11.5px;color:var(--p-muted);margin-top:10px;font-family:var(--font-num)}
+.total{margin-top:20px;background:#191714;color:#F7F5F1;border-radius:12px;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.total .k{font-size:13px;opacity:.7}
+.total .k small{display:block;font-size:10px;letter-spacing:.16em;opacity:.7}
+.total .v{font-family:var(--font-num);font-variant-numeric:tabular-nums;font-size:30px;font-weight:500;line-height:1.1;display:flex;align-items:baseline;gap:8px;overflow-wrap:anywhere}
+.total .v small{font-family:var(--font-ui);font-size:12px;letter-spacing:.12em;opacity:.7}
+.total .pp{width:100%;text-align:right;font-family:var(--font-num);font-size:12px;opacity:.7;margin-top:-4px}
+.paper__foot{margin-top:22px;text-align:center;font-size:10px;letter-spacing:.24em;color:var(--p-muted);font-weight:500}
+.paper__brand svg.paper__logosvg{width:auto;height:72px;transform:none;color:var(--p-ink)}
+.paper__mem{font-size:12.5px;color:var(--p-ink2);margin-top:4px;font-family:var(--font-num)}
+.paper__pay{display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px;align-items:center;margin-top:18px;padding:16px;border-radius:14px;border:1px solid var(--p-rule);background:linear-gradient(135deg,rgba(255,122,60,.06),transparent 60%)}
+.pay__qr{position:relative;width:132px;height:132px;padding:8px;border-radius:12px;background:#fff;box-shadow:0 0 0 1px var(--p-rule)}
+.pay__qrin,.pay__qrin svg{width:100%;height:100%;display:block}
+.pay__mark{position:absolute;left:50%;top:50%;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:6px;background:#141311;box-shadow:0 0 0 3px #fff;display:flex;align-items:center;justify-content:center}
+.pay__mark svg{display:block;width:20px;height:9px}
+.pay__t{display:flex;flex-direction:column;gap:3px;min-width:0}
+.pay__k{font-family:var(--font-num);font-size:10.5px;letter-spacing:.22em;color:var(--p-accent)}
+.pay__t b{font-size:15px;color:var(--p-ink)}
+.pay__amt{font-family:var(--font-num);font-size:24px;font-weight:600;color:var(--p-ink);line-height:1.2}
+.pay__amt small{font-size:11px;margin-left:4px;color:var(--p-muted);letter-spacing:.1em}
+.pay__who{font-size:12.5px;color:var(--p-ink)}
+@media (max-width:420px){.paper__pay{grid-template-columns:minmax(0,1fr);justify-items:center;text-align:center}.pay__t{align-items:center}}
+.stub{position:relative;margin:22px -30px -24px;background:#F3F6F2;--w-ac:#2F7A4F}
+@media (max-width:600px){.stub{margin:20px -20px -18px}}
+.stub__cut{position:relative;display:flex;align-items:center;justify-content:center;height:22px;border-top:2px dashed #B9C2B6}
+.stub__cut span{position:relative;top:-1px;padding:0 10px;background:#F3F6F2;font-size:10.5px;color:#6F7A6C;letter-spacing:.04em}
+.stub__n{position:absolute;top:-12px;width:22px;height:22px;border-radius:50%;background:var(--ground,#141311)}
+.stub__n--l{left:-11px}.stub__n--r{right:-11px}
+.stub__body{display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px;align-items:center;padding:8px 30px 22px}
+@media (max-width:600px){.stub__body{padding:8px 20px 18px;gap:14px}}
+.stub__qr{display:flex;flex-direction:column;align-items:center;gap:5px}
+.stub__qr > div{width:104px;height:104px;padding:6px;border-radius:10px;background:#fff;box-shadow:0 0 0 1px #DCE3D9}
+.stub__qr svg{display:block;width:100%;height:100%}
+.stub__qr > span{font-size:10px;color:#6F7A6C}
+.stub__t{display:flex;flex-direction:column;gap:4px;min-width:0}
+.stub__k{font-family:var(--font-num);font-size:10px;letter-spacing:.18em;color:var(--w-ac);font-weight:600}
+.stub__code{font-family:var(--font-num);font-size:20px;font-weight:600;letter-spacing:.06em;color:var(--p-ink)}
+.stub__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:4px 0 2px}
+.stub__grid > div{display:flex;flex-direction:column;padding:6px 8px;border-radius:8px;background:#fff;box-shadow:0 0 0 1px #DCE3D9}
+.stub__grid > div > span{font-size:10px;color:#6F7A6C}
+.stub__grid b{font-size:12.5px;color:var(--p-ink);font-weight:600;white-space:nowrap}
+.stub__job{font-size:12px;color:var(--p-ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stub__url{font-size:10.5px;color:#6F7A6C;overflow-wrap:anywhere}
+@media (max-width:520px){.stub__qr > div{width:84px;height:84px}.stub__grid{grid-template-columns:1fr 1fr}.stub__grid > div:last-child{grid-column:1 / -1;flex-direction:row;gap:6px;align-items:baseline}.stub__grid > div > span{white-space:nowrap}.stub__code{font-size:17px}}
+/* bill viewer */
+#bDlg{max-width:min(600px,calc(100vw - 16px))}
+#bDlg .dlg__body{background:var(--sunk);padding:16px;display:block;min-height:0;flex:1 1 auto;overscroll-behavior:contain}
+#bDlg .stub__n{background:var(--sunk)}
+.bill__bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:12px 16px;border-top:1px solid var(--rule)}
+.bill__bar .own{margin:0 auto 0 0;font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:center}
+.bill__old{font-size:12px;color:var(--muted);margin:0 0 10px;padding:8px 12px;border-radius:10px;background:var(--surface);border:1px dashed var(--rule)}
+.orow__acts button.bill{color:var(--accent)}
+@media (max-width:600px){#bDlg .dlg__body{padding:8px}}
+.bkalert button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:12px 16px;border-radius:var(--r-md);background:var(--stop-soft);border:1px solid var(--stop);color:var(--ink);font:inherit;font-size:14px;cursor:pointer}
+.bkalert i{width:10px;height:10px;border-radius:50%;background:var(--stop);flex:none;animation:bkpulse 1.6s ease-in-out infinite}
+.bkalert b{color:var(--stop)}.bkalert span{margin-left:auto;color:var(--stop);font-weight:600;white-space:nowrap}
+@keyframes bkpulse{50%{opacity:.35}}
+.tbadge--late{background:var(--stop)!important;color:#fff!important}
+.bkweek{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.bkw{display:grid;gap:1px;padding:7px 8px;border-radius:10px;background:var(--surface);border:1px solid var(--rule);font-size:11.5px;position:relative}
+.bkw span{color:var(--muted)}.bkw b{font-family:var(--font-num);font-weight:500;font-size:14px}
+.bkw em{font-style:normal;font-size:10.5px;color:var(--accent);font-weight:600}
+.bkw.is-full b{color:var(--stop)}.bkw.is-off{background:transparent;border-style:dashed}.bkw.is-off b{color:var(--muted)}
+@media (max-width:640px){.bkweek{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.bkalist{display:grid;gap:10px}
+.bka{display:grid;gap:5px;padding:14px 16px;border-radius:var(--r-md);background:var(--surface);border:1px solid var(--rule)}
+.bka--new{border-color:var(--accent)}.bka--late{border-color:var(--stop);box-shadow:0 0 0 1px var(--stop) inset}
+.bka__h{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.bka__h b{font-weight:600}
+.bka__m{font-size:13px;color:var(--ink-2);line-height:1.6}
+.bka__m b{color:var(--ink);font-weight:600}
+.bka__sw{display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--muted);margin-right:6px;vertical-align:-1px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
+.bka__links{display:flex;gap:14px;flex-wrap:wrap}
+.bka__note{font-size:13px;color:var(--ink-2);background:var(--sunk);border-radius:10px;padding:7px 10px}
+.bka__acts{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:4px}
+.bka__no{color:var(--stop)!important}
+.bkaq{display:grid;gap:10px;padding:12px;border-radius:var(--r-md);background:var(--sunk)}
+
+/* ===== v3 phone: floating dock · "เพิ่มเติม" hub · back bar ===== */
+.adock,.aback{display:none}
+.hub{display:flex;flex-direction:column;gap:16px}
+.hub__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.hub__t{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:14px;border-radius:18px;background:var(--surface);border:1px solid var(--rule);text-align:left;transition:transform .2s var(--ease),border-color .2s}
+.hub__t:hover{border-color:var(--rule-strong)}.hub__t:active{transform:scale(.97)}
+.hub__ic{width:42px;height:42px;border-radius:13px;background:var(--sunk);display:grid;place-items:center;color:var(--accent)}
+.hub__ic svg{width:21px;height:21px}
+.hub__t b{font-size:15px;font-weight:600}
+.hub__t small{font-size:12px;color:var(--warn);min-height:1em}
+.hub__list{display:flex;flex-direction:column;border-radius:18px;background:var(--surface);border:1px solid var(--rule);overflow:hidden}
+.hub__r{display:flex;align-items:center;gap:14px;min-height:54px;padding:0 16px;border-top:1px solid var(--rule);color:var(--ink);text-decoration:none;font-size:15px;text-align:left;width:100%}
+.hub__r:first-child{border-top:0}
+.hub__r:hover{background:var(--sunk);color:var(--ink)}
+.hub__r span{flex:1}
+.hub__r svg{width:20px;height:20px;color:var(--muted);flex:none}
+.hub__r--stop,.hub__r--stop svg{color:var(--stop)}
+@media (max-width:760px){
+  html,body{overflow-x:clip}
+  .adm{padding-bottom:calc(120px + env(safe-area-inset-bottom,0px))}
+  .adm__side,.adm__acts,.top .nav{display:none}
+  .pfhero summary small{display:none}
+  .hub__t{padding:12px;gap:6px}
+  .adm__head h1{font-size:24px}
+  .hub__grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .adock{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:50;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));height:68px;padding:0 4px;border-radius:24px;
+    background:rgba(29,27,24,.92);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);border:1px solid var(--rule-strong);box-shadow:0 16px 36px -10px rgba(0,0,0,.75)}
+  .adock button{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--muted);font-size:11.5px;font-weight:500;line-height:1.2;-webkit-tap-highlight-color:transparent}
+  .adock button svg{width:23px;height:23px;transition:transform .3s var(--ease)}
+  .adock button:active svg{transform:scale(.88)}
+  .adock button[aria-current="page"]{color:var(--accent);font-weight:600}
+  .adock button[aria-current="page"]::before{content:'';position:absolute;top:-1px;left:50%;width:30px;height:5px;margin-left:-15px;background:var(--accent);transform:skewX(-41deg);border-radius:1px;box-shadow:0 0 14px 2px rgba(255,122,60,.55)}
+  .adock__b{position:absolute;top:8px;left:50%;margin-left:6px;min-width:18px;height:18px;padding:0 5px;border-radius:99px;background:var(--accent);color:var(--on-accent);font-style:normal;font-family:var(--font-num);font-size:11px;font-weight:700;display:grid;place-items:center;box-shadow:0 0 0 2px var(--surface)}
+  .aback:not([hidden]){display:flex;align-items:center;gap:10px;margin-bottom:-4px}
+  .aback button{width:44px;height:44px;border-radius:50%;border:1px solid var(--rule-strong);display:grid;place-items:center;flex:none}
+  .aback button svg{width:20px;height:20px}
+  .aback div{display:flex;flex-direction:column;line-height:1.3}
+  .aback span{font-size:12px;color:var(--muted)}
+  .aback b{font-family:var(--font-head);font-size:20px;font-weight:600}
+  .calcfab{bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+  .toast{bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+  .mstat--main{position:relative;overflow:hidden;isolation:isolate}
+  .mstat--main::before{content:'';position:absolute;z-index:-1;right:-30%;top:-60%;width:90%;height:200%;background:radial-gradient(closest-side,rgba(255,122,60,.28),transparent 70%)}
+  .mstat--main{grid-column:1/-1}
+  .mstat--main b{font-size:32px}
+}
+
+/* ===== portfolio: easy adding from a phone ===== */
+.pfhero{padding:0}
+.pfhero summary{display:flex;align-items:center;gap:10px;min-height:56px;padding:0 18px;cursor:pointer;list-style:none}
+.pfhero summary::-webkit-details-marker{display:none}
+.pfhero summary::after{content:'';width:9px;height:9px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);margin-left:auto;transition:transform .25s var(--ease)}
+.pfhero[open] summary::after{transform:rotate(-135deg)}
+.pfhero summary span{font-weight:600}
+.pfhero .hero-set{padding:0 18px 18px}
+.pfadd{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-items:stretch}
+.pfadd__b{display:flex;align-items:center;gap:12px;min-height:72px;padding:12px 16px;border-radius:18px;border:1px dashed var(--rule-strong);background:var(--surface);cursor:pointer;transition:transform .2s var(--ease),border-color .2s}
+.pfadd__b:hover{border-color:var(--ink-2)}.pfadd__b:active{transform:scale(.98)}
+.pfadd__b:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.pfadd__b svg{flex:none;color:var(--accent)}
+.pfadd__b span{display:flex;flex-direction:column;line-height:1.35}
+.pfadd__b b{font-weight:600}.pfadd__b small{font-size:12px;color:var(--muted)}
+.pfadd__b--hot{border:1px solid rgba(255,122,60,.45);background:var(--accent-soft)}
+.pfadd__open{grid-column:1/-1;justify-self:end}
+.pfup__grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.pfup__i{position:relative;display:flex;flex-direction:column;gap:6px}
+.pfup__im{position:relative;aspect-ratio:1;border-radius:12px;overflow:hidden;background:#0E0D0B}
+.pfup__im img{width:100%;height:100%;object-fit:cover;display:block}
+.pfup__x{position:absolute;top:6px;right:6px;width:32px;height:32px;border-radius:50%;background:rgba(10,9,8,.72);color:#fff;display:grid;place-items:center}
+.pfup__x svg{width:16px;height:16px}
+.pfup__st{position:absolute;inset:0;display:grid;place-items:center;background:rgba(10,9,8,.6);color:#fff;font-weight:600;font-size:13px}
+.pfup__st.is-ok{background:rgba(27,45,37,.75);color:var(--ok)}
+.pfup__st.is-bad{background:rgba(58,31,29,.8);color:var(--stop)}
+.pfup__i input{min-height:40px;font-size:13px;padding:8px 10px}
+.pfup__more{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--rule-strong);font-size:13.5px;font-weight:500;cursor:pointer}
+.pfup__cats{display:flex;flex-wrap:wrap;gap:8px}
+.pfup__cats button{min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--rule-strong);font-size:13.5px;color:var(--ink-2)}
+.pfup__cats button[aria-checked="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:600}
+.pfc__a .eye[aria-pressed="false"]{color:var(--stop)}
+@media (max-width:600px){
+  .pf__grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .pfadd__b{flex-direction:column;align-items:flex-start;min-height:96px}
+  .pfup__grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  dialog.sheet{margin:auto 0 0;max-width:100%;width:100%;max-height:94vh}
+  dialog.sheet .dlg{border-radius:24px 24px 0 0;padding-bottom:env(safe-area-inset-bottom,0px);animation:sheetup .35s var(--ease)}
+  @keyframes sheetup{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap top__row">
+    <a class="top__brand" href="./" aria-label="UNITAC กลับหน้าตารางคิว"><span class="top__logo" data-logo></span><span class="top__tag">UNITAC 3D PRINT</span></a>
+    <nav class="nav" aria-label="เมนูหลัก">
+      <a href="./" data-nav="queue">ตารางคิว</a>
+      <a href="member.html" data-nav="member">สมาชิก</a>
+      <a href="warranty.html" data-nav="warranty">เช็กประกัน</a>
+      <a href="portfolio.html" data-nav="works">ผลงาน</a>
+      <a href="partners.html" data-nav="partners">พาร์ทเนอร์</a>
+    </nav>
+    <div class="top__end" id="topEnd"></div>
+  </div>
+</header>
+
+<main id="main" class="wrap adm">
+  <p class="muted adm__loading" id="aLoading">กำลังโหลด…</p>
+
+  <section id="aLogin" class="card adm__login" hidden aria-labelledby="alTitle">
+    <h1 id="alTitle">หลังร้าน UNITAC</h1>
+    <p class="muted small">สำหรับเจ้าของร้านเท่านั้น</p>
+    <form id="alForm" class="sec" novalidate>
+      <div class="field"><label for="alEmail">อีเมล</label><input type="email" id="alEmail" autocomplete="username" spellcheck="false"></div>
+      <div class="field"><label for="alPass">รหัสผ่าน</label><input type="password" id="alPass" autocomplete="current-password"></div>
+      <p class="err" id="alErr" hidden></p>
+      <button type="submit" class="btn btn--primary btn--block" id="alOk">เข้าสู่ระบบ</button>
+    </form>
+  </section>
+
+  <section id="aDenied" class="card adm__login" hidden>
+    <h1>บัญชีนี้ไม่ใช่เจ้าของร้าน</h1>
+    <p class="muted">ออกจากระบบแล้วเข้าใหม่ด้วยบัญชีเจ้าของ</p>
+    <button type="button" class="btn btn--ghost" data-signout>ออกจากระบบ</button>
+  </section>
+
+  <section id="aApp" hidden>
+    <div class="adm__head">
+      <h1>หลังร้าน</h1>
+      <div class="adm__acts">
+        <button type="button" class="btn btn--ghost btn--sm" id="installBtn" hidden>ติดตั้งเป็นแอป</button>
+        <button type="button" class="btn btn--ghost btn--sm" id="bkBtn">สำรองข้อมูล</button>
+        <label class="btn btn--ghost btn--sm" id="rsLbl">กู้คืน<input type="file" id="rsFile" accept="application/json,.json" class="sr"></label>
+        <button type="button" class="btn btn--ghost btn--sm" data-signout>ออกจากระบบ</button>
+      </div>
+    </div>
+    <div class="adm__layout">
+    <nav class="adm__side" aria-label="เมนูหลังร้าน"><div class="adm__tabs" role="tablist" aria-label="ส่วนของหลังร้าน">
+      <button type="button" role="tab" aria-selected="false" data-tab="bk" id="tBk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M12 14v4M10 16h4"/></svg><span>การจอง</span></button>
+      <button type="button" role="tab" aria-selected="true" data-tab="prep" id="tPrep"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/><path d="m9 15 2 2 4-4"/></svg><span>เตรียมงาน</span></button>
+      <button type="button" role="tab" aria-selected="false" data-tab="cust" id="tCust"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 19v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1"/><circle cx="9.5" cy="7.5" r="3.5"/><path d="M21 19v-1a4 4 0 0 0-3-3.87M16 4.13a3.5 3.5 0 0 1 0 6.75"/></svg><span>ลูกค้า</span></button>
+      <button type="button" role="tab" aria-selected="false" data-tab="ord" id="tOrd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg><span>ออเดอร์</span></button>
+      <button type="button" role="tab" aria-selected="false" data-tab="war" id="tWar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg><span>ประกัน</span></button>
+      <button type="button" role="tab" aria-selected="false" data-tab="tag" id="tTag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h18v10H3z"/><path d="M6 10v4M9 10v4M12 10v4M15 10v4M18 10v4"/></svg><span>เลขแท็ก</span></button>
+      <button type="button" role="tab" aria-selected="false" data-tab="stk" id="tStk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg><span>สต็อกเส้น</span></button>
+      <button type="button" role="tab" aria-selected="false" data-tab="prt" id="tPrt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 12h8M12 8v8"/><rect x="3" y="3" width="18" height="18" rx="5"/></svg><span>พาร์ทเนอร์</span></button>
+      <button type="button" role="tab" aria-selected="false" data-tab="pf" id="tPf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/></svg><span>ผลงาน</span></button>
+      <button type="button" role="tab" aria-selected="false" data-tab="sd" id="tSd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="16" y="4" width="5" height="16" rx="1.5"/><path d="M11 9h2M11 15h2"/></svg><span>สองข้าง</span></button>
+      <button type="button" role="tab" aria-selected="false" data-tab="more" id="tMore" hidden><span>เพิ่มเติม</span></button>
+    </div></nav>
+    <div class="adm__main">
+    <div class="bkalert" id="bkAlert" hidden></div>
+    <div class="aback" id="aBack" hidden><button type="button" id="aBackBtn" aria-label="กลับไปเมนูเพิ่มเติม"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg></button><div><span>หลังร้าน · เพิ่มเติม</span><b id="aBackT"></b></div></div>
+    <div class="todo" id="todo" hidden></div>
+
+    <div data-panel="bk" class="sec" hidden>
+      <div class="prep__head">
+        <div><h2 class="prep__t">การจองคิวพิมพ์</h2><p class="muted small">คำขอจากสมาชิก · ยืนยันแล้วเพิ่มลงตารางคิวได้ทันที</p></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn btn--ghost btn--sm" id="bcBtn">📣 ประกาศถึงสมาชิก</button><button type="button" class="btn btn--ghost btn--sm" id="bkaCfgBtn"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>ตั้งค่าการจอง</button></div>
+      </div>
+      <div class="bkweek" id="bkaWeek" aria-label="14 วันข้างหน้า"></div>
+      <div class="cfil" id="bkaFil" role="group" aria-label="กรองการจอง"></div>
+      <div id="bkaList" class="bkalist"><p class="muted">กำลังโหลด…</p></div>
+    </div>
+
+    <div data-panel="prep" class="sec">
+      <div class="prep__head">
+        <div><h2 class="prep__t">งานที่ต้องเตรียมใน 3 วันข้างหน้า</h2><p class="muted small" id="prepSub">ดึงจากตารางคิว อัปเดตทันทีเมื่อแก้คิว</p></div>
+        <a class="btn btn--ghost btn--sm" href="./">เปิดตารางคิว ↗</a>
+      </div>
+      <div class="prep__sum" id="prepSum"></div>
+      <div id="prepLate"></div>
+      <div class="prep__days" id="prepDays"><p class="muted">กำลังโหลด…</p></div>
+    </div>
+
+    <div data-panel="cust" class="sec" hidden>
+      <div class="adm__search">
+        <div class="field"><label for="cSearch" class="sr">ค้นหาลูกค้า</label><input type="search" id="cSearch" placeholder="ค้นหา ชื่อเล่น ชื่อ เบอร์ อีเมล หรือเลขสมาชิก" autocomplete="off"></div>
+        <button type="button" class="btn btn--ghost" id="cScan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M7 12h10"/></svg>สแกน QR</button>
+      </div>
+      <section class="cnew" id="cNew" hidden>
+        <div class="cnew__h"><h2><i aria-hidden="true"></i>สมัครใหม่ใน 3 วัน</h2><span class="muted small" id="cNewN"></span></div>
+        <div class="cnew__row" id="cNewRow"></div>
+      </section>
+      <div class="cfil" id="cFil" role="group" aria-label="กรองลูกค้า"></div>
+      <p class="muted small" id="cCount"></p>
+      <div id="cList" class="clist"></div>
+    </div>
+
+    <div data-panel="ord" class="sec" hidden>
+      <div class="mo__bar">
+        <button type="button" class="iconbtn" id="moPrev" aria-label="เดือนก่อน"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg></button>
+        <h2 id="moTitle" aria-live="polite"></h2>
+        <button type="button" class="iconbtn" id="moNext" aria-label="เดือนถัดไป"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+        <button type="button" class="btn btn--ghost btn--sm" id="moNow">เดือนนี้</button>
+        <span class="sp" style="flex:1"></span>
+        <button type="button" class="btn btn--ghost btn--sm" id="moCsv">ส่งออก CSV เดือนนี้</button>
+      </div>
+      <div class="mo__stats" id="moStats"></div>
+      <div class="card mo__chartc"><div class="sec__h"><h2>ยอดขาย 12 เดือนล่าสุด</h2><span>กดแท่งเพื่อดูเดือนนั้น</span></div><div class="bars" id="moChart"></div></div>
+      <div class="card sec"><div class="sec__h"><h2 id="oHead">ออเดอร์</h2><span id="oCount"></span></div><div class="cfil" id="oPayFil" role="group" aria-label="กรองสถานะชำระ" style="margin-bottom:10px"></div><div id="oList" class="rows"></div></div>
+    </div>
+
+    <div data-panel="tag" class="sec" hidden>
+      <div class="prep__head"><div><h2 class="prep__t">เลขแท็ก (เลขพัสดุ)</h2><p class="muted small">กดชื่อลูกค้าเพื่อกรอกหรือสแกนเลขพัสดุของงานล่าสุด</p></div></div>
+      <div class="adm__search"><div class="field"><label for="tgSearch" class="sr">ค้นหา</label><input type="search" id="tgSearch" placeholder="ค้นหาชื่อลูกค้า ชื่องาน หรือเลขพัสดุ" autocomplete="off"></div></div>
+      <div class="cfil" id="tgFil" role="group" aria-label="กรอง"></div>
+      <div class="clist" id="tgList"></div>
+    </div>
+
+    <div data-panel="stk" class="sec" hidden>
+      <div class="stk__stats" id="stkStats"></div>
+      <div class="stk__bar">
+        <div class="wchips" id="stkChips" role="group" aria-label="กรองชนิดวัสดุ"></div>
+        <div class="stk__acts">
+          <div class="field"><label for="stkSearch" class="sr">ค้นหาเส้น</label><input type="search" id="stkSearch" placeholder="ค้นหา ยี่ห้อ ชนิด หรือสี" autocomplete="off"></div>
+          <button type="button" class="btn btn--primary btn--sm" id="stkAdd">+ เพิ่มเส้น</button>
+          <button type="button" class="btn btn--ghost btn--sm" id="stkImport">นำเข้าราคาจากเครื่องคิดเลขเดิม</button>
+          <button type="button" class="btn btn--ghost btn--sm" id="stkCsv">ส่งออก CSV</button>
+        </div>
+      </div>
+      <div id="stkList" class="stk__grid"></div>
+    </div>
+
+    <div data-panel="pf" class="sec" hidden>
+      <details class="pfhero card"><summary><span>พื้นหลังส่วนหัวหน้าผลงาน</span><small class="muted">รูปหรือคลิปด้านหลังหัวข้อ</small></summary>
+<div class="hero-set">
+        <div class="hero-set__pv" id="hsPv"><span class="muted small">ยังไม่มีพื้นหลัง</span></div>
+        <div class="hero-set__t">
+          <h2>พื้นหลังส่วนหัวหน้าผลงาน</h2>
+          <p class="hint">แสดงด้านหลังหัวข้อ "ผลงานของเรา" ถ้าไม่เลือก ส่วนหัวจะเป็นพื้นเรียบ ชิ้นงานควรอยู่ฝั่งขวาของภาพ เพราะฝั่งซ้ายมีหัวข้อทับ</p>
+          <dl class="hero-set__spec">
+            <dt>รูป</dt><dd>แนวนอน <b>2400 × 1000 px</b> (อย่างน้อย 1920 × 800) · JPG / PNG / HEIC</dd>
+            <dt>คลิป</dt><dd>แนวนอน <b>1920 × 1080 (1080p)</b> · MP4 (H.264) · ยาว 5–15 วินาที · ไม่เกิน 8 MB (แนะนำ 3–5 MB) · ไม่ต้องมีเสียง</dd>
+          </dl>
+          <div class="hero-set__btns">
+            <label class="btn btn--ghost btn--sm">เลือกรูป<input type="file" id="hsImg" accept="image/*,.heic,.heif" class="sr"></label>
+            <label class="btn btn--ghost btn--sm">เลือกคลิป<input type="file" id="hsVid" accept="video/mp4,video/webm,video/quicktime" class="sr"></label>
+            <button type="button" class="btn btn--danger btn--sm" id="hsDel" hidden>เอาพื้นหลังออก</button>
+          </div>
+          <p class="small muted" id="hsMsg" aria-live="polite"></p>
+        </div>
+      </div>
+      </details>
+      <div class="pfadd">
+        <label class="pfadd__b pfadd__b--hot"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/></svg><span><b>เลือกรูปจากเครื่อง</b><small>เลือกได้หลายรูปพร้อมกัน</small></span><input type="file" id="pfFiles" accept="image/*,.heic,.heif" multiple class="sr"></label>
+        <label class="pfadd__b"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z"/><circle cx="12" cy="13.5" r="3.5"/></svg><span><b>ถ่ายรูป</b><small>เปิดกล้องถ่ายชิ้นงาน</small></span><input type="file" id="pfCam" accept="image/*" capture="environment" class="sr"></label>
+        <a class="linkbtn pfadd__open" href="portfolio.html" target="_blank" rel="noopener">เปิดหน้าผลงาน ↗</a>
+      </div>
+      <p class="muted small" id="pfProg" aria-live="polite"></p>
+      <div id="pfList" class="pf__grid"></div>
+    </div>
+
+    <div data-panel="sd" class="sec" hidden>
+      <div class="card sd__info">
+        <h2>รูปหรือคลิปสองข้างของหน้าเว็บ</h2>
+        <p class="hint">แสดงในพื้นที่ว่างซ้ายขวาของ<b>หน้าตารางคิว</b> เฉพาะจอที่กว้างพอ บนมือถือจะไม่โหลด ลูกค้าโหลดไฟล์ครั้งเดียว หน้าถัดไปใช้จากเครื่องลูกค้าเอง</p>
+        <dl class="hero-set__spec">
+          <dt>จอ 16:9</dt><dd>บนจอ 1920 × 1080 พื้นที่แต่ละข้างเป็นแถบแนวตั้งแคบ ราว <b>1 : 2.6</b> (กว้าง ~350 สูง ~950 px) ภาพจะเต็มแถบและถูกครอปซ้ายขวา ให้<b>คนหรือของอยู่กลางภาพ ภายใน 60% ตรงกลาง</b></dd>
+          <dt>คลิป</dt><dd>แนวตั้ง <b>1080 × 2340</b> (พอดีที่สุด) หรือ <b>1080 × 1920</b> (9:16) · MP4 (H.264) · ยาว 6–10 วินาที วนเนียน · ฉาก<b>ดำสนิท</b> แล้วติ๊ก "พื้นหลังดำ ให้กลืนกับเว็บ" · ไม่เกิน 6 MB</dd>
+          <dt>รูป</dt><dd>แนวตั้ง <b>1080 × 2340</b> หรือ 1200 × 1800 · PNG พื้นใส หรือภาพฉากดำ · JPG / PNG / HEIC</dd>
+        </dl>
+      </div>
+      <div class="sd__grid">
+        <section class="card sd">
+          <div class="sd__pv" id="sdPvL"><span class="muted small">ยังไม่มี</span></div>
+          <div class="sd__t">
+            <h2>ฝั่งซ้าย</h2>
+            <div class="hero-set__btns">
+              <label class="btn btn--ghost btn--sm">เลือกรูป<input type="file" id="sdImgL" accept="image/*,.heic,.heif" class="sr"></label>
+              <label class="btn btn--ghost btn--sm">เลือกคลิป<input type="file" id="sdVidL" accept="video/mp4,video/webm,video/quicktime,.mov" class="sr"></label>
+              <button type="button" class="btn btn--danger btn--sm" id="sdDelL" hidden>เอาออก</button>
+            </div>
+            <label class="check"><input type="checkbox" id="sdBlendL" checked><span>พื้นหลังดำ ให้กลืนกับเว็บ</span></label>
+            <label class="check"><input type="checkbox" id="sdFadeL" checked><span>ขอบจางหาย</span></label>
+            <label class="check"><input type="checkbox" id="sdMotionL"><span>ขยับเบาๆ (กล้องดันเข้า + หายใจ เหมาะกับรูปนิ่ง)</span></label>
+            <div class="field sd__size"><label for="sdSizeL">ขนาด <output id="sdSizeOutL">100%</output></label><input type="range" id="sdSizeL" min="50" max="200" step="5" value="100"></div>
+            <div class="field sd__pos"><label for="sdPosL">จัดตำแหน่งเมื่อถูกครอป</label><select id="sdPosL"><option value="upper">ค่อนบน (เห็นหัวและลำตัว)</option><option value="top">ชิดบน</option><option value="center">กึ่งกลาง</option><option value="bottom">ชิดล่าง</option></select></div>
+            <p class="small muted" id="sdMsgL" aria-live="polite"></p>
+          </div>
+        </section>
+        <section class="card sd">
+          <div class="sd__pv" id="sdPvR"><span class="muted small">ยังไม่มี</span></div>
+          <div class="sd__t">
+            <h2>ฝั่งขวา</h2>
+            <div class="hero-set__btns">
+              <label class="btn btn--ghost btn--sm">เลือกรูป<input type="file" id="sdImgR" accept="image/*,.heic,.heif" class="sr"></label>
+              <label class="btn btn--ghost btn--sm">เลือกคลิป<input type="file" id="sdVidR" accept="video/mp4,video/webm,video/quicktime,.mov" class="sr"></label>
+              <button type="button" class="btn btn--danger btn--sm" id="sdDelR" hidden>เอาออก</button>
+            </div>
+            <label class="check"><input type="checkbox" id="sdBlendR" checked><span>พื้นหลังดำ ให้กลืนกับเว็บ</span></label>
+            <label class="check"><input type="checkbox" id="sdFadeR" checked><span>ขอบจางหาย</span></label>
+            <label class="check"><input type="checkbox" id="sdMotionR"><span>ขยับเบาๆ (กล้องดันเข้า + หายใจ เหมาะกับรูปนิ่ง)</span></label>
+            <div class="field sd__size"><label for="sdSizeR">ขนาด <output id="sdSizeOutR">100%</output></label><input type="range" id="sdSizeR" min="50" max="200" step="5" value="100"></div>
+            <div class="field sd__pos"><label for="sdPosR">จัดตำแหน่งเมื่อถูกครอป</label><select id="sdPosR"><option value="upper">ค่อนบน (เห็นหัวและลำตัว)</option><option value="top">ชิดบน</option><option value="center">กึ่งกลาง</option><option value="bottom">ชิดล่าง</option></select></div>
+            <p class="small muted" id="sdMsgR" aria-live="polite"></p>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div data-panel="prt" class="sec" hidden>
+      <div class="pa">
+        <div class="pa__list">
+          <button type="button" class="addbtn" id="paAdd">+ เพิ่มพาร์ทเนอร์</button>
+          <div id="paList" class="pa__groups"></div>
+          <p class="hint">ใช้ลูกศรขึ้น/ลง เพื่อเรียงลำดับที่แสดงในแต่ละหมวด · <a href="partners.html" target="_blank" rel="noopener">เปิดหน้าพาร์ทเนอร์</a></p>
+        </div>
+        <form id="paForm" class="card pa__form" novalidate hidden>
+          <h2 id="paTitle" class="pa__h">เพิ่มพาร์ทเนอร์</h2>
+          <div class="pa__top">
+            <div class="field">
+              <span class="lab">โลโก้</span>
+              <label class="pa__drop"><input type="file" id="paFile" accept="image/png,image/svg+xml,image/webp,image/jpeg,image/heic,image/heif,.heic,.heif" class="sr"><span class="ptile" id="paPrev"><span class="pa__ph">อัปโหลดโลโก้</span></span></label>
+              <p class="hint">PNG พื้นใส หรือ SVG ตัวอย่างนี้หน้าตาเหมือนบนหน้าเว็บจริง ลองชี้ดูได้</p>
+              <div class="field pa__size"><label for="paScale">ขนาดโลโก้ <output id="paScaleOut">100%</output></label><input type="range" id="paScale" min="50" max="160" step="5" value="100"><p class="hint">ปรับให้โลโก้ดูใหญ่เท่าร้านอื่น โลโก้ที่มีขอบว่างเยอะให้ขยาย โลโก้เต็มกรอบให้ลด</p></div>
+              <label class="check"><input type="checkbox" id="paDark"><span>โลโก้สีเข้ม: กลับสีให้เห็นชัดบนพื้นมืด (ใช้กับโลโก้ดำล้วนบนพื้นใส)</span></label>
+            </div>
+            <div class="sec">
+              <div class="field"><label for="paName">ชื่อร้าน</label><input type="text" id="paName" maxlength="60"><p class="hint">ไม่โชว์บนหน้าเว็บ ใช้เป็นคำอธิบายรูปและขึ้นตอนชี้โลโก้</p></div>
+              <div class="field"><label for="paCat">หมวด</label><select id="paCat"></select></div>
+              <div class="field"><label for="paUrl">ลิงก์ปลายทาง</label><input type="text" id="paUrl" inputmode="url" spellcheck="false" placeholder="https://facebook.com/…"><p class="hint">เพจ เว็บไซต์ หรือ Google Maps ก็ได้ เปิดในแท็บใหม่</p></div>
+            </div>
+          </div>
+          <label class="check"><input type="checkbox" id="paVis" checked><span>แสดงบนหน้าพาร์ทเนอร์</span></label>
+          <p class="err" id="paErr" hidden></p>
+          <div class="pa__acts"><button type="button" class="btn btn--danger btn--sm" id="paDel" hidden>ลบ</button><span class="sp"></span><button type="button" class="btn btn--ghost" id="paCancel">ยกเลิก</button><button type="submit" class="btn btn--primary" id="paSave">บันทึก</button></div>
+        </form>
+        <p class="muted pa__empty" id="paHint">เลือกพาร์ทเนอร์ทางซ้ายเพื่อแก้ไข หรือกด เพิ่มพาร์ทเนอร์</p>
+      </div>
+    </div>
+
+    <div data-panel="war" class="sec" hidden>
+      <div class="wfil">
+        <div class="wchips" id="wChips" role="group" aria-label="กรองประกัน"></div>
+        <div class="field"><label for="wSearch" class="sr">ค้นหาประกัน</label><input type="search" id="wSearch" placeholder="ค้นหา ชื่องาน ลูกค้า หรือรหัส" autocomplete="off"></div>
+      </div>
+      <div id="wList" class="wlist2"></div>
+    </div>
+
+    <div data-panel="more" class="sec hub" hidden>
+      <div class="hub__grid">
+        <button type="button" class="hub__t" data-go="tag"><span class="hub__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h18v10H3z"/><path d="M6 10v4M9 10v4M12 10v4M15 10v4M18 10v4"/></svg></span><b>เลขพัสดุ</b><small data-badge-of="tag"></small></button>
+        <button type="button" class="hub__t" data-go="war"><span class="hub__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg></span><b>ประกัน</b><small data-badge-of="war"></small></button>
+        <button type="button" class="hub__t" data-go="stk"><span class="hub__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg></span><b>สต็อกเส้น</b><small data-badge-of="stk"></small></button>
+        <button type="button" class="hub__t" data-go="pf"><span class="hub__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/></svg></span><b>ผลงาน</b><small data-badge-of="pf"></small></button>
+        <button type="button" class="hub__t" data-go="prt"><span class="hub__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 12h8M12 8v8"/><rect x="3" y="3" width="18" height="18" rx="5"/></svg></span><b>พาร์ทเนอร์</b><small data-badge-of="prt"></small></button>
+        <button type="button" class="hub__t" data-go="sd"><span class="hub__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="16" y="4" width="5" height="16" rx="1.5"/><path d="M11 9h2M11 15h2"/></svg></span><b>สองข้าง</b><small data-badge-of="sd"></small></button>
+      </div>
+      <div class="hub__list">
+        <a class="hub__r" href="admin/calc.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 11h2M14 11h2M8 15h2M14 15h2"/></svg><span>เครื่องคิดเลข</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></a>
+        <button type="button" class="hub__r" data-act="bc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11v2a1 1 0 0 0 1 1h3l5 4V6L7 10H4a1 1 0 0 0-1 1Z"/><path d="M16 9a3 3 0 0 1 0 6M19 6a7 7 0 0 1 0 12"/></svg><span>ประกาศถึงสมาชิก</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+        <button type="button" class="hub__r" data-act="bkcfg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg><span>ตั้งค่าการจอง · แจ้งเตือน</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+        <button type="button" class="hub__r" data-act="backup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span>สำรองข้อมูล</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+        <button type="button" class="hub__r" data-act="restore"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20V9M7 14l5-5 5 5M5 4h14"/></svg><span>กู้คืนข้อมูล</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+        <button type="button" class="hub__r" data-act="install"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/></svg><span>ติดตั้งเป็นแอป</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+        <button type="button" class="hub__r hub__r--stop" data-act="signout"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l-5-5 5-5M5 12h11"/></svg><span>ออกจากระบบ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+      </div>
+    </div>
+    </div>
+    </div>
+    <nav class="adock" aria-label="เมนูหลังร้าน">
+      <button type="button" data-go="prep"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/><path d="m9 15 2 2 4-4"/></svg><span>วันนี้</span><i class="adock__b" data-badge-of="prep" hidden></i></button>
+      <button type="button" data-go="bk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M12 13v5M9.5 15.5h5"/></svg><span>การจอง</span><i class="adock__b" data-badge-of="bk" hidden></i></button>
+      <button type="button" data-go="ord"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg><span>ออเดอร์</span><i class="adock__b" data-badge-of="ord" hidden></i></button>
+      <button type="button" data-go="cust"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 19v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1"/><circle cx="9.5" cy="7.5" r="3.5"/><path d="M21 19v-1a4 4 0 0 0-3-3.87M16 4.13a3.5 3.5 0 0 1 0 6.75"/></svg><span>ลูกค้า</span><i class="adock__b" data-badge-of="cust" hidden></i></button>
+      <button type="button" data-go="more"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>เพิ่มเติม</span><i class="adock__b" data-badge-of="more" hidden></i></button>
+    </nav>
+  </section>
+</main>
+
+<dialog id="cDlg" class="wide" aria-labelledby="cdName"><div class="dlg">
+  <div class="dlg__head"><div class="cd__who"><span id="cdAv"></span><div><h2 id="cdName"></h2><p class="muted small num" id="cdNo"></p></div></div>
+    <button type="button" class="iconbtn" data-close aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="dlg__body">
+    <div class="banner" id="cdDel" hidden><p>ลูกค้าขอลบบัญชี ลบข้อมูลสมาชิกได้ที่ปุ่มด้านล่าง แล้วลบบัญชี login ใน Firebase console → Security → Authentication → Users</p></div>
+    <div class="cd__grid">
+      <div class="cd__stat"><span class="muted small">แรงค์</span><b id="cdRank"></b></div>
+      <div class="cd__stat"><span class="muted small">แต้มสะสม</span><b class="num" id="cdPts"></b></div>
+      <div class="cd__stat"><span class="muted small">คูปองต้อนรับ</span><b id="cdCoupon"></b></div>
+    </div>
+    <dl class="cd__info" id="cdInfo"></dl>
+    <div class="sec"><div class="sec__h"><h2>ที่อยู่จัดส่ง</h2></div><div id="cdAddr" class="small"></div></div>
+    <div class="sec rkbox"><div class="sec__h"><h2>แรงค์และแต้ม</h2><span id="cdNow"></span></div>
+      <div class="rk__row">
+        <div class="field"><label for="cdRankSel">ตั้งแรงค์</label><select id="cdRankSel"></select></div>
+        <button type="button" class="btn btn--ghost" id="cdRankOk">ตั้งแรงค์นี้</button>
+      </div>
+      <p class="hint" id="cdRankNote"></p>
+      <div class="rk__row rk__row--pts">
+        <div class="field"><span class="lab" id="cdModeL">แต้ม</span><div class="tabs rk__mode" role="group" aria-labelledby="cdModeL"><button type="button" id="cdModeAdd" aria-selected="true">เพิ่ม / ลด</button><button type="button" id="cdModeSet" aria-selected="false">ตั้งเป็น</button></div></div>
+        <div class="field"><label for="cdPtsN" id="cdPtsNL">จำนวน (ติดลบได้)</label><input type="number" id="cdPtsN" step="1" inputmode="numeric"></div>
+        <div class="field"><label for="cdPtsWhy">เหตุผล</label><input type="text" id="cdPtsWhy" maxlength="80" placeholder="เช่น โปรโมชันเปิดร้าน"></div>
+        <button type="button" class="btn btn--ghost" id="cdPtsOk">บันทึกแต้ม</button>
+      </div>
+    </div>
+    <div class="banner" id="cdVer" hidden><p>ลูกค้ายังไม่ได้ยืนยันอีเมล จึงยังใช้คูปองต้อนรับไม่ได้ ถ้าตรวจตัวตนลูกค้าแล้ว (เช่น คุยทางแชทหรือมาที่ร้าน) กดยืนยันแทนได้</p><button type="button" class="btn btn--ghost btn--sm" id="cdVerBtn">ยืนยันอีเมลแทนลูกค้า</button></div>
+    <div class="sec"><div class="sec__h"><h2>ออเดอร์</h2><span id="cdOCount"></span></div><div id="cdOrders" class="rows"></div></div>
+  </div>
+  <div class="dlg__foot"><button type="button" class="btn btn--danger btn--sm" id="cdDelBtn" hidden>ลบข้อมูลสมาชิก</button><span class="sp"></span><a class="btn btn--primary" id="cdCalc" href="admin/calc.html">เปิดในเครื่องคิดเลข</a></div>
+</div></dialog>
+
+<dialog id="oDlg" aria-labelledby="oDlgT"><form class="dlg" id="oForm" novalidate>
+  <div class="dlg__head"><h2 id="oDlgT">แก้ไขออเดอร์</h2><button type="button" class="iconbtn" data-close aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="dlg__body">
+    <p class="muted small" id="oWho"></p>
+    <div class="field"><label for="oTitle">ชื่องาน</label><input type="text" id="oTitle" maxlength="80"></div>
+    <div class="frow">
+      <div class="field"><label for="oDate">วันส่งมอบ</label><input type="date" id="oDate" class="input"></div>
+      <div class="field oSaleOnly"><label for="oWar">ประกัน</label><select id="oWar"><option value="0">ไม่มีประกัน</option><option value="7">7 วัน</option><option value="15">15 วัน</option><option value="30">30 วัน</option><option value="60">60 วัน</option><option value="90">90 วัน</option><option value="180">180 วัน</option><option value="365">1 ปี</option></select></div>
+      <div class="field oSaleOnly" id="oWarStartF"><label for="oWarStart">เริ่มประกันวันที่</label><input type="date" id="oWarStart"><p class="hint" id="oWarEnd"></p></div>
+    </div>
+    <div class="frow oSaleOnly">
+      <div class="field"><label for="oPrint">ค่าพิมพ์หลังหักส่วนลด (บาท)</label><input type="number" id="oPrint" step="0.01" min="0" inputmode="decimal"></div>
+      <div class="field"><label for="oDesign">ค่าเขียนแบบ (บาท)</label><input type="number" id="oDesign" step="0.01" min="0" inputmode="decimal"></div>
+    </div>
+    <div class="frow oSaleOnly">
+      <div class="field"><label for="oShip">ค่าจัดส่ง (บาท)</label><input type="number" id="oShip" step="0.01" min="0" inputmode="decimal"></div>
+      <div class="field"><span class="lab">ยอดรวม</span><div class="emailbox num" id="oTotal"></div></div>
+    </div>
+    <div class="frow oSaleOnly">
+      <div class="field"><label for="oCost">ต้นทุนจริง (บาท)</label><input type="number" id="oCost" step="0.01" min="0" inputmode="decimal" placeholder="ไม่ทราบ เว้นว่างได้"><p class="hint">วัสดุ ไฟ ค่าเสื่อม ออเดอร์จากเครื่องคิดเลขรุ่นใหม่ใส่ให้เอง</p></div>
+      <div class="field"><span class="lab">กำไร</span><div class="emailbox num" id="oProfit">-</div></div>
+    </div>
+    <div class="oSaleOnly shipbox">
+      <div class="shipaddr"><span class="lab">ที่อยู่จัดส่ง</span><div id="oAddr"></div></div>
+      <div class="frow">
+        <div class="field"><label for="oCarrier">ขนส่ง</label><select id="oCarrier"><option value="flash">Flash Express</option><option value="thp">ไปรษณีย์ไทย</option><option value="kex">KEX Express</option><option value="jt">J&amp;T Express</option><option value="other">ขนส่งอื่น</option></select></div>
+        <div class="field"><label for="oTrack">เลขพัสดุ</label><div class="trk__in"><input type="text" id="oTrack" maxlength="30" autocomplete="off" spellcheck="false" placeholder="TH…" style="text-transform:uppercase;font-family:var(--font-num)"><button type="button" class="btn btn--ghost btn--sm" id="oScanTrack" aria-label="สแกนบาร์โค้ดใบปะหน้า"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="width:17px;height:17px"><path d="M4 7V5a1 1 0 0 1 1-1h2M17 4h2a1 1 0 0 1 1 1v2M20 17v2a1 1 0 0 1-1 1h-2M7 20H5a1 1 0 0 1-1-1v-2M7 9v6M10 9v6M13 9v6M16 9v6"/></svg>สแกน</button></div></div>
+      </div>
+      <div class="ship__link" id="oLinkBox" hidden>
+        <span class="num small" id="oLink"></span>
+        <div class="ship__btns"><button type="button" class="btn btn--primary btn--sm" id="oShipEdit">อัปเดตสถานะพัสดุ</button><button type="button" class="btn btn--ghost btn--sm" id="oCopyMsg">คัดลอกข้อความส่งลูกค้า</button><button type="button" class="btn btn--ghost btn--sm" id="oCopyLink">คัดลอกลิงก์</button><a class="btn btn--ghost btn--sm" id="oOpen" target="_blank" rel="noopener">เปิดดู</a></div>
+      </div>
+    </div>
+    <div class="field oAdjOnly"><label for="oPts">แต้มที่ปรับ (ติดลบได้)</label><input type="number" id="oPts" step="1" inputmode="numeric"></div>
+    <p class="hint" id="oPtsNote"></p>
+    <p class="err" id="oErr" hidden></p>
+  </div>
+  <div class="dlg__foot"><span class="sp"></span><button type="button" class="btn btn--ghost" data-close>ยกเลิก</button><button type="submit" class="btn btn--primary" id="oSave">บันทึก</button></div>
+</form></dialog>
+
+<dialog id="pyDlg" aria-labelledby="pyT"><div class="dlg">
+  <div class="dlg__head"><div><h2 id="pyT">ชำระแล้ว</h2><p class="muted small" id="pySub"></p></div><button type="button" class="iconbtn" data-close aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="dlg__body">
+    <p class="pyamt" id="pyAmt"></p>
+    <div class="field"><span class="lab">ชำระโดย</span><div class="paym" role="radiogroup" aria-label="ชำระโดย">
+      <label><input type="radio" name="pyM" value="transfer" checked><span>โอน</span></label>
+      <label><input type="radio" name="pyM" value="cash"><span>เงินสด</span></label>
+      <label><input type="radio" name="pyM" value="other"><span>อื่น ๆ</span></label>
+    </div></div>
+    <div class="field"><label for="pyAt">วันเวลาที่ชำระ</label><input type="datetime-local" id="pyAt" class="input"></div>
+    <p class="hint" id="pyPts"></p>
+    <p class="err" id="pyErr" hidden></p>
+  </div>
+  <div class="dlg__foot"><button type="button" class="btn btn--ghost" id="pyUndo" hidden>เปลี่ยนเป็นรอชำระ</button><span class="sp"></span><button type="button" class="btn btn--ghost" data-close>ปิด</button><button type="button" class="btn btn--primary" id="pyOk">✓ ชำระแล้ว</button></div>
+</div></dialog>
+
+<dialog id="odDlg" aria-labelledby="odDlgT"><div class="dlg">
+  <div class="dlg__head"><h2 id="odDlgT">ลบออเดอร์</h2></div>
+  <div class="dlg__body">
+    <p id="odWhat"></p>
+    <label class="check" id="odPtsL"><input type="checkbox" id="odPts" checked><span id="odPtsT"></span></label>
+    <label class="check" id="odWarL"><input type="checkbox" id="odWar" checked><span id="odWarT"></span></label>
+    <label class="check" id="odCouL"><input type="checkbox" id="odCou" checked><span>คืนคูปองต้อนรับให้ลูกค้า (ออเดอร์นี้ใช้คูปองไป)</span></label>
+    <p class="err" id="odErr" hidden></p>
+  </div>
+  <div class="dlg__foot"><span class="sp"></span><button type="button" class="btn btn--ghost" data-close>ยกเลิก</button><button type="button" class="btn btn--danger" id="odOk">ลบออเดอร์</button></div>
+</div></dialog>
+
+<dialog id="wDlg" class="wide" aria-labelledby="wDlgT"><div class="dlg">
+  <div class="dlg__head"><h2 id="wDlgT">รายละเอียดประกัน</h2><button type="button" class="iconbtn" data-close aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="dlg__body" id="wOut"></div>
+</div></dialog>
+
+<dialog id="bDlg" aria-labelledby="bDlgT"><div class="dlg">
+  <div class="dlg__head"><h2 id="bDlgT">บิลออเดอร์</h2><button type="button" class="iconbtn" data-close aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="dlg__body">
+    <p class="bill__old" id="bdOld" hidden>ออเดอร์นี้บันทึกก่อนมีระบบเก็บบิล จึงแสดงแบบย่อ (ค่าพิมพ์รวม · ส่วนลด · ค่าเขียนแบบ · ค่าส่ง) ออเดอร์ใหม่จะเก็บรายการครบทุกบรรทัด</p>
+    <div class="paper" id="billPaper">
+      <div class="paper__head">
+        <div class="paper__logo"><span class="paper__brand" id="bdBrand"></span></div>
+        <div class="paper__title"><h3>ใบเสนอราคา</h3><p class="en">QUOTATION</p><p class="date" id="bdDate"></p></div>
+      </div>
+      <div class="paper__cust"><p class="k">PROJECT / CUSTOMER</p><h4 id="bdJob"></h4><p class="paper__mem" id="bdMem" hidden></p></div>
+      <ul class="items" id="bdItems" aria-label="รายการ"></ul>
+      <p class="paper__note" id="bdNote" hidden></p>
+      <div class="total"><div class="k">ยอดรวมสุทธิ<small>GRAND TOTAL</small></div><div class="v"><span id="bdTotal">0.00</span><small>THB</small></div><div class="pp" id="bdPPL" hidden>≈ <span id="bdPP"></span> ฿/ชิ้น</div></div>
+      <p class="paper__st" id="bdPaySt" hidden></p>
+      <div class="paper__pay" id="bdPay" hidden>
+        <div class="pay__qr"><div class="pay__qrin" id="bdPayQr"></div><span class="pay__mark" aria-hidden="true"><svg viewBox="4.3 21.5 85.5 36.5" width="20" height="9"><path fill="#FF7A3C" d="M4.85 24.9Q4.85 22.05 7.7 22.05H10.5L12.4 24.9L16.6 22.05H26Q27.3 22.05 27.3 23.3V24.54L12.14 41.96Q11.1 43.16 11.1 44.56V45.25Q11.1 46.85 12.7 46.85H25.54L47.12 22.05H84.2L89.3 27.7V28.4Q89.3 30.1 86.9 30.1H72.56L48.73 57.5H40.02Q36.23 57.5 38.73 54.63L60.06 30.1H52.46L28.63 57.5H7.65Q4.85 57.5 4.85 54.7Z"/></svg></span></div>
+        <div class="pay__t"><span class="pay__k">PROMPTPAY · THAI QR</span><b>สแกนเพื่อชำระเงิน</b><span class="pay__amt"><span id="bdPayAmt">0.00</span><small>THB</small></span><span class="pay__who" id="bdPayName"></span></div>
+      </div>
+      <p class="paper__foot">UNITAC AUTHORIZED SERVICE</p>
+      <div class="stub" id="bdWar" hidden>
+        <div class="stub__cut" aria-hidden="true"><i class="stub__n stub__n--l"></i><span>✂ ฉีกตามรอยเก็บไว้เป็นใบรับประกัน</span><i class="stub__n stub__n--r"></i></div>
+        <div class="stub__body">
+          <div class="stub__qr"><div id="bwQr"></div><span>สแกนเช็กประกัน</span></div>
+          <div class="stub__t">
+            <span class="stub__k">WARRANTY CARD · ใบรับประกัน</span>
+            <code class="stub__code" id="bwCode"></code>
+            <div class="stub__grid"><div><span>เริ่มประกัน</span><b id="bwStart"></b></div><div><span>หมดประกัน</span><b id="bwUntil"></b></div><div><span>ระยะ</span><b><span id="bwDays"></span> วัน</b></div></div>
+            <span class="stub__job" id="bwJob"></span>
+            <span class="stub__url">เช็กได้ในหน้าสมาชิก หรือ <span id="bwUrl"></span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bill__bar">
+    <label class="own"><input type="checkbox" id="bdPayOn" checked> แสดง QR ชำระเงิน</label>
+    <button type="button" class="btn btn--ghost" data-close>ปิด</button>
+    <button type="button" class="btn btn--ghost" id="bdReceipt">ใบเสร็จ 58 มม.</button>
+    <button type="button" class="btn btn--primary" id="bdSave">บันทึกรูป</button>
+  </div>
+</div></dialog>
+
+<dialog id="bkaDlg" aria-labelledby="bkaT"><div class="dlg">
+  <div class="dlg__head"><h2 id="bkaT">ยืนยันคิว</h2><button type="button" class="iconbtn" data-close aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="dlg__body">
+    <div class="frow">
+      <div class="field" id="bkaDateF"><label for="bkaDate" id="bkaDateL">วันเริ่มพิมพ์</label><input type="date" id="bkaDate"></div>
+      <div class="field" id="bkaDoneF"><label for="bkaDone">คาดว่าเสร็จ</label><input type="date" id="bkaDone"></div>
+    </div>
+    <p class="hint" id="bkaDayNote"></p>
+    <div class="field" id="bkaMsgF"><label for="bkaMsg" id="bkaMsgL">ข้อความถึงลูกค้า</label><textarea id="bkaMsg" rows="2" maxlength="300" placeholder="เช่น เติมเนื้อ 40% ตามที่ขอครับ"></textarea></div>
+    <div id="bkaQF" class="bkaq">
+      <label class="check"><input type="checkbox" id="bkaQ" checked><span>เพิ่มลงตารางคิวหน้าเว็บด้วย</span></label>
+      <div class="frow" id="bkaQOpts">
+        <div class="field"><label for="bkaMach">เครื่อง</label><select id="bkaMach"></select></div>
+        <div class="field"><label for="bkaQName">ชื่อที่โชว์ในตารางคิว</label><input type="text" id="bkaQName" maxlength="60"></div>
+      </div>
+    </div>
+    <p class="err" id="bkaErr" hidden></p>
+  </div>
+  <div class="dlg__foot"><span class="sp"></span><button type="button" class="btn btn--ghost" data-close>ยกเลิก</button><button type="button" class="btn btn--primary" id="bkaOk">ยืนยัน</button></div>
+</div></dialog>
+
+<dialog id="bksDlg" aria-labelledby="bksT"><div class="dlg">
+  <div class="dlg__head"><h2 id="bksT">ตั้งค่าการจอง</h2><button type="button" class="iconbtn" data-close aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="dlg__body">
+    <label class="check"><input type="checkbox" id="bksOpen"><span>เปิดรับจองคิวออนไลน์ <small class="muted">ปิดชั่วคราวได้ตอนงานล้น</small></span></label>
+    <div class="frow">
+      <div class="field"><label for="bksPer">รับงานต่อวัน</label><input type="number" id="bksPer" min="1" max="50" inputmode="numeric"></div>
+      <div class="field"><label for="bksPend">คำขอค้างได้ต่อคน</label><input type="number" id="bksPend" min="1" max="10" inputmode="numeric"></div>
+      <div class="field"><label for="bksMin">จองล่วงหน้าขั้นต่ำ (วัน)</label><input type="number" id="bksMin" min="0" max="30" inputmode="numeric"></div>
+      <div class="field"><label for="bksMax">จองล่วงหน้าสูงสุด (วัน)</label><input type="number" id="bksMax" min="1" max="120" inputmode="numeric"></div>
+      <div class="field"><label for="bksAlert">เตือนเมื่อไม่ตอบเกิน (ชม.)</label><input type="number" id="bksAlert" min="1" max="168" inputmode="numeric"></div>
+    </div>
+    <div class="field"><label for="bksBlocked">ปิดรับจองเฉพาะวัน</label><input type="text" id="bksBlocked" placeholder="2026-10-23, 2026-12-05"><p class="hint">วันหยุดประจำและวันหยุดในตารางคิวปิดรับจองให้อัตโนมัติอยู่แล้ว ใส่เพิ่มเฉพาะวันที่เครื่องเต็ม</p></div>
+    <div class="field"><span class="lab">แจ้งเตือนเข้ามือถือ / คอมเครื่องนี้ (เด้งแม้ปิดแอป)</span>
+      <p class="hint" id="bksPushSt"></p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn btn--primary btn--sm" id="bksNotif">เปิดแจ้งเตือนในเครื่องนี้</button><button type="button" class="btn btn--ghost btn--sm" id="bksTest">ส่งแจ้งเตือนทดสอบ</button><button type="button" class="btn btn--ghost btn--sm" id="bksOff" hidden>ปิดในเครื่องนี้</button></div></div>
+    <p class="err" id="bksErr" hidden></p>
+  </div>
+  <div class="dlg__foot"><span class="sp"></span><button type="button" class="btn btn--ghost" data-close>ยกเลิก</button><button type="button" class="btn btn--primary" id="bksSave">บันทึก</button></div>
+</div></dialog>
+
+<dialog id="bcDlg" aria-labelledby="bcT"><div class="dlg">
+  <div class="dlg__head"><h2 id="bcT">ประกาศถึงสมาชิก</h2><button type="button" class="iconbtn" data-close aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="dlg__body">
+    <p class="hint" id="bcCount">กำลังนับเครื่องที่เปิดรับแจ้งเตือน…</p>
+    <div class="field"><label for="bcTitle">หัวข้อ</label><input type="text" id="bcTitle" maxlength="60" placeholder="เช่น ร้านหยุด 12–14 ต.ค."></div>
+    <div class="field"><label for="bcBody">ข้อความ</label><textarea id="bcBody" rows="3" maxlength="180" placeholder="เช่น งานที่จองไว้เลื่อนไปเริ่ม 15 ต.ค. ขออภัยในความไม่สะดวก"></textarea></div>
+    <div class="field"><label for="bcLink">แตะแล้วเปิดหน้า</label><select id="bcLink"><option value="index.html">ตารางคิว</option><option value="member.html">หน้าสมาชิก</option><option value="member.html#book">จองคิวพิมพ์</option><option value="portfolio.html">ผลงาน</option></select></div>
+    <p class="hint">ส่งถึงสมาชิกที่เปิดแจ้งเตือนและยังเปิดรับ "ข่าวสารจากร้าน" อยู่ ข้อความภาษาไทยตามที่พิมพ์ · ใช้นาน ๆ ครั้ง ถ้าเด้งบ่อยลูกค้าจะปิดแจ้งเตือน</p>
+    <p class="err" id="bcErr" hidden></p>
+  </div>
+  <div class="dlg__foot"><span class="sp"></span><button type="button" class="btn btn--ghost" data-close>ยกเลิก</button><button type="button" class="btn btn--primary" id="bcSend">ส่งประกาศ</button></div>
+</div></dialog>
+
+<a class="calcfab" id="calcFab" href="admin/calc.html" hidden aria-label="เปิดเครื่องคิดเลข"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M8.5 7h7M8.5 11h.01M12 11h.01M15.5 11h.01M8.5 14.5h.01M12 14.5h.01M15.5 14.5h.01M8.5 18h.01M12 18h3.5"/></svg><span>เครื่องคิดเลข</span></a>
+
+<dialog id="mDlg" aria-labelledby="mDlgT"><form class="dlg" id="mForm" novalidate>
+  <div class="dlg__head"><h2 id="mDlgT">เพิ่มเส้น</h2><button type="button" class="iconbtn" data-close aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="dlg__body">
+    <div class="frow">
+      <div class="field"><label for="mBrand">ยี่ห้อ</label><input type="text" id="mBrand" maxlength="40" placeholder="Bambu Lab, Polymaker…"></div>
+      <div class="field"><label for="mType">ชนิดวัสดุ</label><input type="text" id="mType" maxlength="30" list="mTypes" placeholder="PLA, PETG, ASA-CF…"><datalist id="mTypes"><option>PLA</option><option>PLA+</option><option>PLA Matte</option><option>PLA-CF</option><option>PETG</option><option>PETG-HF</option><option>PETG-CF</option><option>ABS</option><option>ASA</option><option>ASA-CF</option><option>TPU 95A</option><option>PA6-GF</option><option>PA6-CF</option><option>PC</option><option>PPS-CF</option></datalist></div>
+    </div>
+    <div class="frow">
+      <div class="field"><label for="mColor">สี</label><input type="text" id="mColor" maxlength="30" placeholder="ดำ, ขาว, Titan Gray…"></div>
+      <div class="field"><label for="mHex">สีตัวอย่าง</label><input type="color" id="mHex" value="#2b2b2b" class="input" style="padding:4px;height:46px"></div>
+    </div>
+    <div class="frow">
+      <div class="field"><label for="mWeight">น้ำหนักต่อม้วน (g)</label><input type="number" id="mWeight" min="1" step="1" value="1000" inputmode="numeric"></div>
+      <div class="field"><label for="mCost">ราคาทุนต่อม้วน (บาท)</label><input type="number" id="mCost" min="0" step="0.01" inputmode="decimal"></div>
+    </div>
+    <div class="frow">
+      <div class="field"><label for="mSell">ราคาขายคิดลูกค้าต่อม้วน (บาท)</label><input type="number" id="mSell" min="0" step="1" inputmode="decimal" placeholder="เช่น 1700"><p class="hint" id="mSellHint"></p></div>
+      
+    </div>
+    <div class="frow">
+      <div class="field"><label for="mSpools">จำนวนม้วน</label><input type="number" id="mSpools" min="0" step="1" value="0" inputmode="numeric"></div>
+    </div>
+    <div class="field"><label for="mNote">หมายเหตุ</label><input type="text" id="mNote" maxlength="100" placeholder="เช่น ร้านที่ซื้อ อุณหภูมิที่ใช้"></div>
+    <label class="check"><input type="checkbox" id="mActive" checked><span>แสดงในเครื่องคิดเลข</span></label>
+    <p class="err" id="mErr" hidden></p>
+  </div>
+  <div class="dlg__foot"><button type="button" class="btn btn--danger btn--sm" id="mDel" hidden>ลบ</button><span class="sp"></span><button type="button" class="btn btn--ghost" data-close>ยกเลิก</button><button type="submit" class="btn btn--primary" id="mSave">บันทึก</button></div>
+</form></dialog>
+
+<dialog id="pfUpDlg" class="sheet wide" aria-labelledby="pfUpT"><div class="dlg">
+  <div class="dlg__head"><div><h2 id="pfUpT">ลงรูปผลงาน</h2><p class="muted small" id="pfUpSub"></p></div><button type="button" class="iconbtn" id="pfUpX" aria-label="ปิด"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="dlg__body">
+    <div class="pfup__grid" id="pfUpGrid"></div>
+    <label class="pfup__more"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>เพิ่มรูปอีก<input type="file" id="pfUpMore" accept="image/*,.heic,.heif" multiple class="sr"></label>
+    <div class="field"><span class="lab" id="pfUpCatL">หมวด (ใช้กับทุกรูปในชุดนี้)</span><div class="pfup__cats" id="pfUpCats" role="radiogroup" aria-labelledby="pfUpCatL"></div></div>
+    <label class="check"><input type="checkbox" id="pfUpVis" checked><span>แสดงบนหน้าผลงานทันที</span></label>
+    <p class="err" id="pfUpErr" hidden></p>
+  </div>
+  <div class="dlg__foot"><span class="sp"></span><button type="button" class="btn btn--primary btn--block" id="pfUpGo">ลงผลงาน</button></div>
+</div></dialog>
+
+<dialog id="pfDlg" class="sheet" aria-labelledby="pfDlgT"><form class="dlg" id="pfForm" novalidate>
+  <div class="dlg__head"><h2 id="pfDlgT">แก้ไขผลงาน</h2><button type="button" class="iconbtn" data-close aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="dlg__body">
+    <img id="pfPrev" alt="" style="width:100%;max-height:260px;object-fit:contain;border-radius:12px;background:#0E0D0B">
+    <div class="field"><label for="pfTitle">ชื่องาน (ไม่บังคับ ไม่แสดงบนหน้าเว็บ)</label><input type="text" id="pfTitle" maxlength="80"></div>
+    <div class="field"><label for="pfCat">หมวด</label><select id="pfCat"></select></div>
+    <div class="field"><label for="pfDesc">รายละเอียด (ไม่บังคับ)</label><textarea id="pfDesc" maxlength="300" rows="3" placeholder="เช่น วัสดุ PETG-CF พิมพ์ 14 ชม. สำหรับปืน…"></textarea></div>
+    <label class="check"><input type="checkbox" id="pfVis"><span>แสดงบนหน้าผลงาน</span></label>
+    <p class="err" id="pfErr" hidden></p>
+  </div>
+  <div class="dlg__foot"><button type="button" class="btn btn--danger btn--sm" id="pfDel">ลบ</button><span class="sp"></span><button type="button" class="btn btn--ghost" data-close>ยกเลิก</button><button type="submit" class="btn btn--primary" id="pfSave">บันทึก</button></div>
+</form></dialog>
+
+<dialog id="shDlg" class="wide" aria-labelledby="shT"><div class="dlg">
+  <div class="dlg__head"><div><h2 id="shT">อัปเดตสถานะจาก Flash</h2><p class="muted small num" id="shNum"></p></div><button type="button" class="iconbtn" data-close aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="dlg__body">
+    <div class="sh__grid">
+      <div class="sec">
+        <button type="button" class="btn btn--primary" id="shAuto" hidden>ดึงสถานะจาก Flash อัตโนมัติ</button>
+        <ol class="sh__how">
+          <li><a class="btn btn--primary btn--sm" id="shGo" target="_blank" rel="noopener">เปิดหน้า Flash ↗</a><span>เลขพัสดุถูกคัดลอกไว้ให้แล้ว ถ้าหน้า Flash ไม่เติมเอง กดวาง</span></li>
+          <li><span>ลากคลุมรายการสถานะทั้งหมด ตั้งแต่วันที่บนสุดจนถึงรายการล่างสุด แล้วคัดลอก</span></li>
+          <li><span>วางในช่องนี้ ระบบแปลงให้ทันที</span></li>
+        </ol>
+        <div class="field"><label for="shPaste" class="sr">ข้อความจากหน้า Flash</label><textarea id="shPaste" rows="9" placeholder="วางข้อความจากหน้าติดตามของ Flash ที่นี่&#10;&#10;2026-10-03&#10;18:00:02&#10;ระหว่างการขนส่ง&#10;ส่งต่อพัสดุจากสาขา…"></textarea></div>
+        <p class="hint" id="shParsed"></p>
+        <div class="field"><label for="shEta">คาดว่าถึงลูกค้า</label><input type="date" id="shEta" class="input"></div>
+      </div>
+      <div class="sec">
+        <div class="sec__h"><h2>ที่ลูกค้าเห็น</h2><a class="linkbtn" id="shOpen" target="_blank" rel="noopener">เปิดหน้าลูกค้า ↗</a></div>
+        <ol class="sh__list" id="shList"></ol>
+      </div>
+    </div>
+    <p class="err" id="shErr" hidden></p>
+  </div>
+  <div class="dlg__foot"><span class="hint">วางข้อความชุดใหม่ ระบบแทนที่สถานะเดิมทั้งหมดให้ตรงกับ Flash</span><span class="sp"></span><button type="button" class="btn btn--ghost" data-close>ปิด</button><button type="button" class="btn btn--primary" id="shSave">บันทึกสถานะ</button></div>
+</div></dialog>
+
+<dialog id="tgDlg" aria-labelledby="tgT"><div class="dlg">
+  <div class="dlg__head"><div><h2 id="tgT">ใส่เลขพัสดุ</h2><p class="muted small" id="tgSub"></p></div><button type="button" class="iconbtn" data-close aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="dlg__body">
+    <div class="field"><label for="tgOrder">งาน</label><select id="tgOrder"></select></div>
+    <div class="shipaddr"><span class="lab">ที่อยู่จัดส่ง</span><div id="tgAddr"></div></div>
+    <div class="ship">
+      <div class="tg__fields">
+        <div class="field"><label for="tgCarrier">ขนส่ง</label><select id="tgCarrier"><option value="flash">Flash Express</option><option value="thp">ไปรษณีย์ไทย</option><option value="kex">KEX Express</option><option value="jt">J&amp;T Express</option><option value="other">ขนส่งอื่น</option></select></div>
+        <div class="field"><label for="tgNum">เลขพัสดุ</label><div class="trk__in"><input type="text" id="tgNum" maxlength="30" autocomplete="off" spellcheck="false" placeholder="TH…" style="text-transform:uppercase;font-family:var(--font-num)"><button type="button" class="btn btn--ghost btn--sm" id="tgScan" aria-label="สแกนบาร์โค้ดใบปะหน้า"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="width:17px;height:17px"><path d="M4 7V5a1 1 0 0 1 1-1h2M17 4h2a1 1 0 0 1 1 1v2M20 17v2a1 1 0 0 1-1 1h-2M7 20H5a1 1 0 0 1-1-1v-2M7 9v6M10 9v6M13 9v6M16 9v6"/></svg>สแกน</button></div></div>
+      </div>
+      <p class="ship__url" id="tgUrl" hidden></p>
+      <div class="ship__btns" id="tgBtns" hidden><button type="button" class="btn btn--ghost btn--sm" id="tgCopyMsg">คัดลอกข้อความส่งลูกค้า</button><button type="button" class="btn btn--ghost btn--sm" id="tgCopyLink">คัดลอกลิงก์</button><a class="btn btn--ghost btn--sm" id="tgOpen" target="_blank" rel="noopener">เปิดดู</a></div>
+    </div>
+    <p class="err" id="tgErr" hidden></p>
+  </div>
+  <div class="dlg__foot"><span class="sp"></span><button type="button" class="btn btn--ghost" data-close>ปิด</button><button type="button" class="btn btn--primary" id="tgSave">บันทึก</button></div>
+</div></dialog>
+
+<footer class="foot">UNITAC · <a href="./">ตารางคิว</a> · <a href="warranty.html">เช็กประกัน</a> · <a href="portfolio.html">ผลงาน</a> · <a href="partners.html">พาร์ทเนอร์</a> · <a href="privacy.html">นโยบายความเป็นส่วนตัว</a></footer>
+<script src="vendor/qrcode.js?v=20261004w"></script>
+<script type="module" src="js/admin.js?v=20261013a"></script>
+<script src="js/admin-mobile.js?v=20261013a" defer></script>
+<script type="module" src="js/admin-partners.js?v=20261004w"></script>
+<script type="module" src="js/admin-stock.js?v=20261010f"></script>
+<script type="module" src="js/admin-portfolio.js?v=20261012a"></script>
+<script type="module" src="js/admin-tools.js?v=20261013a"></script>
+<script type="module" src="js/admin-ship.js?v=20261013a"></script>
+<script type="module" src="js/admin-hero.js?v=20261004w"></script>
+<script type="module" src="js/admin-sides.js?v=20261004w"></script>
+<script type="module" src="js/admin-prep.js?v=20261004w"></script>
+<script type="module" src="js/admin-bookings.js?v=20261013a"></script>
+</body>
+</html>

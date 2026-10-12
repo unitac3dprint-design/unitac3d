@@ -1,6 +1,6 @@
 import { db, doc, getDoc, setDoc } from './fb.js?v=20261004w';
 import { $, h, toast } from './core.js?v=20261004w';
-import { CARRIERS, cleanTrack, trackPage } from './carriers.js?v=20261004w';
+import { CARRIERS, cleanTrack, trackPage } from './carriers.js?v=20261013a';
 import { FLASH_FN_URL } from './config.js?v=20261004w';
 import { SENT_TITLE, parsePaste, titleOf, detailOf, toneOf, fmtWhen } from './shipstatus.js?v=20261004w';
 

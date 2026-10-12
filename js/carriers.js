@@ -7,7 +7,7 @@ export const CARRIERS = {
   other: { name: 'ขนส่งอื่น', url: null }
 };
 export const track17 = (n) => 'https://t.17track.net/th#nums=' + encodeURIComponent(n);
-export function trackPage(n, c) { return new URL('track.html?n=' + encodeURIComponent(n) + '&c=' + encodeURIComponent(c || 'flash'), location.href).href; }
+export function trackPage(n, c) { return new URL('track.html?n=' + encodeURIComponent(n) + '&c=' + encodeURIComponent(c || 'flash'), document.baseURI).href; }
 export function cleanTrack(s) { return (s || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 30); }
 
 /* our own tracking timeline is paused for now: links go straight to the courier's site */

@@ -3,9 +3,9 @@ import {
   doc, collection, getDoc, getDocs, setDoc, updateDoc, deleteDoc, query, where, writeBatch, serverTimestamp, increment
 } from './fb.js?v=20261004w';
 import { RANKS, rankOf, couponInfo, memberNo, toDate, fDate, fDM, money, intf, daysLeft, warrantyCode, $, h, toast, avatarEl, LOGO_SVG } from './core.js?v=20261004w';
-import { CARRIERS, trackPage, trackLink, TRACK_PAGE_ON, cleanTrack } from './carriers.js?v=20261004w';
+import { CARRIERS, trackPage, trackLink, TRACK_PAGE_ON, cleanTrack } from './carriers.js?v=20261013a';
 import { scanQR, parseMemberQR, scanTracking, carrierOf } from './scan.js?v=20261004w';
-import { openBill, publishPay } from './admin-bill.js?v=20261012a';
+import { openBill, publishPay } from './admin-bill.js?v=20261013a';
 
 document.querySelectorAll('[data-logo]').forEach(e => { e.innerHTML = LOGO_SVG; });
 
@@ -172,7 +172,7 @@ function openMember(uid) {
   const ol = $('cdOrders'); ol.textContent = '';
   if (!mo.length) ol.appendChild(h('p', 'empty', 'ยังไม่มีออเดอร์'));
   mo.forEach(o => ol.appendChild(orderRow(o, false)));
-  $('cdCalc').href = 'calc.html?m=' + encodeURIComponent(uid);
+  $('cdCalc').href = 'admin/calc.html?m=' + encodeURIComponent(uid);
   $('cDlg').showModal();
 }
 $('cdVerBtn').addEventListener('click', async () => {

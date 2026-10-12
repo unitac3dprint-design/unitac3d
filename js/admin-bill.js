@@ -86,7 +86,7 @@ export async function openBill(o) {
   const W = $('bdWar');
   if (o.warrantyCode) {
     const start = toDate(o.warrantyStart) || d, exp = toDate(o.expiresAt);
-    const url = new URL('warranty.html?c=' + o.warrantyCode, location.href);
+    const url = new URL('warranty.html?c=' + o.warrantyCode, document.baseURI);
     $('bwQr').innerHTML = qrSvg(url.href); $('bwCode').textContent = o.warrantyCode;
     $('bwStart').textContent = start ? fDate.format(start) : '-'; $('bwUntil').textContent = exp ? fDate.format(exp) : '-';
     $('bwDays').textContent = o.warrantyDays || 0; $('bwJob').textContent = o.title || '';
