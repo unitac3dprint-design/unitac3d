@@ -1606,6 +1606,6 @@ window.__unitac={calc:calc,last:function(){return last;},materials:materials,rec
 </form></dialog>
 <script src="vendor/qrcode.js?v=20261004w"></script>
 <script type="module" src="js/calc-member.js?v=20261010b"></script>
-<script type="module">import { openReceipt } from './js/receipt.js?v=20261010e'; document.getElementById('receiptBtn').addEventListener('click', () => { const r = window.__unitac && window.__unitac.last(); openReceipt(document.getElementById('quotePaper'), (document.getElementById('jobName').value || '').trim(), r ? { material: r.matLabel, qty: r.qty, weight: (r.matWeight || 0) * (r.qty || 1), hours: r.totalHours, sub: r.printSubtotal, disc: r.discountTotal, design: r.designFee, ship: r.shippingFee } : null); });</script>
+<script type="module">import { openReceipt } from './js/receipt.js?v=20261012a'; document.getElementById('receiptBtn').addEventListener('click', () => { const r = window.__unitac && window.__unitac.last(); openReceipt(document.getElementById('quotePaper'), (document.getElementById('jobName').value || '').trim(), r ? { material: r.matLabel, qty: r.qty, weight: (r.matWeight || 0) * (r.qty || 1), hours: r.totalHours, sub: r.printSubtotal, disc: r.discountTotal, design: r.designFee, ship: r.shippingFee } : null); });</script>
 </body>
 </html>

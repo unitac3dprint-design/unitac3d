@@ -1,6 +1,6 @@
 /* ---------- ดูบิลย้อนหลังของแต่ละออเดอร์ (หน้าตาเหมือนใบเสนอราคาในเครื่องคิดเลข) ---------- */
 import { db, doc, getDoc } from './fb.js?v=20261004w';
-import { openReceipt } from './receipt.js?v=20261010e';
+import { openReceipt } from './receipt.js?v=20261012a';
 import { toDate, fDate, money, intf, qrSvg, $, h, toast, LOGO_SVG } from './core.js?v=20261004w';
 
 const I = (p) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + p + '</svg>';
