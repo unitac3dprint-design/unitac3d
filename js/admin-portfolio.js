@@ -17,7 +17,7 @@ const DN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-wi
 function render() {
   const L = $('pfList'); L.textContent = '';
   const list = sorted();
-  if (!list.length) { L.appendChild(h('p', 'empty', 'ยังไม่มีผลงาน กด + เพิ่มรูปผลงาน เลือกหลายรูปพร้อมกันได้')); return; }
+  if (!list.length) { L.appendChild(h('p', 'empty', 'ยังไม่มีผลงาน กด เลือกรูปจากเครื่อง หรือ ถ่ายรูป ด้านบน')); return; }
   list.forEach((p, i) => {
     const c = h('article', 'pfc' + (p.visible ? '' : ' is-off'));
     const im = h('img', 'pfc__img'); im.src = p.thumb; im.alt = ''; im.loading = 'lazy'; im.addEventListener('click', () => edit(p));
@@ -26,8 +26,16 @@ function render() {
     const l = h('button'); l.type = 'button'; l.innerHTML = UP; l.setAttribute('aria-label', 'เลื่อนไปก่อน'); l.disabled = i === 0; l.addEventListener('click', () => move(p, -1));
     const r = h('button'); r.type = 'button'; r.innerHTML = DN; r.setAttribute('aria-label', 'เลื่อนไปหลัง'); r.disabled = i === list.length - 1; r.addEventListener('click', () => move(p, 1));
     const e = h('button', 'grow', 'แก้ไข'); e.type = 'button'; e.addEventListener('click', () => edit(p));
-    a.append(l, e, r); c.append(im, bd, a); L.appendChild(c);
+    const v = h('button', 'eye'); v.type = 'button'; v.setAttribute('aria-pressed', String(!!p.visible)); v.setAttribute('aria-label', p.visible ? 'ซ่อนจากหน้าผลงาน' : 'แสดงบนหน้าผลงาน');
+    v.innerHTML = p.visible ? EYE : EYE_OFF; v.addEventListener('click', () => toggleVis(p));
+    a.append(l, e, v, r); c.append(im, bd, a); L.appendChild(c);
   });
+}
+const EYE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>';
+const EYE_OFF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18M10.6 6.1A10 10 0 0 1 12 6c6.4 0 10 6 10 6a17 17 0 0 1-3.2 3.9M6.6 6.6A17 17 0 0 0 2 12s3.6 6 10 6a9.7 9.7 0 0 0 4.4-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>';
+async function toggleVis(p) {
+  try { await updateDoc(doc(db, 'portfolio', p.id), { visible: !p.visible }); p.visible = !p.visible; render(); toast(p.visible ? 'แสดงบนหน้าผลงานแล้ว' : 'ซ่อนจากหน้าผลงานแล้ว'); }
+  catch (x) { toast(authMsg(x.code)); }
 }
 async function move(p, dir) {
   const list = sorted(), i = list.findIndex(x => x.id === p.id), o = list[i + dir]; if (!o) return;
@@ -49,22 +57,71 @@ function draw(im, max, q, limit) {
   if (d.length > limit) { c.width = Math.round(c.width * 0.75); c.height = Math.round(c.height * 0.75); c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); d = c.toDataURL(type, q); }
   return { d, w: c.width, h: c.height };
 }
-$('pfFiles').addEventListener('change', async () => {
-  const files = [...($('pfFiles').files || [])]; $('pfFiles').value = ''; if (!files.length) return;
-  let n = 0, base = items.length;
-  for (const f of files) {
-    $('pfProg').textContent = 'กำลังเพิ่มรูป ' + (n + 1) + ' จาก ' + files.length + '…';
+/* ---------- adding: pick (gallery or camera) → check in a sheet → upload with progress ---------- */
+let staged = [], upCat = 'other', uploading = false;
+const X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+function stage(files) {
+  files = [...(files || [])].filter(f => f && (/^image\//.test(f.type) || isHeic(f) || /\.(jpe?g|png|webp|gif|heic|heif)$/i.test(f.name || '')));
+  if (!files.length) return;
+  files.forEach(f => staged.push({ f, url: URL.createObjectURL(f), title: '', st: '' }));
+  renderStage(); if (!$('pfUpDlg').open) $('pfUpDlg').showModal();
+}
+function renderCats() {
+  const C = $('pfUpCats'); C.textContent = '';
+  PFCATS.forEach(c => { const b = h('button', null, c.name); b.type = 'button'; b.setAttribute('role', 'radio'); b.setAttribute('aria-checked', String(upCat === c.key));
+    b.addEventListener('click', () => { upCat = c.key; renderCats(); }); C.appendChild(b); });
+}
+function renderStage() {
+  const G = $('pfUpGrid'); G.textContent = '';
+  const left = staged.filter(x => x.st !== 'ok').length;
+  $('pfUpSub').textContent = staged.length + ' รูป' + (staged.some(x => x.st === 'ok') ? ' · ลงแล้ว ' + (staged.length - left) : '');
+  staged.forEach((x, i) => {
+    const it = h('div', 'pfup__i'), im = h('div', 'pfup__im'), img = h('img'); img.src = x.url; img.alt = ''; im.appendChild(img);
+    if (!uploading && x.st !== 'ok') { const d = h('button', 'pfup__x'); d.type = 'button'; d.innerHTML = X; d.setAttribute('aria-label', 'เอารูปนี้ออก');
+      d.addEventListener('click', () => { URL.revokeObjectURL(x.url); staged.splice(i, 1); if (!staged.length) $('pfUpDlg').close(); else renderStage(); }); im.appendChild(d); }
+    if (x.st) im.appendChild(h('span', 'pfup__st' + (x.st === 'ok' ? ' is-ok' : x.st === 'bad' ? ' is-bad' : ''), x.st === 'ok' ? '✓ ลงแล้ว' : x.st === 'bad' ? 'ไม่สำเร็จ แตะลงใหม่' : x.st));
+    const t = h('input'); t.type = 'text'; t.maxLength = 80; t.placeholder = 'ชื่องาน (ไม่บังคับ)'; t.value = x.title; t.disabled = uploading || x.st === 'ok';
+    t.addEventListener('input', () => { x.title = t.value; });
+    it.append(im, t); G.appendChild(it);
+  });
+  const go = $('pfUpGo');
+  go.disabled = uploading || !left; go.textContent = uploading ? 'กำลังลงรูป…' : left ? 'ลงผลงาน ' + left + ' รูป' : 'เสร็จแล้ว';
+  if (!uploading && !left && staged.length) { go.disabled = false; }
+}
+async function upload() {
+  if (uploading) return;
+  if (!staged.some(x => x.st !== 'ok')) { closeStage(); return; }
+  uploading = true; $('pfUpErr').hidden = true; renderStage();
+  const vis = $('pfUpVis').checked; let n = 0, base = items.length;
+  for (const x of staged) {
+    if (x.st === 'ok') continue;
+    x.st = isHeic(x.f) ? 'กำลังแปลงรูป…' : 'กำลังย่อรูป…'; renderStage();
     try {
-      if (isHeic(f)) $('pfProg').textContent = 'กำลังแปลงรูป iPhone (HEIC) ' + (n + 1) + ' จาก ' + files.length + '…';
-      const im = await loadImg(await normalizeImage(f)), th = draw(im, 640, 0.8, 140000), full = draw(im, 1800, 0.86, 900000);
+      const im = await loadImg(await normalizeImage(x.f)), th = draw(im, 640, 0.8, 140000), full = draw(im, 1800, 0.86, 900000);
+      x.st = 'กำลังอัปโหลด…'; renderStage();
       const ref = doc(collection(db, 'portfolio'));
-      const data = { title: '', cat: 'other', desc: '', thumb: th.d, w: th.w, h: th.h, order: base + n, visible: true, createdAt: serverTimestamp() };
+      const data = { title: (x.title || '').trim().slice(0, 80), cat: upCat, desc: '', thumb: th.d, w: th.w, h: th.h, order: base + n, visible: vis, createdAt: serverTimestamp() };
       await setDoc(doc(db, 'portfolioFull', ref.id), { img: full.d });
-      await setDoc(ref, data); items.push({ id: ref.id, ...data, createdAt: new Date() }); n++; render();
-    } catch (x) { toast('เพิ่มรูป ' + f.name + ' ไม่สำเร็จ ' + (x && x.code ? authMsg(x.code) : ''), 5000); }
+      await setDoc(ref, data); items.push({ id: ref.id, ...data, createdAt: new Date() }); n++; x.st = 'ok'; render();
+    } catch (e) { x.st = 'bad'; }
+    renderStage();
   }
-  $('pfProg').textContent = n ? 'เพิ่มแล้ว ' + n + ' รูป ขึ้นหน้าผลงานทันที (หมวด อื่นๆ) กดที่รูปเพื่อเลือกหมวดหรือซ่อนได้' : '';
-});
+  uploading = false; renderStage();
+  const bad = staged.filter(x => x.st === 'bad').length;
+  if (bad) { $('pfUpErr').textContent = 'ลงไม่สำเร็จ ' + bad + ' รูป กด "ลงผลงาน" อีกครั้งเพื่อลองใหม่ (รูปที่ลงแล้วไม่ซ้ำ)'; $('pfUpErr').hidden = false; staged.forEach(x => { if (x.st === 'bad') x.st = ''; }); renderStage(); }
+  else { toast('ลงผลงานแล้ว ' + n + ' รูป' + (vis ? ' ขึ้นหน้าผลงานทันที' : ' (ซ่อนไว้)'), 4000); closeStage(); }
+}
+function closeStage() { if (uploading) return; staged.forEach(x => URL.revokeObjectURL(x.url)); staged = []; $('pfUpDlg').close(); }
+renderCats();
+$('pfFiles').addEventListener('change', () => { const f = $('pfFiles').files; stage(f); $('pfFiles').value = ''; });
+$('pfCam').addEventListener('change', () => { const f = $('pfCam').files; stage(f); $('pfCam').value = ''; });
+$('pfUpMore').addEventListener('change', () => { const f = $('pfUpMore').files; stage(f); $('pfUpMore').value = ''; });
+$('pfUpGo').addEventListener('click', upload);
+$('pfUpX').addEventListener('click', closeStage);
+$('pfUpDlg').addEventListener('cancel', (e) => { if (uploading) e.preventDefault(); else { e.preventDefault(); closeStage(); } });
+/* drop images onto the panel (computer) */
+const pfPanel = document.querySelector('[data-panel="pf"]');
+if (pfPanel) { pfPanel.addEventListener('dragover', (e) => { e.preventDefault(); }); pfPanel.addEventListener('drop', (e) => { e.preventDefault(); stage(e.dataTransfer && e.dataTransfer.files); }); }
 
 /* edit */
 function edit(p) {

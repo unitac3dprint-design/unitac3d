@@ -35,7 +35,7 @@ function route() {
   if (!user) return show('auth');
   if (user.uid === OWNER) { location.replace('admin.html'); return show('owner'); }
   if (!member) return show('loading');
-  if (location.hash === '#profile') { renderProfile(); show('profile'); }
+  if (location.hash === '#profile' || location.hash === '#notify') { const nf = location.hash === '#notify'; renderProfile(); show('profile'); if (nf) setTimeout(() => { const b = $('nfBox'); if (b) b.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 250); }
   else { renderHome(); show('home'); reveal(); if (bookHash || location.hash === '#book') { bookHash = false; history.replaceState(null, '', location.pathname + location.search); setTimeout(openBooking, 300); } }
 }
 window.addEventListener('hashchange', route);
@@ -192,6 +192,9 @@ function renderMyJobs() {
     }
     const when = it.status === 'printing' ? 'คาดว่าเสร็จ ' + fWD.format(pD(it.end)) : 'เริ่มประมาณ ' + fWD.format(pD(it.start)) + ' · เสร็จราว ' + fWD.format(pD(it.end));
     card.appendChild(h('span', 'qi__m', when + (mach ? ' · ' + mach.name : '')));
+    const steps = h('ol', 'qsteps'), now = it.status === 'printing' ? 2 : 1; steps.setAttribute('aria-label', 'สถานะงาน');
+    ['รับงาน', 'รอคิว', design ? 'เขียนแบบ' : 'กำลังพิมพ์', 'เสร็จ/ส่ง'].forEach((t, i) => steps.appendChild(h('li', i < now ? 'is-done' : i === now ? 'is-now' : '', t)));
+    card.appendChild(steps);
     L.appendChild(card);
   });
 }
@@ -199,7 +202,8 @@ function renderTopEnd() {
   const t = $('topEnd'); t.textContent = '';
   if (user && user.uid !== OWNER) {
     const a = h('a'); a.href = '#profile'; a.setAttribute('aria-label', 'ข้อมูลของฉัน'); a.style.borderRadius = '50%';
-    a.appendChild(avatarEl(member, 36)); t.appendChild(a);
+    const av = avatarEl(member, 36); av.setAttribute('data-noi18n', '');
+    a.appendChild(av); t.appendChild(a);
   }
 }
 document.querySelectorAll('[data-signout]').forEach(b => b.addEventListener('click', async () => {
@@ -213,8 +217,8 @@ function renderHome() {
   renderNotifyBar();
   const m = member, uid = user.uid, r = rankOf(m);
   renderTopEnd();
-  const ha = $('helloAv'); ha.textContent = ''; ha.appendChild(avatarEl(m, 52));
-  $('helloName').textContent = 'สวัสดี ' + (m.nickname || 'สมาชิก');
+  const ha = $('helloAv'); ha.textContent = ''; ha.appendChild(avatarEl(m, 52)); ha.setAttribute('data-noi18n', '');
+  $('helloName').textContent = m.nickname || 'สมาชิก';
   const since = toDate(m.createdAt);
   $('helloSince').textContent = (since ? 'สมาชิกตั้งแต่ ' + fMonthYear.format(since) + ' · ' : '') + memberNo(uid);
   $('verifyBar').hidden = !!user.emailVerified || !!m.verified; $('verifyEmail').textContent = user.email || ''; $('verifyHelp').hidden = !!user.emailVerified; renderVerifyStatus();
@@ -225,6 +229,7 @@ function renderHome() {
   if (!card || cb.dataset.key !== key) {
     cb.textContent = ''; card = rankCard(m, uid); cb.dataset.key = key;
     if (flipped) card.classList.add('is-flipped'); cb.appendChild(card); attachTilt(card);
+    const inner = card.querySelector('.rcard__in'); if (inner) inner.appendChild(h('span', 'tagchain'));   /* ball chain through the punched hole, tilts with the tag */
   }
   if (!glinted && !matchMedia('(prefers-reduced-motion: reduce)').matches) { glinted = true; requestAnimationFrame(() => card.classList.add('is-glint')); }
   $('flipHint').textContent = flipped ? 'ปัดหรือแตะเพื่อพลิกกลับ' : 'แตะหรือปัดเพื่อพลิก · กดค้างเพื่อยื่นที่ร้าน';
@@ -242,6 +247,7 @@ function renderHome() {
     p.append('อีก ', Object.assign(h('b', 'num', intf(nx.min - (m.points || 0)))), ' แต้ม ถึง ');
     const rb = h('b', null, nx.key); rb.style.color = nx.key === 'Rhodium' ? 'var(--ink)' : nx.c; p.append(rb, ' · ลด ' + nx.disc + '%');
   }
+  { const w = parseFloat(bar.style.width) || 0, ring = $('ptsRing'); ring.style.setProperty('--p', w.toFixed(1)); ring.style.setProperty('--rc', r.partner ? 'var(--accent)' : (r.key === 'Rhodium' ? 'var(--ink)' : r.c)); }
   renderLadder(r);
   renderWarranties();
   renderOrders();
@@ -357,7 +363,16 @@ function renderWarranties() {
 }
 $('wExpBtn').addEventListener('click', () => { const X = $('wExp'); X.hidden = !X.hidden; $('wExpBtn').setAttribute('aria-expanded', String(!X.hidden)); renderWarranties(); });
 
+function renderPayStrip() {
+  const due = orders.filter(o => o.kind !== 'adjust' && !isPaid(o)), S = $('payStrip'); if (!S) return;
+  S.hidden = !due.length; if (!due.length) return;
+  const sum = due.reduce((a, o) => a + (+o.total || 0), 0);
+  $('payStripT').textContent = 'รอชำระ ' + due.length + ' งาน';
+  $('payStripS').textContent = due.length === 1 ? (due[0].title || 'งานพิมพ์') + ' · ' + money(due[0].total) + ' บาท' : 'รวม ' + money(sum) + ' บาท';
+  $('payStripBtn').onclick = () => { if (due.length === 1) openPayDlg(due[0]); else { showAllOrders = true; renderOrders(); $('oTitle').scrollIntoView({ behavior: 'smooth', block: 'start' }); } };
+}
 function renderOrders() {
+  renderPayStrip();
   const L = $('oList'); L.textContent = '';
   $('oCount').textContent = orders.length ? orders.length + ' งาน' : '';
   if (!orders.length) { L.appendChild(h('p', 'empty', 'งานแรกของคุณจะขึ้นที่นี่')); $('oAllBtn').hidden = true; return; }
@@ -397,6 +412,7 @@ async function openPayDlg(o) {
   if (p && p.on !== false && validBase(p.base) && amt > 0) { $('payQr').innerHTML = qrSvg(promptPay(p.base, amt)); if (p.name) $('payName').append(h('span', null, 'ชื่อบัญชี'), ': ' + p.name); }
   else { $('payQrBox').hidden = true; $('payNoQr').hidden = false; }
 }
+$('quickWar').addEventListener('click', (e) => { e.preventDefault(); $('wTitle').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
 /* the shop just updated something (paid, shipped…): refresh the list */
 addEventListener('unitac-push', () => { if (user) loadOrders(user); });
 $('oAllBtn').addEventListener('click', () => { showAllOrders = !showAllOrders; $('oAllBtn').setAttribute('aria-expanded', String(showAllOrders)); renderOrders(); });

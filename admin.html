@@ -499,6 +499,93 @@ button.paytag--ok:hover{filter:brightness(1.15)}
 .bka__acts{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:4px}
 .bka__no{color:var(--stop)!important}
 .bkaq{display:grid;gap:10px;padding:12px;border-radius:var(--r-md);background:var(--sunk)}
+
+/* ===== v3 phone: floating dock · "เพิ่มเติม" hub · back bar ===== */
+.adock,.aback{display:none}
+.hub{display:flex;flex-direction:column;gap:16px}
+.hub__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.hub__t{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:14px;border-radius:18px;background:var(--surface);border:1px solid var(--rule);text-align:left;transition:transform .2s var(--ease),border-color .2s}
+.hub__t:hover{border-color:var(--rule-strong)}.hub__t:active{transform:scale(.97)}
+.hub__ic{width:42px;height:42px;border-radius:13px;background:var(--sunk);display:grid;place-items:center;color:var(--accent)}
+.hub__ic svg{width:21px;height:21px}
+.hub__t b{font-size:15px;font-weight:600}
+.hub__t small{font-size:12px;color:var(--warn);min-height:1em}
+.hub__list{display:flex;flex-direction:column;border-radius:18px;background:var(--surface);border:1px solid var(--rule);overflow:hidden}
+.hub__r{display:flex;align-items:center;gap:14px;min-height:54px;padding:0 16px;border-top:1px solid var(--rule);color:var(--ink);text-decoration:none;font-size:15px;text-align:left;width:100%}
+.hub__r:first-child{border-top:0}
+.hub__r:hover{background:var(--sunk);color:var(--ink)}
+.hub__r span{flex:1}
+.hub__r svg{width:20px;height:20px;color:var(--muted);flex:none}
+.hub__r--stop,.hub__r--stop svg{color:var(--stop)}
+@media (max-width:760px){
+  .adm{padding-bottom:calc(120px + env(safe-area-inset-bottom,0px))}
+  .adm__side,.adm__acts,.top .nav{display:none}
+  .pfhero summary small{display:none}
+  .hub__t{padding:12px;gap:6px}
+  .adm__head h1{font-size:24px}
+  .hub__grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .adock{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:50;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));height:68px;padding:0 4px;border-radius:24px;
+    background:rgba(29,27,24,.92);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);border:1px solid var(--rule-strong);box-shadow:0 16px 36px -10px rgba(0,0,0,.75)}
+  .adock button{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--muted);font-size:11.5px;font-weight:500;line-height:1.2;-webkit-tap-highlight-color:transparent}
+  .adock button svg{width:23px;height:23px;transition:transform .3s var(--ease)}
+  .adock button:active svg{transform:scale(.88)}
+  .adock button[aria-current="page"]{color:var(--accent);font-weight:600}
+  .adock button[aria-current="page"]::before{content:'';position:absolute;top:-1px;left:50%;width:30px;height:5px;margin-left:-15px;background:var(--accent);transform:skewX(-41deg);border-radius:1px;box-shadow:0 0 14px 2px rgba(255,122,60,.55)}
+  .adock__b{position:absolute;top:8px;left:50%;margin-left:6px;min-width:18px;height:18px;padding:0 5px;border-radius:99px;background:var(--accent);color:var(--on-accent);font-style:normal;font-family:var(--font-num);font-size:11px;font-weight:700;display:grid;place-items:center;box-shadow:0 0 0 2px var(--surface)}
+  .aback:not([hidden]){display:flex;align-items:center;gap:10px;margin-bottom:-4px}
+  .aback button{width:44px;height:44px;border-radius:50%;border:1px solid var(--rule-strong);display:grid;place-items:center;flex:none}
+  .aback button svg{width:20px;height:20px}
+  .aback div{display:flex;flex-direction:column;line-height:1.3}
+  .aback span{font-size:12px;color:var(--muted)}
+  .aback b{font-family:var(--font-head);font-size:20px;font-weight:600}
+  .calcfab{bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+  .toast{bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+  .mstat--main{position:relative;overflow:hidden;isolation:isolate}
+  .mstat--main::before{content:'';position:absolute;z-index:-1;right:-30%;top:-60%;width:90%;height:200%;background:radial-gradient(closest-side,rgba(255,122,60,.28),transparent 70%)}
+  .mstat--main{grid-column:1/-1}
+  .mstat--main b{font-size:32px}
+}
+
+/* ===== portfolio: easy adding from a phone ===== */
+.pfhero{padding:0}
+.pfhero summary{display:flex;align-items:center;gap:10px;min-height:56px;padding:0 18px;cursor:pointer;list-style:none}
+.pfhero summary::-webkit-details-marker{display:none}
+.pfhero summary::after{content:'';width:9px;height:9px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);margin-left:auto;transition:transform .25s var(--ease)}
+.pfhero[open] summary::after{transform:rotate(-135deg)}
+.pfhero summary span{font-weight:600}
+.pfhero .hero-set{padding:0 18px 18px}
+.pfadd{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-items:stretch}
+.pfadd__b{display:flex;align-items:center;gap:12px;min-height:72px;padding:12px 16px;border-radius:18px;border:1px dashed var(--rule-strong);background:var(--surface);cursor:pointer;transition:transform .2s var(--ease),border-color .2s}
+.pfadd__b:hover{border-color:var(--ink-2)}.pfadd__b:active{transform:scale(.98)}
+.pfadd__b:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.pfadd__b svg{flex:none;color:var(--accent)}
+.pfadd__b span{display:flex;flex-direction:column;line-height:1.35}
+.pfadd__b b{font-weight:600}.pfadd__b small{font-size:12px;color:var(--muted)}
+.pfadd__b--hot{border:1px solid rgba(255,122,60,.45);background:var(--accent-soft)}
+.pfadd__open{grid-column:1/-1;justify-self:end}
+.pfup__grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.pfup__i{position:relative;display:flex;flex-direction:column;gap:6px}
+.pfup__im{position:relative;aspect-ratio:1;border-radius:12px;overflow:hidden;background:#0E0D0B}
+.pfup__im img{width:100%;height:100%;object-fit:cover;display:block}
+.pfup__x{position:absolute;top:6px;right:6px;width:32px;height:32px;border-radius:50%;background:rgba(10,9,8,.72);color:#fff;display:grid;place-items:center}
+.pfup__x svg{width:16px;height:16px}
+.pfup__st{position:absolute;inset:0;display:grid;place-items:center;background:rgba(10,9,8,.6);color:#fff;font-weight:600;font-size:13px}
+.pfup__st.is-ok{background:rgba(27,45,37,.75);color:var(--ok)}
+.pfup__st.is-bad{background:rgba(58,31,29,.8);color:var(--stop)}
+.pfup__i input{min-height:40px;font-size:13px;padding:8px 10px}
+.pfup__more{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--rule-strong);font-size:13.5px;font-weight:500;cursor:pointer}
+.pfup__cats{display:flex;flex-wrap:wrap;gap:8px}
+.pfup__cats button{min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--rule-strong);font-size:13.5px;color:var(--ink-2)}
+.pfup__cats button[aria-checked="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:600}
+.pfc__a .eye[aria-pressed="false"]{color:var(--stop)}
+@media (max-width:600px){
+  .pf__grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .pfadd__b{flex-direction:column;align-items:flex-start;min-height:96px}
+  .pfup__grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  dialog.sheet{margin:auto 0 0;max-width:100%;width:100%;max-height:94vh}
+  dialog.sheet .dlg{border-radius:24px 24px 0 0;padding-bottom:env(safe-area-inset-bottom,0px);animation:sheetup .35s var(--ease)}
+  @keyframes sheetup{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+}
 </style>
 </head>
 <body>
@@ -558,9 +645,11 @@ button.paytag--ok:hover{filter:brightness(1.15)}
       <button type="button" role="tab" aria-selected="false" data-tab="prt" id="tPrt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 12h8M12 8v8"/><rect x="3" y="3" width="18" height="18" rx="5"/></svg><span>พาร์ทเนอร์</span></button>
       <button type="button" role="tab" aria-selected="false" data-tab="pf" id="tPf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/></svg><span>ผลงาน</span></button>
       <button type="button" role="tab" aria-selected="false" data-tab="sd" id="tSd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="16" y="4" width="5" height="16" rx="1.5"/><path d="M11 9h2M11 15h2"/></svg><span>สองข้าง</span></button>
+      <button type="button" role="tab" aria-selected="false" data-tab="more" id="tMore" hidden><span>เพิ่มเติม</span></button>
     </div></nav>
     <div class="adm__main">
     <div class="bkalert" id="bkAlert" hidden></div>
+    <div class="aback" id="aBack" hidden><button type="button" id="aBackBtn" aria-label="กลับไปเมนูเพิ่มเติม"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg></button><div><span>หลังร้าน · เพิ่มเติม</span><b id="aBackT"></b></div></div>
     <div class="todo" id="todo" hidden></div>
 
     <div data-panel="bk" class="sec" hidden>
@@ -633,7 +722,8 @@ button.paytag--ok:hover{filter:brightness(1.15)}
     </div>
 
     <div data-panel="pf" class="sec" hidden>
-      <section class="card hero-set">
+      <details class="pfhero card"><summary><span>พื้นหลังส่วนหัวหน้าผลงาน</span><small class="muted">รูปหรือคลิปด้านหลังหัวข้อ</small></summary>
+<div class="hero-set">
         <div class="hero-set__pv" id="hsPv"><span class="muted small">ยังไม่มีพื้นหลัง</span></div>
         <div class="hero-set__t">
           <h2>พื้นหลังส่วนหัวหน้าผลงาน</h2>
@@ -649,12 +739,12 @@ button.paytag--ok:hover{filter:brightness(1.15)}
           </div>
           <p class="small muted" id="hsMsg" aria-live="polite"></p>
         </div>
-      </section>
-      <div class="pf__bar">
-        <label class="btn btn--primary" id="pfAddL">+ เพิ่มรูปผลงาน<input type="file" id="pfFiles" accept="image/*,.heic,.heif" multiple class="sr"></label>
-        <span class="hint">เลือกได้ทีละหลายรูป ระบบย่อรูปให้เอง รูปขึ้นหน้าผลงานทันที แล้วค่อยเลือกหมวดทีหลังได้</span>
-        <span class="sp" style="flex:1"></span>
-        <a class="linkbtn" href="portfolio.html" target="_blank" rel="noopener">เปิดหน้าผลงาน ↗</a>
+      </div>
+      </details>
+      <div class="pfadd">
+        <label class="pfadd__b pfadd__b--hot"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/></svg><span><b>เลือกรูปจากเครื่อง</b><small>เลือกได้หลายรูปพร้อมกัน</small></span><input type="file" id="pfFiles" accept="image/*,.heic,.heif" multiple class="sr"></label>
+        <label class="pfadd__b"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z"/><circle cx="12" cy="13.5" r="3.5"/></svg><span><b>ถ่ายรูป</b><small>เปิดกล้องถ่ายชิ้นงาน</small></span><input type="file" id="pfCam" accept="image/*" capture="environment" class="sr"></label>
+        <a class="linkbtn pfadd__open" href="portfolio.html" target="_blank" rel="noopener">เปิดหน้าผลงาน ↗</a>
       </div>
       <p class="muted small" id="pfProg" aria-live="polite"></p>
       <div id="pfList" class="pf__grid"></div>
@@ -746,8 +836,35 @@ button.paytag--ok:hover{filter:brightness(1.15)}
       </div>
       <div id="wList" class="wlist2"></div>
     </div>
+
+    <div data-panel="more" class="sec hub" hidden>
+      <div class="hub__grid">
+        <button type="button" class="hub__t" data-go="tag"><span class="hub__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h18v10H3z"/><path d="M6 10v4M9 10v4M12 10v4M15 10v4M18 10v4"/></svg></span><b>เลขพัสดุ</b><small data-badge-of="tag"></small></button>
+        <button type="button" class="hub__t" data-go="war"><span class="hub__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg></span><b>ประกัน</b><small data-badge-of="war"></small></button>
+        <button type="button" class="hub__t" data-go="stk"><span class="hub__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg></span><b>สต็อกเส้น</b><small data-badge-of="stk"></small></button>
+        <button type="button" class="hub__t" data-go="pf"><span class="hub__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/></svg></span><b>ผลงาน</b><small data-badge-of="pf"></small></button>
+        <button type="button" class="hub__t" data-go="prt"><span class="hub__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 12h8M12 8v8"/><rect x="3" y="3" width="18" height="18" rx="5"/></svg></span><b>พาร์ทเนอร์</b><small data-badge-of="prt"></small></button>
+        <button type="button" class="hub__t" data-go="sd"><span class="hub__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="16" y="4" width="5" height="16" rx="1.5"/><path d="M11 9h2M11 15h2"/></svg></span><b>สองข้าง</b><small data-badge-of="sd"></small></button>
+      </div>
+      <div class="hub__list">
+        <a class="hub__r" href="calc.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 11h2M14 11h2M8 15h2M14 15h2"/></svg><span>เครื่องคิดเลข</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></a>
+        <button type="button" class="hub__r" data-act="bc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11v2a1 1 0 0 0 1 1h3l5 4V6L7 10H4a1 1 0 0 0-1 1Z"/><path d="M16 9a3 3 0 0 1 0 6M19 6a7 7 0 0 1 0 12"/></svg><span>ประกาศถึงสมาชิก</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+        <button type="button" class="hub__r" data-act="bkcfg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg><span>ตั้งค่าการจอง · แจ้งเตือน</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+        <button type="button" class="hub__r" data-act="backup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span>สำรองข้อมูล</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+        <button type="button" class="hub__r" data-act="restore"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20V9M7 14l5-5 5 5M5 4h14"/></svg><span>กู้คืนข้อมูล</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+        <button type="button" class="hub__r" data-act="install"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/></svg><span>ติดตั้งเป็นแอป</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+        <button type="button" class="hub__r hub__r--stop" data-act="signout"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l-5-5 5-5M5 12h11"/></svg><span>ออกจากระบบ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+      </div>
     </div>
     </div>
+    </div>
+    <nav class="adock" aria-label="เมนูหลังร้าน">
+      <button type="button" data-go="prep"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/><path d="m9 15 2 2 4-4"/></svg><span>วันนี้</span><i class="adock__b" data-badge-of="prep" hidden></i></button>
+      <button type="button" data-go="bk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M12 13v5M9.5 15.5h5"/></svg><span>การจอง</span><i class="adock__b" data-badge-of="bk" hidden></i></button>
+      <button type="button" data-go="ord"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg><span>ออเดอร์</span><i class="adock__b" data-badge-of="ord" hidden></i></button>
+      <button type="button" data-go="cust"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 19v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1"/><circle cx="9.5" cy="7.5" r="3.5"/><path d="M21 19v-1a4 4 0 0 0-3-3.87M16 4.13a3.5 3.5 0 0 1 0 6.75"/></svg><span>ลูกค้า</span><i class="adock__b" data-badge-of="cust" hidden></i></button>
+      <button type="button" data-go="more"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>เพิ่มเติม</span><i class="adock__b" data-badge-of="more" hidden></i></button>
+    </nav>
   </section>
 </main>
 
@@ -982,7 +1099,19 @@ button.paytag--ok:hover{filter:brightness(1.15)}
   <div class="dlg__foot"><button type="button" class="btn btn--danger btn--sm" id="mDel" hidden>ลบ</button><span class="sp"></span><button type="button" class="btn btn--ghost" data-close>ยกเลิก</button><button type="submit" class="btn btn--primary" id="mSave">บันทึก</button></div>
 </form></dialog>
 
-<dialog id="pfDlg" aria-labelledby="pfDlgT"><form class="dlg" id="pfForm" novalidate>
+<dialog id="pfUpDlg" class="sheet wide" aria-labelledby="pfUpT"><div class="dlg">
+  <div class="dlg__head"><div><h2 id="pfUpT">ลงรูปผลงาน</h2><p class="muted small" id="pfUpSub"></p></div><button type="button" class="iconbtn" id="pfUpX" aria-label="ปิด"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="dlg__body">
+    <div class="pfup__grid" id="pfUpGrid"></div>
+    <label class="pfup__more"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>เพิ่มรูปอีก<input type="file" id="pfUpMore" accept="image/*,.heic,.heif" multiple class="sr"></label>
+    <div class="field"><span class="lab" id="pfUpCatL">หมวด (ใช้กับทุกรูปในชุดนี้)</span><div class="pfup__cats" id="pfUpCats" role="radiogroup" aria-labelledby="pfUpCatL"></div></div>
+    <label class="check"><input type="checkbox" id="pfUpVis" checked><span>แสดงบนหน้าผลงานทันที</span></label>
+    <p class="err" id="pfUpErr" hidden></p>
+  </div>
+  <div class="dlg__foot"><span class="sp"></span><button type="button" class="btn btn--primary btn--block" id="pfUpGo">ลงผลงาน</button></div>
+</div></dialog>
+
+<dialog id="pfDlg" class="sheet" aria-labelledby="pfDlgT"><form class="dlg" id="pfForm" novalidate>
   <div class="dlg__head"><h2 id="pfDlgT">แก้ไขผลงาน</h2><button type="button" class="iconbtn" data-close aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
   <div class="dlg__body">
     <img id="pfPrev" alt="" style="width:100%;max-height:260px;object-fit:contain;border-radius:12px;background:#0E0D0B">
@@ -1041,9 +1170,10 @@ button.paytag--ok:hover{filter:brightness(1.15)}
 <footer class="foot">UNITAC · <a href="./">ตารางคิว</a> · <a href="warranty.html">เช็กประกัน</a> · <a href="portfolio.html">ผลงาน</a> · <a href="partners.html">พาร์ทเนอร์</a> · <a href="privacy.html">นโยบายความเป็นส่วนตัว</a></footer>
 <script src="vendor/qrcode.js?v=20261004w"></script>
 <script type="module" src="js/admin.js?v=20261012a"></script>
+<script src="js/admin-mobile.js?v=20261012a" defer></script>
 <script type="module" src="js/admin-partners.js?v=20261004w"></script>
 <script type="module" src="js/admin-stock.js?v=20261010f"></script>
-<script type="module" src="js/admin-portfolio.js?v=20261004w"></script>
+<script type="module" src="js/admin-portfolio.js?v=20261012a"></script>
 <script type="module" src="js/admin-tools.js?v=20261010f"></script>
 <script type="module" src="js/admin-ship.js?v=20261004w"></script>
 <script type="module" src="js/admin-hero.js?v=20261004w"></script>

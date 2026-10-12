@@ -232,9 +232,61 @@ dialog[open] .rankup__name{display:inline-block;animation:forgeName .6s var(--ea
 .paydlg__qr svg{display:block;width:100%;height:auto}
 .paydlg__amt{font-size:30px;font-weight:600;margin:4px 0}
 .paydlg__amt small{font-size:14px;color:var(--muted)}
+
+/* ---------- v3: hello · dog tag · points ring · unpaid strip · shortcuts ---------- */
+.hello__t{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.3}
+.hello__k{font-size:13px;color:var(--muted)}
+.hello__acts{display:flex;gap:8px;flex:none}
+.hbtn{width:44px;height:44px;border-radius:50%;border:1px solid var(--rule-strong);display:grid;place-items:center;color:var(--ink);text-decoration:none;transition:border-color .2s,transform .2s var(--ease)}
+.hbtn:hover{border-color:var(--ink-2);color:var(--ink)}.hbtn:active{transform:scale(.94)}
+.hbtn svg{width:20px;height:20px}
+@media (max-width:760px){.hello #helloAv{display:none}.hello h1{font-size:26px}}
+.taghost{position:relative;isolation:isolate}
+.taghost::before{content:'';position:absolute;z-index:-1;left:50%;top:44%;width:120%;height:120%;transform:translate(-50%,-50%);background:radial-gradient(closest-side,var(--accent-glow),transparent 70%);pointer-events:none;animation:glowfloat 7s ease-in-out infinite}
+@keyframes glowfloat{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-48%,-53%) scale(1.06)}}
+.rcard.dt .tagchain{position:absolute;left:8.5%;top:50%;width:30cqw;height:2.6cqw;transform-origin:0 50%;transform:translateZ(.6cqw) rotate(-128deg);
+  background:radial-gradient(circle at 50% 50%,#E6E8EA 0 32%,#8E949A 52%,transparent 56%) 0 0/2.6cqw 100% repeat-x;filter:drop-shadow(0 .5cqw .4cqw rgba(0,0,0,.55));pointer-events:none;z-index:3}
+.rcard.dt .tagchain::before{content:'';position:absolute;left:-2.6cqw;top:50%;width:5.2cqw;height:5.2cqw;margin-top:-2.6cqw;border-radius:50%;border:.7cqw solid #C9CDD1;box-shadow:inset 0 0 0 .3cqw #6E747A,0 .3cqw .5cqw rgba(0,0,0,.5)}
+.prog__row{display:flex;align-items:center;gap:16px}
+.prog__t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.pring{--p:0;--rc:var(--accent);flex:none;width:84px;height:84px;border-radius:50%;background:conic-gradient(var(--rc) calc(var(--p)*1%),var(--sunk) 0);display:grid;place-items:center;position:relative}
+.pring::after{content:'';position:absolute;inset:-14px;border-radius:50%;background:radial-gradient(closest-side,var(--accent-glow),transparent 70%);z-index:-1}
+.pring__in{width:70px;height:70px;border-radius:50%;background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}
+.pring__in b{font-size:20px;font-weight:600}
+.pring__in small{font-size:11px;color:var(--muted)}
+.prog{position:relative;isolation:isolate}
+.prog .bar{display:none}
+.paystrip{display:flex;align-items:center;gap:12px;padding:12px 12px 12px 16px;border-radius:var(--r-lg);background:var(--warn-soft);border:1px solid color-mix(in srgb,var(--warn) 35%,transparent)}
+.paystrip__dot{width:10px;height:10px;border-radius:50%;background:var(--warn);flex:none;box-shadow:0 0 0 0 rgba(227,168,83,.6);animation:pulse 2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(227,168,83,.55)}70%{box-shadow:0 0 0 9px rgba(227,168,83,0)}100%{box-shadow:0 0 0 0 rgba(227,168,83,0)}}
+.paystrip__t{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.4}
+.paystrip__t b{color:var(--warn);font-weight:600;font-size:14px}
+.paystrip__t span{font-size:13px;color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.quick{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.quick__i{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 4px;border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--rule);color:var(--ink);text-decoration:none;font-size:12.5px;font-weight:500;cursor:pointer;transition:transform .2s var(--ease),border-color .2s}
+.quick__i:hover{border-color:var(--rule-strong);color:var(--ink)}.quick__i:active{transform:scale(.96)}
+.quick__i:disabled{opacity:.5}
+.quick__ic{width:40px;height:40px;border-radius:12px;background:var(--sunk);display:grid;place-items:center}
+.quick__ic svg{width:21px;height:21px}
+.quick__i--hot .quick__ic{background:var(--accent-soft);color:var(--accent)}
+.qsteps{list-style:none;margin:2px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
+.qsteps li{display:flex;flex-direction:column;gap:6px;font-size:11.5px;color:var(--muted)}
+.qsteps li::before{content:'';height:4px;background:var(--rule-strong);clip-path:polygon(3px 0,100% 0,calc(100% - 3px) 100%,0 100%)}
+.qsteps li.is-done{color:var(--ok)}.qsteps li.is-done::before{background:var(--ok)}
+.qsteps li.is-now{color:var(--accent);font-weight:600}.qsteps li.is-now::before{background:var(--accent)}
+/* pay: bottom sheet on phones */
+@media (max-width:600px){
+  dialog.sheet{margin:auto 0 0;max-width:100%;width:100%;max-height:92vh}
+  dialog.sheet .dlg{border-radius:26px 26px 0 0;padding-bottom:calc(18px + env(safe-area-inset-bottom,0px));animation:sheetup .35s var(--ease)}
+  @keyframes sheetup{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+}
+.paydlg__amt{font-family:var(--font-num)}
+@media (prefers-reduced-motion:reduce){.taghost::before,.paystrip__dot{animation:none}}
 </style>
-<script src="js/i18n.js?v=20261012a" defer></script>
+<script src="js/i18n.js?v=20261012b" defer></script>
 <script src="js/install.js?v=20261010f" defer></script>
+<link rel="stylesheet" href="css/mobile.css?v=20261012b">
+<script src="js/mobile.js?v=20261012b" defer></script>
 </head>
 <body>
 <header class="top">
@@ -305,7 +357,11 @@ dialog[open] .rankup__name{display:inline-block;animation:forgeName .6s var(--ea
     <div class="home__col">
       <div class="hello rv">
         <span id="helloAv"></span>
-        <div><h1 id="helloName">สวัสดี</h1><p class="muted small" id="helloSince"></p></div>
+        <div class="hello__t"><span class="hello__k">สวัสดี</span><h1 id="helloName">สมาชิก</h1><p class="muted small" id="helloSince"></p></div>
+        <div class="hello__acts">
+          <a class="hbtn" href="#notify" aria-label="การแจ้งเตือน"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></a>
+          <a class="hbtn" href="#profile" aria-label="ข้อมูลของฉัน"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg></a>
+        </div>
       </div>
       <div class="banner" id="verifyBar" hidden>
         <p>ยืนยันอีเมลก่อน จึงจะใช้คูปองต้อนรับได้ ระบบส่ง<b>ลิงก์ยืนยัน</b> (ไม่ใช่รหัสตัวเลข) ไปที่ <b id="verifyEmail"></b> กดลิงก์ในอีเมล แล้วกลับมากด "ยืนยันแล้ว"
@@ -315,26 +371,37 @@ dialog[open] .rankup__name{display:inline-block;animation:forgeName .6s var(--ea
         <button type="button" class="btn btn--primary btn--sm" id="verifiedBtn">ยืนยันแล้ว</button>
       </div>
       <div class="banner banner--accent" id="delBar" hidden><p>ส่งคำขอลบบัญชีแล้ว ร้านจะดำเนินการและแจ้งกลับทางอีเมล</p></div>
-      <div class="rv" style="--d:60ms">
+      <div class="rv taghost" style="--d:60ms">
         <button type="button" class="rcard-btn" id="cardBtn" aria-label="พลิกบัตรเพื่อแสดง QR"></button>
         <div class="cardacts"><p class="muted small" id="flipHint">แตะหรือปัดเพื่อพลิก · กดค้างเพื่อยื่นที่ร้าน</p><button type="button" class="linkbtn" id="showBtn">แสดง QR เต็มจอ</button></div>
       </div>
+      <div class="paystrip rv" id="payStrip" style="--d:80ms" hidden>
+        <span class="paystrip__dot" aria-hidden="true"></span>
+        <div class="paystrip__t"><b id="payStripT">รอชำระ</b><span id="payStripS"></span></div>
+        <button type="button" class="btn btn--primary btn--sm" id="payStripBtn">ชำระเงิน</button>
+      </div>
       <div id="couponBox" class="rv" style="--d:100ms" hidden></div>
       <div class="card prog rv" style="--d:140ms">
-        <div class="prog__top"><span class="muted small">แต้มสะสม · ค่าพิมพ์ทุก 10 บาท = 1 แต้ม</span><b class="num prog__pts" id="pts">0</b></div>
+        <div class="prog__row">
+          <div class="pring" id="ptsRing"><span class="pring__in"><b class="num" id="pts">0</b><small>แต้ม</small></span></div>
+          <div class="prog__t">
+            <span class="muted small">แต้มสะสม · ความคืบหน้าสู่แรงค์ถัดไป</span>
+            <p class="small" id="ptsNext"></p>
+            <span class="hint">ค่าพิมพ์ทุก 10 บาท = 1 แต้ม</span>
+          </div>
+        </div>
         <div class="bar" id="ptsBarWrap"><span class="liq" id="ptsBar" style="width:0"></span></div>
-        <p class="small" id="ptsNext"></p>
         <button type="button" class="linkbtn" id="ladderBtn" aria-expanded="false">ดูสิทธิ์ทุกแรงค์</button>
         <div id="ladder" class="ladder" hidden></div>
       </div>
       <div class="bkcta rv" style="--d:180ms">
-        <button type="button" class="btn btn--primary btn--block" id="bkOpen">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M12 14v4M10 16h4"/></svg>
-          จองคิวพิมพ์</button>
+        <div class="quick" role="group" aria-label="ทางลัด">
+          <button type="button" class="quick__i quick__i--hot" id="bkOpen"><span class="quick__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M12 14v4M10 16h4"/></svg></span>จองคิว</button>
+          <a class="quick__i" id="bookBtn" href="./" target="_blank" rel="noopener"><span class="quick__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12c0-4.4 3.6-8 8-8s8 3.6 8 8-3.6 8-8 8c-1.2 0-2.4-.3-3.4-.8L4 20l.9-3.9A8 8 0 0 1 4 12Z"/></svg></span>ทักร้าน</a>
+          <a class="quick__i" href="#wTitle" id="quickWar"><span class="quick__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg></span>ประกัน</a>
+          <a class="quick__i" href="#profile"><span class="quick__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></span>ที่อยู่</a>
+        </div>
         <p class="hint" id="bkOpenNote" hidden></p>
-        <a class="btn btn--ghost btn--block btn--sm" id="bookBtn" href="./" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12c0-4.4 3.6-8 8-8s8 3.6 8 8-3.6 8-8 8c-1.2 0-2.4-.3-3.4-.8L4 20l.9-3.9A8 8 0 0 1 4 12Z"/></svg>
-          ทักแชทร้านทาง Messenger</a>
       </div>
       <div class="nfbar" id="nfBar" hidden></div>
     </div>
@@ -431,13 +498,13 @@ dialog[open] .rankup__name{display:inline-block;animation:forgeName .6s var(--ea
   <div class="dlg__foot"><button type="button" class="btn btn--ghost" id="bkBack" hidden>ย้อนกลับ</button><span class="sp"></span><button type="button" class="btn btn--primary" id="bkNext">ถัดไป</button><button type="button" class="btn btn--primary" id="bkSend" hidden>ส่งคำขอจอง</button></div>
 </div></dialog>
 
-<dialog id="payDlg" aria-labelledby="payT"><div class="dlg"><div class="dlg__body paydlg">
+<dialog id="payDlg" class="sheet" aria-labelledby="payT"><div class="dlg"><div class="dlg__body paydlg">
   <h2 id="payT">ชำระเงิน</h2>
   <p class="muted" id="payJob"></p>
   <div id="payQrBox"><div class="paydlg__qr" id="payQr"></div><p class="muted small" id="payName"></p></div>
   <p class="paydlg__amt"><span class="num" id="payAmt"></span> <small>บาท</small></p>
   <p class="hint" id="payNoQr" hidden>ติดต่อร้านเพื่อขอช่องทางชำระเงิน</p>
-  <p class="hint">สแกนด้วยแอปธนาคาร ยอดเงินใส่ไว้ให้แล้ว เมื่อร้านตรวจยอดแล้ว สถานะจะเปลี่ยนเป็น "ชำระแล้ว" และแต้มจะเข้าทันที</p>
+  <p class="hint">ร้านตรวจยอดแล้วสถานะจะเปลี่ยนเป็น “ชำระแล้ว” และแต้มเข้าทันที</p>
   <button type="button" class="btn btn--ghost btn--block" data-close>ปิด</button>
 </div></div></dialog>
 
@@ -490,6 +557,6 @@ dialog[open] .rankup__name{display:inline-block;animation:forgeName .6s var(--ea
 
 <footer class="foot">UNITAC · <a href="./">ตารางคิว</a> · <a href="warranty.html">เช็กประกัน</a> · <a href="portfolio.html">ผลงาน</a> · <a href="partners.html">พาร์ทเนอร์</a> · <a href="privacy.html">นโยบายความเป็นส่วนตัว</a></footer>
 <script src="vendor/qrcode.js?v=20261004w"></script>
-<script type="module" src="js/member.js?v=20261012a"></script>
+<script type="module" src="js/member.js?v=20261012b"></script>
 </body>
 </html>
